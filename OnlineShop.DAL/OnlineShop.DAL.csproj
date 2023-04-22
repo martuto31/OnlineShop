@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Data\Configurations\" />
+    <ProjectReference Include="..\OnlineShop.Models\OnlineShop.Models.csproj" />
   </ItemGroup>
 
 </Project>
