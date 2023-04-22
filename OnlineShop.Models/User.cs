@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace OnlineShop.Models
 {
@@ -15,5 +16,7 @@ namespace OnlineShop.Models
 
         public int RoleId { get; set; }
         public Role Role { get; set; }
+
+        public virtual ICollection<Review> Reviews { get; set; }
     }
 }
