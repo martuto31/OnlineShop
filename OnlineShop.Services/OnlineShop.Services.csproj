@@ -7,10 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="User\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\OnlineShop.DAL\OnlineShop.DAL.csproj" />
     <ProjectReference Include="..\OnlineShop.Models\OnlineShop.Models.csproj" />
     <ProjectReference Include="..\OnlineShop.Shared\OnlineShop.Shared.csproj" />

@@ -11,6 +11,6 @@ namespace OnlineShop.DAL.Repository.User
         Task AddUserAsync(Models.User user);
         void DeleteUser(Models.User user);
         void UpdateUser(Models.User user);
-        Task<Models.User?> GetUserById(int id);
+        Task<Models.User?> GetUserByIdAsync(int id);
     }
 }

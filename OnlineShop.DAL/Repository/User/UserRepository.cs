@@ -22,7 +22,7 @@ namespace OnlineShop.DAL.Repository.User
             _context.Users.Remove(user);
         }
 
-        public async Task<Models.User?> GetUserById(int id)
+        public async Task<Models.User?> GetUserByIdAsync(int id)
         {
             return await DbSet
                 .Where(x => x.Id == id)
