@@ -40,7 +40,7 @@ namespace OnlineShop.DAL.Repository.Product
 
         public void UpdateProduct(Models.Product product)
         {
-            _context.Update(product);
+            _context.Products.Update(product);
         }
     }
 }
