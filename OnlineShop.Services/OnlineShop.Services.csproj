@@ -8,7 +8,12 @@
 
   <ItemGroup>
     <Folder Include="User\" />
-    <Folder Include="Product\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\OnlineShop.DAL\OnlineShop.DAL.csproj" />
+    <ProjectReference Include="..\OnlineShop.Models\OnlineShop.Models.csproj" />
+    <ProjectReference Include="..\OnlineShop.Shared\OnlineShop.Shared.csproj" />
   </ItemGroup>
 
 </Project>

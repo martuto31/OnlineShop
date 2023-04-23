@@ -14,5 +14,6 @@ namespace OnlineShop.DAL.Repository
         void Add(TEntity entity);
         Task AddAsync(TEntity entity);
         void Delete(TEntity entity);
+        Task SaveChangesAsync();
     }
 }

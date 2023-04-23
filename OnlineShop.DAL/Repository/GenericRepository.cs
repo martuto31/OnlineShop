@@ -44,5 +44,10 @@ namespace OnlineShop.DAL.Repository
         }
 
         protected DbSet<TEntity> DbSet => _context.Set<TEntity>();
+
+        public Task SaveChangesAsync()
+        {
+            return _context.SaveChangesAsync();
+        }
     }
 }
