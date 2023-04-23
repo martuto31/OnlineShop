@@ -1,18 +1,19 @@
 ﻿using OnlineShop.Models;
+using OnlineShop.Shared.DTO.ProductDTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OnlineShop.DAL.Repository.Product
+namespace OnlineShop.Services.Product
 {
-    public interface IReviewRepository : IGenericRepository<Review>
+    public interface IReviewService
     {
-        Task AddReviewAsync(Review review);
+        Task AddReviewAsync(ReviewDTO input);
         Task<IEnumerable<Review>> GetAllReviewsForProductAsync(int productId);
         Task<Review?> GetReviewByIdAsync(int id);
-        void UpdateReview(Review review);
-        void DeleteReview(Review review);
+        Task UpdateReviewAsync(ReviewDTO input);
+        Task DeleteReviewAsync(int id);
     }
 }

@@ -3,6 +3,7 @@ using OnlineShop.DAL.Data;
 using OnlineShop.Models;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,13 +24,14 @@ namespace OnlineShop.DAL.Repository.Product
             _context.Reviews.Remove(review);
         }
 
-        public async Task<IEnumerable<Review>> GetAllReviews()
+        public async Task<IEnumerable<Review>> GetAllReviewsForProductAsync(int productId)
         {
             return await DbSet
+                .Where(x => x.ProductId == productId)
                 .ToListAsync();
         }
 
-        public async Task<Review?> GetReviewById(int id)
+        public async Task<Review?> GetReviewByIdAsync(int id)
         {
             return await DbSet
                 .Where(x => x.Id == id)
