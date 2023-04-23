@@ -10,7 +10,5 @@ namespace OnlineShop.Shared.DTO.UserDTO
         public string Email { get; set; }
 
         public int RoleId { get; set; }
-
-        public virtual ICollection<Review>? Reviews { get; set; }
     }
 }
