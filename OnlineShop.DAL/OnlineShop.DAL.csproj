@@ -19,4 +19,8 @@
     <ProjectReference Include="..\OnlineShop.Models\OnlineShop.Models.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Repository\User\" />
+  </ItemGroup>
+
 </Project>
