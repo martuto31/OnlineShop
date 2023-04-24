@@ -30,7 +30,7 @@ namespace OnlineShop.Controllers
             return Ok();
         }
 
-        [HttpPost]
+        [HttpDelete]
         public async Task<IActionResult> RemoveProductAsync([FromBody] int id)
         {
             await productService.DeleteProductAsync(id);
