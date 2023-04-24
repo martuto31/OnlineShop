@@ -50,5 +50,21 @@ namespace OnlineShop.Controllers
 
             return Ok();
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetProductByIdAsync(int id)
+        {
+            await productService.GetProductByIdAsync(id);
+
+            return Ok();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllProductsAsync()
+        {
+            await productService.GetAllProductsAsync();
+
+            return Ok();
+        }
     }
 }
