@@ -17,7 +17,7 @@ namespace OnlineShop.Controllers
             this.productService = productService;
         }
 
-        [HttpPost]
+        [HttpPost("AddProduct")]
         public async Task<IActionResult> AddProductAsync([FromBody] ProductDTO userInput)
         {
             if (userInput == null)
@@ -30,7 +30,7 @@ namespace OnlineShop.Controllers
             return Ok();
         }
 
-        [HttpDelete]
+        [HttpDelete("RemoveProduct")]
         public async Task<IActionResult> RemoveProductAsync([FromBody] int id)
         {
             await productService.DeleteProductAsync(id);
@@ -38,7 +38,7 @@ namespace OnlineShop.Controllers
             return Ok();
         }
 
-        [HttpPost]
+        [HttpPost("UpdateProduct")]
         public async Task<IActionResult> UpdateProductAsync([FromBody] ProductDTO userInput)
         {
             if (userInput == null)
@@ -51,7 +51,7 @@ namespace OnlineShop.Controllers
             return Ok();
         }
 
-        [HttpGet]
+        [HttpGet("GetProductById")]
         public async Task<IActionResult> GetProductByIdAsync(int id)
         {
             await productService.GetProductByIdAsync(id);
@@ -59,7 +59,7 @@ namespace OnlineShop.Controllers
             return Ok();
         }
 
-        [HttpGet]
+        [HttpGet("GetAllProducts")]
         public async Task<IActionResult> GetAllProductsAsync()
         {
             await productService.GetAllProductsAsync();

@@ -15,7 +15,7 @@ namespace OnlineShop.Controllers
             this.reviewService = reviewService;
         }
 
-        [HttpPost]
+        [HttpPost("AddReview")]
         public async Task<IActionResult> AddReviewAsync([FromBody] ReviewDTO userInput)
         {
             if(userInput == null)
@@ -28,7 +28,7 @@ namespace OnlineShop.Controllers
             return Ok();
         }
 
-        [HttpPost]
+        [HttpPost("UpdateReview")]
         public async Task<IActionResult> UpdateReviewAsync([FromBody] ReviewDTO userInput)
         {
             if (userInput == null)
@@ -41,7 +41,7 @@ namespace OnlineShop.Controllers
             return Ok();
         }
 
-        [HttpDelete]
+        [HttpDelete("RemoveReview")]
         public async Task<IActionResult> RemoveReviewAsync([FromBody] int id)
         {
             await reviewService.DeleteReviewAsync(id);
@@ -49,7 +49,7 @@ namespace OnlineShop.Controllers
             return Ok();
         }
 
-        [HttpGet]
+        [HttpGet("GetReviewById")]
         public async Task<IActionResult> GetReviewByIdAsync([FromBody] int id)
         {
             await reviewService.GetReviewByIdAsync(id);
@@ -57,7 +57,7 @@ namespace OnlineShop.Controllers
             return Ok();
         }
 
-        [HttpGet]
+        [HttpGet("GetAllReviews")]
         public async Task<IActionResult> GetAllReviewsAsync(int productId)
         {
             await reviewService.GetAllReviewsForProductAsync(productId);

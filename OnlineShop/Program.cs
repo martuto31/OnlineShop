@@ -1,11 +1,13 @@
-using Fluent.Infrastructure.FluentModel;
-using FluentAssertions.Common;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using OnlineShop.DAL.Data;
 using OnlineShop.DAL.Repository.Product;
 using OnlineShop.DAL.Repository.User;
 using OnlineShop.Services.Product;
 using OnlineShop.Services.User;
+using OnlineShop.Shared.Options;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -15,8 +17,31 @@ builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlSer
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddDefaultIdentity<ApplicationUser>(IdentityOptionsProvider.GetIdentityOptions)
-                .AddRoles<ApplicationRole>().AddEntityFrameworkStores<ApplicationDbContext>();
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+
+.AddJwtBearer(options =>
+{
+    options.SaveToken = true;
+    options.RequireHttpsMetadata = false;
+    options.TokenValidationParameters = new TokenValidationParameters()
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        //ValidAudience = configuration[SportsHubConstants.JwtAudience],
+        //ValidIssuer = configuration[SportsHubConstants.JwtIssuer],
+        //IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration[SportsHubConstants.JwtKey]))
+    };
+});
+
+builder.Services.Configure<JsonTokenOptions>(
+    builder.Configuration.GetSection(JsonTokenOptions.Jwt));
 
 // Data repositories
 builder.Services.AddTransient<IUserRepository, UserRepository>();
