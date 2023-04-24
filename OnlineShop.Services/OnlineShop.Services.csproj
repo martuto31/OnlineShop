@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="6.29.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\OnlineShop.DAL\OnlineShop.DAL.csproj" />
     <ProjectReference Include="..\OnlineShop.Models\OnlineShop.Models.csproj" />
     <ProjectReference Include="..\OnlineShop.Shared\OnlineShop.Shared.csproj" />

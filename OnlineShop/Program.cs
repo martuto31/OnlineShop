@@ -1,3 +1,5 @@
+using Fluent.Infrastructure.FluentModel;
+using FluentAssertions.Common;
 using Microsoft.EntityFrameworkCore;
 using OnlineShop.DAL.Data;
 using OnlineShop.DAL.Repository.Product;
@@ -13,12 +15,16 @@ builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlSer
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddDefaultIdentity<ApplicationUser>(IdentityOptionsProvider.GetIdentityOptions)
+                .AddRoles<ApplicationRole>().AddEntityFrameworkStores<ApplicationDbContext>();
+
 // Data repositories
 builder.Services.AddTransient<IUserRepository, UserRepository>();
 builder.Services.AddTransient<IProductRepository, ProductRepository>();
 builder.Services.AddTransient<IReviewRepository, ReviewRepository>();
 
 // Application services
+builder.Services.AddTransient<IJsonTokenService, JsonTokenService>();
 builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddTransient<IProductService, ProductService>();
 builder.Services.AddTransient<IReviewService, ReviewService>();
@@ -34,6 +40,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+app.UseAuthentication();
 
 app.MapControllers();
 
