@@ -31,6 +31,23 @@ namespace OnlineShop.Services.User
             await userRepository.SaveChangesAsync();
         }
 
+        public async Task<Models.User?> LoginAsync(LoginDTO userInput)
+        {
+            var user = await userRepository.GetUserByUsernameAsync(userInput.Username);
+
+            if(user == null)
+            {
+                return null;
+            }
+
+            if(userInput.Password != userInput.Password)
+            {
+                return null;
+            }
+
+            return user;
+        }
+
         public async Task DeleteUserAsync(int id)
         {
             var user = await userRepository.GetUserByIdAsync(id);

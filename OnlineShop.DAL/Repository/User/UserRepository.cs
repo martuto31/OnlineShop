@@ -29,6 +29,13 @@ namespace OnlineShop.DAL.Repository.User
                 .FirstOrDefaultAsync();
         }
 
+        public async Task<Models.User?> GetUserByUsernameAsync(string username)
+        {
+            return await DbSet
+                .Where(x => x.Username == username)
+                .FirstOrDefaultAsync();
+        }
+
         public void UpdateUser(Models.User user)
         {
             _context.Users.Update(user);

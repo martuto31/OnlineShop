@@ -8,5 +8,6 @@ namespace OnlineShop.Services.User
         Task DeleteUserAsync(int id);
         Task UpdateUserAsync(UserDTO userDTO);
         Task<Models.User?> GetUserByIdAsync(int id);
+        Task<Models.User?> LoginAsync(LoginDTO userInput);
     }
 }
