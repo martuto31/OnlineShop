@@ -30,5 +30,21 @@ namespace OnlineShop.Controllers
 
             return Ok();
         }
+
+        [HttpDelete]
+        public async Task<IActionResult> RemoveUserAsync([FromBody] int id)
+        {
+            await userService.DeleteUserAsync(id);
+
+            return Ok();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetUserByIdAsync([FromBody] int id)
+        {
+            await userService.GetUserByIdAsync(id);
+
+            return Ok();
+        }
     }
 }
