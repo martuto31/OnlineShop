@@ -62,7 +62,7 @@ namespace OnlineShop.Controllers
             return Ok();
         }
 
-        [Authorize("Admin")]
+        [Authorize(Roles = "Admin")]
         [HttpGet("GetUserById")]
         public async Task<IActionResult> GetUserByIdAsync([FromBody] int id)
         {
