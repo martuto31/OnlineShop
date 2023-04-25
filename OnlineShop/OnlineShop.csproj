@@ -33,11 +33,16 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite.Core" Version="7.0.5" />
     <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="6.29.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.29.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\OnlineShop.DAL\OnlineShop.DAL.csproj" />
     <ProjectReference Include="..\OnlineShop.Services\OnlineShop.Services.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Mapping\Models\" />
   </ItemGroup>
 
 </Project>

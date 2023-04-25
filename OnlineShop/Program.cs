@@ -9,6 +9,7 @@ using OnlineShop.Services.Product;
 using OnlineShop.Services.User;
 using OnlineShop.Shared.Options;
 using System.Text;
+using System.IdentityModel.Tokens.Jwt;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -42,9 +43,6 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-builder.Services.Configure<JsonTokenOptions>(
-    builder.Configuration.GetSection(JsonTokenOptions.Jwt));
-
 // Data repositories
 builder.Services.AddTransient<IUserRepository, UserRepository>();
 builder.Services.AddTransient<IProductRepository, ProductRepository>();
@@ -55,6 +53,11 @@ builder.Services.AddTransient<IJsonTokenService, JsonTokenService>();
 builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddTransient<IProductService, ProductService>();
 builder.Services.AddTransient<IReviewService, ReviewService>();
+
+//builder.Services.Configure<JsonTokenOptions>(
+//    builder.Configuration.GetSection(JsonTokenOptions.Jwt));
+
+builder.Services.AddScoped<IJsonTokenService, JsonTokenService>();
 
 // Swagger
 builder.Services.AddSwaggerGen(c =>
@@ -96,8 +99,9 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseAuthorization();
 app.UseAuthentication();
+
+app.UseAuthorization();
 
 app.MapControllers();
 

@@ -13,23 +13,27 @@ namespace OnlineShop.Services.User
 {
     public class JsonTokenService : IJsonTokenService
     {
-        private JsonTokenOptions _tokenOptions;
+        //private JsonTokenOptions _tokenOptions;
 
-        public JsonTokenService(IOptions<JsonTokenOptions> tokenOptions)
-        {
-            _tokenOptions = tokenOptions.Value;
-        }
+        //public JsonTokenService(IOptions<JsonTokenOptions> tokenOptions)
+        //{
+        //    _tokenOptions = tokenOptions.Value;
+        //}
         public string GenerateToken(Models.User user)
         {
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_tokenOptions.Key));
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(JsonTokenOptions.Key));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
-            var claims = new List<Claim>();
-            claims.Add(new Claim(ClaimTypes.NameIdentifier, user.Username));
+            var claims = new[]
+            {
+                new Claim(ClaimTypes.NameIdentifier, user.Username),
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.Role, user.Role.Name)
+            };
 
             var token = new JwtSecurityToken(
-                _tokenOptions.Issuer,
-                _tokenOptions.Audience,
+                JsonTokenOptions.Issuer,
+                JsonTokenOptions.Audience,
                 claims,
                 expires: DateTime.Now.AddMinutes(15),
                 signingCredentials: credentials

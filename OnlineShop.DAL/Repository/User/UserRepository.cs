@@ -33,6 +33,7 @@ namespace OnlineShop.DAL.Repository.User
         {
             return await DbSet
                 .Where(x => x.Username == username)
+                .Include(x => x.Role)
                 .FirstOrDefaultAsync();
         }
 

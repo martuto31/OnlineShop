@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using OnlineShop.Models;
 using OnlineShop.Services.Product;
 using OnlineShop.Services.User;
 using OnlineShop.Shared.DTO.ProductDTO;

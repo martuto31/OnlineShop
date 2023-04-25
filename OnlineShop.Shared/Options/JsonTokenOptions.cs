@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace OnlineShop.Shared.Options
 {
-    public class JsonTokenOptions
+    public static class JsonTokenOptions
     {
         public const string Jwt = "Jwt";
-        public string Key { get; set; }
-        public string Issuer { get; set; }
-        public string Audience { get; set; }
+        public static string Key = "My-secret-key123456789123456789";
+        public static  string Issuer = "https://localhost:7260/";
+        public static string Audience = "https://localhost:7260/";
     }
 }
