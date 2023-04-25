@@ -60,6 +60,7 @@ namespace OnlineShop.Controllers
             return Ok(token);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpDelete("RemoveAccount")]
         public async Task<IActionResult> RemoveUserAsync(int id)
         {
