@@ -31,14 +31,14 @@ namespace OnlineShop.Controllers
         }
 
         [HttpDelete("RemoveProduct")]
-        public async Task<IActionResult> RemoveProductAsync([FromBody] int id)
+        public async Task<IActionResult> RemoveProductAsync(int id)
         {
             await productService.DeleteProductAsync(id);
 
             return Ok();
         }
 
-        [HttpPost("UpdateProduct")]
+        [HttpPut("UpdateProduct")]
         public async Task<IActionResult> UpdateProductAsync([FromBody] ProductDTO userInput)
         {
             if (userInput == null)

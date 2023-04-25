@@ -55,7 +55,7 @@ namespace OnlineShop.Controllers
         }
 
         [HttpDelete("RemoveAccount")]
-        public async Task<IActionResult> RemoveUserAsync([FromBody] int id)
+        public async Task<IActionResult> RemoveUserAsync(int id)
         {
             await userService.DeleteUserAsync(id);
 
@@ -64,7 +64,7 @@ namespace OnlineShop.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpGet("GetUserById")]
-        public async Task<IActionResult> GetUserByIdAsync([FromBody] int id)
+        public async Task<IActionResult> GetUserByIdAsync(int id)
         {
             await userService.GetUserByIdAsync(id);
 

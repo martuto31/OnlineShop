@@ -28,7 +28,7 @@ namespace OnlineShop.Controllers
             return Ok();
         }
 
-        [HttpPost("UpdateReview")]
+        [HttpPut("UpdateReview")]
         public async Task<IActionResult> UpdateReviewAsync([FromBody] ReviewDTO userInput)
         {
             if (userInput == null)
@@ -42,7 +42,7 @@ namespace OnlineShop.Controllers
         }
 
         [HttpDelete("RemoveReview")]
-        public async Task<IActionResult> RemoveReviewAsync([FromBody] int id)
+        public async Task<IActionResult> RemoveReviewAsync(int id)
         {
             await reviewService.DeleteReviewAsync(id);
 
@@ -50,7 +50,7 @@ namespace OnlineShop.Controllers
         }
 
         [HttpGet("GetReviewById")]
-        public async Task<IActionResult> GetReviewByIdAsync([FromBody] int id)
+        public async Task<IActionResult> GetReviewByIdAsync(int id)
         {
             await reviewService.GetReviewByIdAsync(id);
 
