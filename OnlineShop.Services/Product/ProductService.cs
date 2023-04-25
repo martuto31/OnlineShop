@@ -42,6 +42,7 @@ namespace OnlineShop.Services.Product
             }
 
             productRepository.DeleteProduct(product);
+            await productRepository.SaveChangesAsync();
         }
 
         public async Task EditProductAsync(ProductDTO input)

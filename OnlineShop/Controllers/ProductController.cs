@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using OnlineShop.Mapping.Models;
 using OnlineShop.Models;
 using OnlineShop.Services.Product;
 using OnlineShop.Services.User;
@@ -13,10 +15,12 @@ namespace OnlineShop.Controllers
     public class ProductController : ControllerBase
     {
         private readonly IProductService productService;
+        private readonly IMapper mapper;
 
-        public ProductController(IProductService productService)
+        public ProductController(IProductService productService, IMapper mapper)
         {
             this.productService = productService;
+            this.mapper = mapper;
         }
 
         [HttpPost("AddProduct")]
@@ -54,19 +58,23 @@ namespace OnlineShop.Controllers
         }
 
         [HttpGet("GetProductById")]
-        public async Task<IActionResult> GetProductByIdAsync(int id)
+        public async Task<ActionResult<ProductResponseDTO>> GetProductByIdAsync(int id)
         {
-            await productService.GetProductByIdAsync(id);
+            var product = await productService.GetProductByIdAsync(id);
 
-            return Ok();
+            var response = mapper.Map<ProductResponseDTO>(product);
+
+            return Ok(response);
         }
 
         [HttpGet("GetAllProducts")]
-        public async Task<IActionResult> GetAllProductsAsync()
+        public async Task<ActionResult<List<ProductResponseDTO>>> GetAllProductsAsync()
         {
-            await productService.GetAllProductsAsync();
+            var product = await productService.GetAllProductsAsync();
 
-            return Ok();
+            var response = mapper.Map<List<ProductResponseDTO>>(product);
+
+            return Ok(response);
         }
     }
 }

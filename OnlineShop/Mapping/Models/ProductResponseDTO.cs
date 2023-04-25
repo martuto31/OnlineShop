@@ -1,9 +1,8 @@
-﻿using OnlineShop.Models;
-using OnlineShop.Models.Enums;
+﻿using OnlineShop.Models.Enums;
 
-namespace OnlineShop.Shared.DTO.ProductDTO
+namespace OnlineShop.Mapping.Models
 {
-    public class ProductDTO
+    public class ProductResponseDTO
     {
         public int Id { get; set; }
         public string Name { get; set; }

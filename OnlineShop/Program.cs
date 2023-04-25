@@ -54,6 +54,9 @@ builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddTransient<IProductService, ProductService>();
 builder.Services.AddTransient<IReviewService, ReviewService>();
 
+// Automapper
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
 //builder.Services.Configure<JsonTokenOptions>(
 //    builder.Configuration.GetSection(JsonTokenOptions.Jwt));
 
