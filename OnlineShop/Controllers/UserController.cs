@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OnlineShop.Models;
 using OnlineShop.Services.User;
@@ -12,11 +13,16 @@ namespace OnlineShop.Controllers
     {
         private readonly IUserService userService;
         private readonly IJsonTokenService jsonTokenService;
+        private readonly IMapper mapper;
 
-        public UserController(IUserService userService, IJsonTokenService jsonTokenService)
+        public UserController(
+            IUserService userService,
+            IJsonTokenService jsonTokenService,
+            IMapper mapper)
         {
             this.userService = userService;
             this.jsonTokenService = jsonTokenService;
+            this.mapper = mapper;
         }
 
         [AllowAnonymous]
