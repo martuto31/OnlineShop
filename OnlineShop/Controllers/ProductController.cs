@@ -70,9 +70,9 @@ namespace OnlineShop.Controllers
         [HttpGet("GetAllProducts")]
         public async Task<ActionResult<List<ProductResponseDTO>>> GetAllProductsAsync()
         {
-            var product = await productService.GetAllProductsAsync();
+            var products = await productService.GetAllProductsAsync();
 
-            var response = mapper.Map<List<ProductResponseDTO>>(product);
+            var response = mapper.Map<List<ProductResponseDTO>>(products);
 
             return Ok(response);
         }

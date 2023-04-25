@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using OnlineShop.Services.Product;
 using OnlineShop.Shared.DTO.ProductDTO;
 
@@ -9,10 +10,12 @@ namespace OnlineShop.Controllers
     public class ReviewController : ControllerBase
     {
         private readonly IReviewService reviewService;
+        private readonly IMapper mapper;
 
-        public ReviewController(IReviewService reviewService)
+        public ReviewController(IReviewService reviewService, IMapper mapper)
         {
             this.reviewService = reviewService;
+            this.mapper = mapper;
         }
 
         [HttpPost("AddReview")]
@@ -50,19 +53,23 @@ namespace OnlineShop.Controllers
         }
 
         [HttpGet("GetReviewById")]
-        public async Task<IActionResult> GetReviewByIdAsync(int id)
+        public async Task<ActionResult<ReviewDTO>> GetReviewByIdAsync(int id)
         {
-            await reviewService.GetReviewByIdAsync(id);
+            var review = await reviewService.GetReviewByIdAsync(id);
+
+            var response = mapper.Map<ReviewDTO>(review);
 
             return Ok();
         }
 
         [HttpGet("GetAllReviews")]
-        public async Task<IActionResult> GetAllReviewsAsync(int productId)
+        public async Task<ActionResult<List<ReviewDTO>>> GetAllReviewsAsync(int productId)
         {
-            await reviewService.GetAllReviewsForProductAsync(productId);
+            var reviews = await reviewService.GetAllReviewsForProductAsync(productId);
 
-            return Ok();
+            var response = mapper.Map<List<ReviewDTO>>(reviews);
+
+            return Ok(response);
         }
     }
 }
