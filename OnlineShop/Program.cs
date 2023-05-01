@@ -57,6 +57,13 @@ builder.Services.AddTransient<IReviewService, ReviewService>();
 // Automapper
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
+// CORS
+builder.Services.AddCors(options => options.AddPolicy(name: "OnlineShopUI",
+    policy =>
+    {
+        policy.WithOrigins("http://localhost:4200/").AllowAnyMethod().AllowAnyHeader().AllowAnyOrigin();
+    }));
+
 //builder.Services.Configure<JsonTokenOptions>(
 //    builder.Configuration.GetSection(JsonTokenOptions.Jwt));
 
@@ -99,6 +106,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseCors("OnlineShopUI");
 
 app.UseHttpsRedirection();
 
