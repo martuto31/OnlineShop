@@ -10,6 +10,7 @@ namespace OnlineShop.DAL.Repository.Product
     {
         Task<IEnumerable<Models.Product>> GetAllProductsAsync();
         Task<Models.Product?> GetProductByIdAsync(int id);
+        Task<IEnumerable<Models.Product>> GetProductsByType(string type);
         Task AddProductAsync(Models.Product product);
         void UpdateProduct(Models.Product product);
         void DeleteProduct (Models.Product product);
