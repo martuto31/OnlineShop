@@ -82,5 +82,17 @@ namespace OnlineShop.Services.Product
 
             return product;
         }
+
+        public async Task<IEnumerable<Models.Product>> GetProductsByTypeAsync(string type)
+        {
+            var products = await productRepository.GetProductsByTypeAsync(type);
+
+            if(products == null)
+            {
+                throw new Exception("Object should not be null.");
+            }
+
+            return products;
+        }
     }
 }

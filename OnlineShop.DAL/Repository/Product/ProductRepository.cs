@@ -30,7 +30,7 @@ namespace OnlineShop.DAL.Repository.Product
             return await DbSet
                 .ToListAsync();
         }
-        public async Task<IEnumerable<Models.Product>> GetProductsByType(string type)
+        public async Task<IEnumerable<Models.Product>> GetProductsByTypeAsync(string type)
         {
             return await DbSet
                 .Where(x => x.ProductType.ToString() == type)

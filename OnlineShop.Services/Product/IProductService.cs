@@ -6,6 +6,7 @@ namespace OnlineShop.Services.Product
     {
         Task<IEnumerable<Models.Product>> GetAllProductsAsync();
         Task<Models.Product> GetProductByIdAsync(int id);
+        Task<IEnumerable<Models.Product>> GetProductsByTypeAsync(string type);
         Task AddProductAsync(ProductDTO input);
         Task EditProductAsync(ProductDTO input);
         Task DeleteProductAsync(int id);
