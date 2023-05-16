@@ -79,5 +79,15 @@ namespace OnlineShop.Controllers
 
             return Ok(response);
         }
+
+        [HttpGet("GetProductsByType")]
+        public async Task<ActionResult<List<ProductResponseDTO>>> GetAllProductsAsync([FromBody] string type)
+        {
+            var products = await productService.GetProductsByTypeAsync(type);
+
+            var response = mapper.Map<List<ProductResponseDTO>>(products);
+
+            return Ok(response);
+        }
     }
 }
