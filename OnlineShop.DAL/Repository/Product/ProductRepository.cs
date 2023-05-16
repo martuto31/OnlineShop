@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using OnlineShop.DAL.Data;
 using OnlineShop.Models;
+using OnlineShop.Models.Enums;
 
 namespace OnlineShop.DAL.Repository.Product
 {
@@ -32,8 +33,10 @@ namespace OnlineShop.DAL.Repository.Product
         }
         public async Task<IEnumerable<Models.Product>> GetProductsByTypeAsync(string type)
         {
+            var productType = Enum.Parse<ProductType>(type);
+
             return await DbSet
-                .Where(x => x.ProductType.ToString() == type)
+                .Where(x => x.ProductType == productType)
                 .ToListAsync();
         }
 

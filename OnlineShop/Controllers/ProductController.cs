@@ -81,7 +81,7 @@ namespace OnlineShop.Controllers
         }
 
         [HttpGet("GetProductsByType")]
-        public async Task<ActionResult<List<ProductResponseDTO>>> GetAllProductsAsync([FromBody] string type)
+        public async Task<ActionResult<List<ProductResponseDTO>>> GetAllProductsAsync(string type)
         {
             var products = await productService.GetProductsByTypeAsync(type);
 
