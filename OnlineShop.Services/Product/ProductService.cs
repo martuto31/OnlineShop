@@ -25,7 +25,8 @@ namespace OnlineShop.Services.Product
                 Name = input.Name,
                 Price = input.Price,
                 ProductTarget = input.ProductTarget,
-                ProductType = input.ProductType
+                ProductType = input.ProductType,
+                Image = input.Image,
             };
 
             await productRepository.AddProductAsync(product);
@@ -59,6 +60,7 @@ namespace OnlineShop.Services.Product
             product.Description = input.Description;
             product.ProductTarget = input.ProductTarget;
             product.ProductType = input.ProductType;
+            product.Image = input.Image;
 
             productRepository.UpdateProduct(product);
             await productRepository.SaveChangesAsync();
