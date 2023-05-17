@@ -16,7 +16,7 @@ namespace OnlineShop.Models
         public double Price { get; set; }
         public ProductTarget ProductTarget { get; set; }
         public ProductType ProductType { get; set; }
-        public byte[] Image { get; set; }
+        public string PictureFileName { get; set; }
 
         public  ICollection<Review> Reviews { get; set; }
     }

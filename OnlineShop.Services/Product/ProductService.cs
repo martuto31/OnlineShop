@@ -1,10 +1,13 @@
 ﻿using OnlineShop.DAL.Repository.Product;
 using OnlineShop.Shared.DTO.ProductDTO;
-using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using static System.Net.Mime.MediaTypeNames;
+using System.IO.Pipes;
 
 namespace OnlineShop.Services.Product
 {
@@ -17,8 +20,22 @@ namespace OnlineShop.Services.Product
             this.productRepository = productRepository;
         }
 
-        public async Task AddProductAsync(ProductDTO input)
+        public async Task AddProductAsync(CreateProductDTO input)
         {
+
+            // Generate a unique filename for the picture
+            string uniqueFileName = Guid.NewGuid().ToString() + "_" + input.Image.FileName;
+
+            // Set the path where the picture will be saved
+            string filePath = Path.Combine(@"C:\\Users\\martu\\Desktop\\", uniqueFileName);
+
+            byte[] imageData;
+
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await input.Image.CopyToAsync(stream);
+            }
+
             var product = new Models.Product()
             {
                 Description = input.Description,
@@ -26,7 +43,7 @@ namespace OnlineShop.Services.Product
                 Price = input.Price,
                 ProductTarget = input.ProductTarget,
                 ProductType = input.ProductType,
-                Image = input.Image,
+                PictureFileName = uniqueFileName,
             };
 
             await productRepository.AddProductAsync(product);
@@ -46,7 +63,7 @@ namespace OnlineShop.Services.Product
             await productRepository.SaveChangesAsync();
         }
 
-        public async Task EditProductAsync(ProductDTO input)
+        public async Task EditProductAsync(CreateProductDTO input)
         {
             var product = await productRepository.GetProductByIdAsync(input.Id);
 
@@ -60,7 +77,7 @@ namespace OnlineShop.Services.Product
             product.Description = input.Description;
             product.ProductTarget = input.ProductTarget;
             product.ProductType = input.ProductType;
-            product.Image = input.Image;
+            //product.PictureFileName = Convert.FromBase64String(input.Image);
 
             productRepository.UpdateProduct(product);
             await productRepository.SaveChangesAsync();

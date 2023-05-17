@@ -23,9 +23,9 @@ namespace OnlineShop.Controllers
             this.mapper = mapper;
         }
 
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         [HttpPost("AddProduct")]
-        public async Task<IActionResult> AddProductAsync([FromBody] ProductDTO userInput)
+        public async Task<IActionResult> AddProductAsync([FromForm] CreateProductDTO userInput)
         {
             if (userInput == null)
             {
@@ -48,7 +48,7 @@ namespace OnlineShop.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpPut("UpdateProduct")]
-        public async Task<IActionResult> UpdateProductAsync([FromBody] ProductDTO userInput)
+        public async Task<IActionResult> UpdateProductAsync([FromBody] CreateProductDTO userInput)
         {
             if (userInput == null)
             {
