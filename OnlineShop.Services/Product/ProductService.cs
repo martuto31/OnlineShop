@@ -22,19 +22,7 @@ namespace OnlineShop.Services.Product
 
         public async Task AddProductAsync(CreateProductDTO input)
         {
-
-            // Generate a unique filename for the picture
-            string uniqueFileName = Guid.NewGuid().ToString() + "_" + input.Image.FileName;
-
-            // Set the path where the picture will be saved
-            string filePath = Path.Combine(@"C:\\Users\\martu\\Desktop\\", uniqueFileName);
-
-            byte[] imageData;
-
-            using (var stream = new FileStream(filePath, FileMode.Create))
-            {
-                await input.Image.CopyToAsync(stream);
-            }
+            byte[] img = this.ConvertIFormFileToByteArray(input.Image);
 
             var product = new Models.Product()
             {
@@ -43,7 +31,7 @@ namespace OnlineShop.Services.Product
                 Price = input.Price,
                 ProductTarget = input.ProductTarget,
                 ProductType = input.ProductType,
-                PictureFileName = uniqueFileName,
+                Picture = img,
             };
 
             await productRepository.AddProductAsync(product);
@@ -77,7 +65,7 @@ namespace OnlineShop.Services.Product
             product.Description = input.Description;
             product.ProductTarget = input.ProductTarget;
             product.ProductType = input.ProductType;
-            //product.PictureFileName = Convert.FromBase64String(input.Image);
+            product.Picture = ConvertIFormFileToByteArray(input.Image);
 
             productRepository.UpdateProduct(product);
             await productRepository.SaveChangesAsync();
@@ -112,6 +100,15 @@ namespace OnlineShop.Services.Product
             }
 
             return products;
+        }
+
+        private byte[] ConvertIFormFileToByteArray(IFormFile file)
+        {
+            using (var memoryStream = new MemoryStream())
+            {
+                file.CopyToAsync(memoryStream).GetAwaiter().GetResult();
+                return memoryStream.ToArray();
+            }
         }
     }
 }
