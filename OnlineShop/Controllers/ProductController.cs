@@ -81,11 +81,21 @@ namespace OnlineShop.Controllers
         }
 
         [HttpGet("GetProductsByType")]
-        public async Task<ActionResult<List<ProductResponseDTO>>> GetAllProductsAsync(string type)
+        public async Task<ActionResult<List<ProductResponseDTO>>> GetAllProductsByTypeAsync(string type)
         {
             var products = await productService.GetProductsByTypeAsync(type);
 
-            var response = mapper.Map<List<ProductResponseDTO>>(products);
+            var response = new List<ProductResponseDTO>();
+
+            foreach (var product in products)
+            {
+                var productResponse = mapper.Map<ProductResponseDTO>(product);
+
+                // Convert the binary byte array to base64
+                productResponse.PictureData = Convert.ToBase64String(product.Picture);
+
+                response.Add(productResponse);
+            }
 
             return Ok(response);
         }

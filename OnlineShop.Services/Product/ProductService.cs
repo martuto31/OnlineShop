@@ -23,6 +23,7 @@ namespace OnlineShop.Services.Product
         public async Task AddProductAsync(CreateProductDTO input)
         {
             byte[] img = this.ConvertIFormFileToByteArray(input.Image);
+            img = ImageService.CompressAndResizeImage(img, 400, 400);
 
             var product = new Models.Product()
             {
@@ -66,6 +67,8 @@ namespace OnlineShop.Services.Product
             product.ProductTarget = input.ProductTarget;
             product.ProductType = input.ProductType;
             product.Picture = ConvertIFormFileToByteArray(input.Image);
+
+            product.Picture = ImageService.CompressAndResizeImage(product.Picture, 400, 400);
 
             productRepository.UpdateProduct(product);
             await productRepository.SaveChangesAsync();
