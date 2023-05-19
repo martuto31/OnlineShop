@@ -1,9 +1,19 @@
-﻿using SixLabors.ImageSharp.Formats.Jpeg;
+﻿using Microsoft.EntityFrameworkCore;
+using OnlineShop.DAL.Repository.Product;
+using OnlineShop.Models;
+using SixLabors.ImageSharp.Formats.Jpeg;
 
 namespace OnlineShop.Services.Product
 {
-    public class ImageService
+    public class ImageService : IImageService
     {
+        private readonly IImageRepository imageRepository;
+
+        public ImageService(IImageRepository imageRepository)
+        {
+            this.imageRepository = imageRepository;
+        }
+
         public static byte[] CompressAndResizeImage(byte[] imageBytes, int targetWidth, int targetHeight)
         {
             // Load the image from the byte array
@@ -26,6 +36,13 @@ namespace OnlineShop.Services.Product
                     return outputStream.ToArray();
                 }
             }
+        }
+
+        public async Task<IEnumerable<ImageUri>> GetAllImagesForProductAsync(int productId)
+        {
+            var images = imageRepository.GetAllImagesForProductAsync(productId);
+
+            return await images.ToListAsync();
         }
     }
 }

@@ -15,12 +15,14 @@ namespace OnlineShop.Controllers
     public class ProductController : ControllerBase
     {
         private readonly IProductService productService;
+        private readonly IImageService imageService;
         private readonly IMapper mapper;
 
-        public ProductController(IProductService productService, IMapper mapper)
+        public ProductController(IProductService productService, IMapper mapper, IImageService imageService)
         {
             this.productService = productService;
             this.mapper = mapper;
+            this.imageService = imageService;
         }
 
         //[Authorize(Roles = "Admin")]
@@ -90,11 +92,12 @@ namespace OnlineShop.Controllers
             foreach (var product in products)
             {
                 var productResponse = mapper.Map<ProductResponseDTO>(product);
+                var images = await imageService.GetAllImagesForProductAsync(product.Id);
 
                 // Convert the binary byte array to base64
-                for(int i = 0; i < product.Pictures.Count; i++)
+                foreach (var image in images)
                 {
-                    //productResponse.PicturesData[i] = Convert.ToBase64String(product.Pictures[i]);
+                    productResponse.PicturesData.Add(Convert.ToBase64String(image.Image));
                 }
 
                 response.Add(productResponse);
