@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using static System.Net.Mime.MediaTypeNames;
 using System.IO.Pipes;
+using OnlineShop.Models;
 
 namespace OnlineShop.Services.Product
 {
@@ -22,8 +23,21 @@ namespace OnlineShop.Services.Product
 
         public async Task AddProductAsync(CreateProductDTO input)
         {
-            byte[] img = this.ConvertIFormFileToByteArray(input.Image);
-            img = ImageService.CompressAndResizeImage(img, 400, 400);
+            List<ImageUri> images = new List<ImageUri>();
+
+            if (input.Images != null && input.Images.Count > 0)
+            {
+                foreach (var imageFile in input.Images)
+                {
+                    byte[] img = ConvertIFormFileToByteArray(imageFile);
+                    img = ImageService.CompressAndResizeImage(img, 400, 400);
+                    var image = new ImageUri()
+                    {
+                        Image = img,
+                    };
+                    images.Add(image);
+                }
+            }
 
             var product = new Models.Product()
             {
@@ -32,7 +46,7 @@ namespace OnlineShop.Services.Product
                 Price = input.Price,
                 ProductTarget = input.ProductTarget,
                 ProductType = input.ProductType,
-                Picture = img,
+                Pictures = images,
             };
 
             await productRepository.AddProductAsync(product);
@@ -66,9 +80,9 @@ namespace OnlineShop.Services.Product
             product.Description = input.Description;
             product.ProductTarget = input.ProductTarget;
             product.ProductType = input.ProductType;
-            product.Picture = ConvertIFormFileToByteArray(input.Image);
+            //product.Picture = ConvertIFormFileToByteArray(input.Image);
 
-            product.Picture = ImageService.CompressAndResizeImage(product.Picture, 400, 400);
+            //product.Picture = ImageService.CompressAndResizeImage(product.Picture, 400, 400);
 
             productRepository.UpdateProduct(product);
             await productRepository.SaveChangesAsync();

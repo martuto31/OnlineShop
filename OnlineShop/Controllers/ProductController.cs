@@ -92,7 +92,10 @@ namespace OnlineShop.Controllers
                 var productResponse = mapper.Map<ProductResponseDTO>(product);
 
                 // Convert the binary byte array to base64
-                productResponse.PictureData = Convert.ToBase64String(product.Picture);
+                for(int i = 0; i < product.Pictures.Count; i++)
+                {
+                    //productResponse.PicturesData[i] = Convert.ToBase64String(product.Pictures[i]);
+                }
 
                 response.Add(productResponse);
             }
