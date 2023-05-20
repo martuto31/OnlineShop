@@ -67,9 +67,16 @@ namespace OnlineShop.Controllers
         {
             var product = await productService.GetProductByIdAsync(id);
 
-            var response = mapper.Map<ProductResponseDTO>(product);
+            var productResponse = mapper.Map<ProductResponseDTO>(product);
+            var images = await imageService.GetAllImagesForProductAsync(product.Id);
 
-            return Ok(response);
+            // Convert the binary byte array to base64
+            foreach (var image in images)
+            {
+                productResponse.PicturesData.Add(Convert.ToBase64String(image.Image));
+            }
+
+            return Ok(productResponse);
         }
 
         [HttpGet("GetAllProducts")]

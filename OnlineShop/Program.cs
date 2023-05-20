@@ -71,6 +71,11 @@ builder.Services.AddCors(options => options.AddPolicy(name: "OnlineShopUI",
 
 builder.Services.AddScoped<IJsonTokenService, JsonTokenService>();
 
+builder.Services.Configure<IISServerOptions>(options =>
+{
+    options.MaxRequestBodySize = 30000000; // Set the maximum request body size
+});
+
 // Swagger
 builder.Services.AddSwaggerGen(c =>
 {
