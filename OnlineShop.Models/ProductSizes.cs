@@ -11,7 +11,7 @@ namespace OnlineShop.Models
     {
         public int Id { get; set; }
         [Required]
-        public int Size { get; set; }
+        public string Size { get; set; }
 
         public Product Product { get; set; }
     }
