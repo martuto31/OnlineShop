@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using OnlineShop.Models;
 using OnlineShop.Models.Enums;
 using System;
 using System.Collections.Generic;
@@ -18,7 +19,8 @@ namespace OnlineShop.Shared.DTO.ProductDTO
 
         public ProductTarget ProductTarget { get; set; }
         public ProductType ProductType { get; set; }
-        public ProductSize ProductSize { get; set; }
-        public ProductColor ProductColor { get; set; }
+
+        public ICollection<ProductSizes> ProductSizes {get; set; }
+        public ICollection<ProductColors> ProductColors { get; set; }
     }
 }

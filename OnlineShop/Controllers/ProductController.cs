@@ -95,7 +95,8 @@ namespace OnlineShop.Controllers
             var products = await productService.GetProductsByTypeAsync(type);
 
             var response = new List<ProductResponseDTO>();
-
+            
+            // Refactor
             foreach (var product in products)
             {
                 var productResponse = mapper.Map<ProductResponseDTO>(product);

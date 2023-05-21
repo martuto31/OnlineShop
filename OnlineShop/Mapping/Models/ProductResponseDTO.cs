@@ -1,4 +1,5 @@
-﻿using OnlineShop.Models.Enums;
+﻿using OnlineShop.Models;
+using OnlineShop.Models.Enums;
 
 namespace OnlineShop.Mapping.Models
 {
@@ -9,9 +10,11 @@ namespace OnlineShop.Mapping.Models
         public string Description { get; set; }
         public double Price { get; set; }
         public List<string> PicturesData { get; set; } = new List<string>();
+
         public ProductTarget ProductTarget { get; set; }
         public ProductType ProductType { get; set; }
-        public ProductSize ProductSize { get; set; }
-        public ProductColor ProductColor { get; set; }
+
+        public ICollection<ProductSizes> ProductSizes { get; set; }
+        public ICollection<ProductColors> ProductColors { get; set; }
     }
 }
