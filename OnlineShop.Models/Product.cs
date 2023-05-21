@@ -16,6 +16,8 @@ namespace OnlineShop.Models
         public double Price { get; set; }
         public ProductTarget ProductTarget { get; set; }
         public ProductType ProductType { get; set; }
+        public ProductColor ProductColor { get; set; }
+        public ProductSize ProductSize { get; set; }
 
         public ICollection<ImageUri> Pictures { get; set; }
 
