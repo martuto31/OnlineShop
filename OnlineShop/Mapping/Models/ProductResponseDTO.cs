@@ -11,5 +11,7 @@ namespace OnlineShop.Mapping.Models
         public List<string> PicturesData { get; set; } = new List<string>();
         public ProductTarget ProductTarget { get; set; }
         public ProductType ProductType { get; set; }
+        public ProductSize ProductSize { get; set; }
+        public ProductColor ProductColor { get; set; }
     }
 }

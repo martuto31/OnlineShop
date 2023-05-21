@@ -18,5 +18,7 @@ namespace OnlineShop.Shared.DTO.ProductDTO
 
         public ProductTarget ProductTarget { get; set; }
         public ProductType ProductType { get; set; }
+        public ProductSize ProductSize { get; set; }
+        public ProductColor ProductColor { get; set; }
     }
 }
