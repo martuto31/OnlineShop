@@ -13,6 +13,6 @@ namespace OnlineShop.Models
         [Required]
         public string Color { get; set; }
 
-        public Product Product { get; set; }
+        public Product? Product { get; set; }
     }
 }
