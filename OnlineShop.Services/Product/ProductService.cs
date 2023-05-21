@@ -46,6 +46,8 @@ namespace OnlineShop.Services.Product
                 Price = input.Price,
                 ProductTarget = input.ProductTarget,
                 ProductType = input.ProductType,
+                ProductSize = input.ProductSize,
+                ProductColor = input.ProductColor,
                 Pictures = images,
             };
 
@@ -80,6 +82,8 @@ namespace OnlineShop.Services.Product
             product.Description = input.Description;
             product.ProductTarget = input.ProductTarget;
             product.ProductType = input.ProductType;
+            product.ProductColor = input.ProductColor;
+            product.ProductSize = input.ProductSize;
             //product.Picture = ConvertIFormFileToByteArray(input.Image);
 
             //product.Picture = ImageService.CompressAndResizeImage(product.Picture, 400, 400);
