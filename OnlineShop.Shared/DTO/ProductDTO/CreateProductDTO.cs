@@ -3,6 +3,7 @@ using OnlineShop.Models;
 using OnlineShop.Models.Enums;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,7 +21,7 @@ namespace OnlineShop.Shared.DTO.ProductDTO
         public ProductTarget ProductTarget { get; set; }
         public ProductType ProductType { get; set; }
 
-        public ICollection<ProductSizes> ProductSizes {get; set; }
-        public ICollection<ProductColors> ProductColors { get; set; }
+        public ICollection<ProductSizes> ProductSizes{ get; set; }
+        public ICollection<ProductColors> ProductColors{ get; set; }
     }
 }

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OnlineShop.DAL.Data;
 
@@ -11,9 +12,11 @@ using OnlineShop.DAL.Data;
 namespace OnlineShop.DAL.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230521140147_ProductSizesAndProductColorsChangedToManyToManyRelWithProducts")]
+    partial class ProductSizesAndProductColorsChangedToManyToManyRelWithProducts
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -113,36 +116,6 @@ namespace OnlineShop.DAL.Migrations
                     b.ToTable("ProductSizes");
                 });
 
-            modelBuilder.Entity("OnlineShop.Models.ProductsWithColors", b =>
-                {
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ProductColorsId")
-                        .HasColumnType("int");
-
-                    b.HasKey("ProductId", "ProductColorsId");
-
-                    b.HasIndex("ProductColorsId");
-
-                    b.ToTable("ProductsWithColors");
-                });
-
-            modelBuilder.Entity("OnlineShop.Models.ProductsWithSizes", b =>
-                {
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ProductSizesId")
-                        .HasColumnType("int");
-
-                    b.HasKey("ProductId", "ProductSizesId");
-
-                    b.HasIndex("ProductSizesId");
-
-                    b.ToTable("ProductsWithSizes");
-                });
-
             modelBuilder.Entity("OnlineShop.Models.Review", b =>
                 {
                     b.Property<int>("Id")
@@ -220,6 +193,36 @@ namespace OnlineShop.DAL.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("ProductProductColors", b =>
+                {
+                    b.Property<int>("ProductColorsId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductsId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ProductColorsId", "ProductsId");
+
+                    b.HasIndex("ProductsId");
+
+                    b.ToTable("ProductProductColors");
+                });
+
+            modelBuilder.Entity("ProductProductSizes", b =>
+                {
+                    b.Property<int>("ProductSizesId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductsId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ProductSizesId", "ProductsId");
+
+                    b.HasIndex("ProductsId");
+
+                    b.ToTable("ProductProductSizes");
+                });
+
             modelBuilder.Entity("OnlineShop.Models.ImageUri", b =>
                 {
                     b.HasOne("OnlineShop.Models.Product", "Product")
@@ -229,44 +232,6 @@ namespace OnlineShop.DAL.Migrations
                         .IsRequired();
 
                     b.Navigation("Product");
-                });
-
-            modelBuilder.Entity("OnlineShop.Models.ProductsWithColors", b =>
-                {
-                    b.HasOne("OnlineShop.Models.ProductColors", "ProductColors")
-                        .WithMany("ProductsWithColors")
-                        .HasForeignKey("ProductColorsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("OnlineShop.Models.Product", "Product")
-                        .WithMany("ProductsWithColors")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Product");
-
-                    b.Navigation("ProductColors");
-                });
-
-            modelBuilder.Entity("OnlineShop.Models.ProductsWithSizes", b =>
-                {
-                    b.HasOne("OnlineShop.Models.Product", "Product")
-                        .WithMany("ProductsWithSizes")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("OnlineShop.Models.ProductSizes", "ProductSizes")
-                        .WithMany("ProductsWithSizes")
-                        .HasForeignKey("ProductSizesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Product");
-
-                    b.Navigation("ProductSizes");
                 });
 
             modelBuilder.Entity("OnlineShop.Models.Review", b =>
@@ -299,25 +264,41 @@ namespace OnlineShop.DAL.Migrations
                     b.Navigation("Role");
                 });
 
+            modelBuilder.Entity("ProductProductColors", b =>
+                {
+                    b.HasOne("OnlineShop.Models.ProductColors", null)
+                        .WithMany()
+                        .HasForeignKey("ProductColorsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("OnlineShop.Models.Product", null)
+                        .WithMany()
+                        .HasForeignKey("ProductsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("ProductProductSizes", b =>
+                {
+                    b.HasOne("OnlineShop.Models.ProductSizes", null)
+                        .WithMany()
+                        .HasForeignKey("ProductSizesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("OnlineShop.Models.Product", null)
+                        .WithMany()
+                        .HasForeignKey("ProductsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("OnlineShop.Models.Product", b =>
                 {
                     b.Navigation("Pictures");
 
-                    b.Navigation("ProductsWithColors");
-
-                    b.Navigation("ProductsWithSizes");
-
                     b.Navigation("Reviews");
-                });
-
-            modelBuilder.Entity("OnlineShop.Models.ProductColors", b =>
-                {
-                    b.Navigation("ProductsWithColors");
-                });
-
-            modelBuilder.Entity("OnlineShop.Models.ProductSizes", b =>
-                {
-                    b.Navigation("ProductsWithSizes");
                 });
 
             modelBuilder.Entity("OnlineShop.Models.Role", b =>

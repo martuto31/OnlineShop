@@ -24,12 +24,6 @@ namespace OnlineShop.DAL.Data.Configurations
 
             product.HasMany(x => x.Reviews)
                 .WithOne(x => x.Product);
-
-            product.HasMany(x => x.ProductSizes)
-                .WithOne(x => x.Product);
-
-            product.HasMany(x => x.ProductColors)
-                .WithOne(x => x.Product);
         }
     }
 }

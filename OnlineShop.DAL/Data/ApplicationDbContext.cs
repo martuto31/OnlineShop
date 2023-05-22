@@ -16,6 +16,7 @@ namespace OnlineShop.DAL.Data
         public DbSet<Product> Products { get; set; }
         public DbSet<ProductSizes> ProductSizes { get; set; }
         public DbSet<ProductColors> ProductColors { get; set; }
+        public DbSet<ProductsWithSizes> ProductsWithSizes { get; set; }
         public DbSet<Review> Reviews { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Role> Roles { get; set; }

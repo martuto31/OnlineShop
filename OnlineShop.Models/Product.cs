@@ -17,9 +17,10 @@ namespace OnlineShop.Models
         public ProductTarget ProductTarget { get; set; }
         public ProductType ProductType { get; set; }
 
-        public ICollection<ProductColors> ProductColors { get; set; }
-        public ICollection<ProductSizes> ProductSizes { get; set; }
+        public ICollection<ProductsWithColors> ProductsWithColors { get; set; }
+        public ICollection<ProductsWithSizes> ProductsWithSizes { get; set; }
+
         public ICollection<ImageUri> Pictures { get; set; }
-        public  ICollection<Review> Reviews { get; set; }
+        public ICollection<Review> Reviews { get; set; }
     }
 }

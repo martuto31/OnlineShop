@@ -15,9 +15,6 @@ namespace OnlineShop.DAL.Data.Configurations
         {
             productSizes.Property(x => x.Size)
                 .IsRequired();
-
-            productSizes.HasOne(x => x.Product)
-                .WithMany(x => x.ProductSizes);
         }
     }
 }

@@ -13,6 +13,6 @@ namespace OnlineShop.Models
         [Required]
         public string Size { get; set; }
 
-        public Product? Product { get; set; }
+        public ICollection<ProductsWithSizes>? ProductsWithSizes { get; set; }
     }
 }

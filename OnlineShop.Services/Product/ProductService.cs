@@ -39,6 +39,15 @@ namespace OnlineShop.Services.Product
                 }
             }
 
+            //List<ProductsWithColors> productsWithColors = new List<ProductsWithColors>();
+            //foreach (var color in input.ProductColors)
+            //{
+            //    var productWithColor = new ProductsWithColors()
+            //    {
+            //        produc
+            //    }
+            //}
+
             var product = new Models.Product()
             {
                 Description = input.Description,
@@ -46,8 +55,8 @@ namespace OnlineShop.Services.Product
                 Price = input.Price,
                 ProductTarget = input.ProductTarget,
                 ProductType = input.ProductType,
-                ProductSizes = input.ProductSizes,
-                ProductColors = input.ProductColors,
+                //ProductsWithColors = input.,
+                //ProductColors = input.ProductColors,
                 Pictures = images,
             };
 
@@ -82,8 +91,8 @@ namespace OnlineShop.Services.Product
             product.Description = input.Description;
             product.ProductTarget = input.ProductTarget;
             product.ProductType = input.ProductType;
-            product.ProductColors = input.ProductColors;
-            product.ProductSizes = input.ProductSizes;
+            //product.ProductColors = input.ProductColors;
+            //product.ProductSizes = input.ProductSizes;
             //product.Picture = ConvertIFormFileToByteArray(input.Image);
 
             //product.Picture = ImageService.CompressAndResizeImage(product.Picture, 400, 400);

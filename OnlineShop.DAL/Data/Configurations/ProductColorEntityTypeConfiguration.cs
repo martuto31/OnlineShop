@@ -13,9 +13,6 @@ namespace OnlineShop.DAL.Data.Configurations
     {
         public void Configure(EntityTypeBuilder<ProductColors> productColor)
         {
-            productColor.HasOne(x => x.Product)
-                .WithMany(x => x.ProductColors);
-
             productColor.Property(x => x.Color)
                 .IsRequired();
         }
