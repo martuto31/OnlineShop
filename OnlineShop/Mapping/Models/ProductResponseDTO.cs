@@ -14,7 +14,7 @@ namespace OnlineShop.Mapping.Models
         public ProductTarget ProductTarget { get; set; }
         public ProductType ProductType { get; set; }
 
-        public ICollection<ProductSizes> ProductSizes { get; set; }
-        public ICollection<ProductColors> ProductColors { get; set; }
+        public List<string> ProductSizes { get; set; } = new List<string>();
+        public List<string> ProductColors { get; set; } = new List<string>();
     }
 }

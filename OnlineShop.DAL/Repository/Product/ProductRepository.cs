@@ -44,6 +44,10 @@ namespace OnlineShop.DAL.Repository.Product
         {
             return await DbSet
                 .Where(x => x.Id == id)
+                .Include(x => x.ProductsWithSizes)
+                    .ThenInclude(ps => ps.ProductSizes)
+                .Include(x => x.ProductsWithColors)
+                    .ThenInclude(ps => ps.ProductColors)
                 .FirstOrDefaultAsync();
         }
 
