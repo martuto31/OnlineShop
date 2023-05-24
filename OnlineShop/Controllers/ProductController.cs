@@ -15,14 +15,20 @@ namespace OnlineShop.Controllers
     public class ProductController : ControllerBase
     {
         private readonly IProductService productService;
+        private readonly IProductSizeService productSizeService;
         private readonly IImageService imageService;
         private readonly IMapper mapper;
 
-        public ProductController(IProductService productService, IMapper mapper, IImageService imageService)
+        public ProductController(
+            IProductService productService,
+            IMapper mapper, 
+            IImageService imageService, 
+            IProductSizeService productSizeService)
         {
             this.productService = productService;
             this.mapper = mapper;
             this.imageService = imageService;
+            this.productSizeService = productSizeService;
         }
 
         //[Authorize(Roles = "Admin")]
@@ -110,6 +116,16 @@ namespace OnlineShop.Controllers
 
                 response.Add(productResponse);
             }
+
+            return Ok(response);
+        }
+
+        [HttpGet("GetAllProductSizes")]
+        public async Task<ActionResult<List<ProductSizesResponseDTO>>> GetAllProductSizesAsync()
+        {
+            var sizes = await productSizeService.GetAllProductSizesAsync();
+
+            var response = mapper.Map<List<ProductSizesResponseDTO>>(sizes);
 
             return Ok(response);
         }

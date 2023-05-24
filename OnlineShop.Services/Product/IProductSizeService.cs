@@ -1,9 +1,9 @@
-﻿using OnlineShop.Shared.DTO.ProductDTO;
+﻿using OnlineShop.Models;
 
 namespace OnlineShop.Services.Product
 {
     public interface IProductSizeService
     {
-        Task<IEnumerable<ProductSizesDTO>> GetAllProductSizesAsync();
+        Task<IEnumerable<ProductSizes>> GetAllProductSizesAsync();
     }
 }
