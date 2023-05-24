@@ -129,5 +129,15 @@ namespace OnlineShop.Controllers
 
             return Ok(response);
         }
+
+        [HttpGet("GetAllProductColors")]
+        public async Task<ActionResult<List<ProductColorsResponseDTO>>> GetAllProductColorsAsync()
+        {
+            var colors = await productService.GetAllProductColorsAsync();
+
+            var response = mapper.Map<List<ProductColorsResponseDTO>>(colors);
+
+            return Ok(response);
+        }
     }
 }
