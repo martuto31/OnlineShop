@@ -15,10 +15,12 @@ namespace OnlineShop.Services.Product
     public class ProductService : IProductService
     {
         private readonly IProductRepository productRepository;
+        private readonly IProductColorRepository productColorRepository;
 
-        public ProductService(IProductRepository productRepository)
+        public ProductService(IProductRepository productRepository, IProductColorRepository productColorRepository)
         {
             this.productRepository = productRepository;
+            this.productColorRepository = productColorRepository;
         }
 
         public async Task AddProductAsync(CreateProductDTO input)
@@ -38,15 +40,6 @@ namespace OnlineShop.Services.Product
                     images.Add(image);
                 }
             }
-
-            //List<ProductsWithColors> productsWithColors = new List<ProductsWithColors>();
-            //foreach (var color in input.ProductColors)
-            //{
-            //    var productWithColor = new ProductsWithColors()
-            //    {
-            //        produc
-            //    }
-            //}
 
             var product = new Models.Product()
             {
@@ -130,6 +123,18 @@ namespace OnlineShop.Services.Product
             }
 
             return products;
+        }
+
+        public async Task<IEnumerable<ProductColors>> GetAllProductColorsAsync()
+        {
+            var colors = await productColorRepository.GetAllProductColorsAsync();
+
+            if(colors == null)
+            {
+                throw new Exception("No colors found in database.");
+            }
+
+            return colors;
         }
 
         private byte[] ConvertIFormFileToByteArray(IFormFile file)
