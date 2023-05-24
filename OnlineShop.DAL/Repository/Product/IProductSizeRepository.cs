@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OnlineShop.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,7 +7,8 @@ using System.Threading.Tasks;
 
 namespace OnlineShop.DAL.Repository.Product
 {
-    internal class IProductSizeRepository
+    public interface IProductSizeRepository : IGenericRepository<ProductSizes>
     {
+        Task<IEnumerable<ProductSizes>> GetAllProductSizesAsync();
     }
 }
