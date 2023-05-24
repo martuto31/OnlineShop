@@ -49,6 +49,7 @@ builder.Services.AddTransient<IProductRepository, ProductRepository>();
 builder.Services.AddTransient<IReviewRepository, ReviewRepository>();
 builder.Services.AddTransient<IImageRepository, ImageRepository>();
 builder.Services.AddTransient<IProductSizeRepository, ProductSizeRepository>();
+builder.Services.AddTransient<IProductColorRepository, ProductColorRepository>();
 
 // Application services
 builder.Services.AddTransient<IJsonTokenService, JsonTokenService>();
