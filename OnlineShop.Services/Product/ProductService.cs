@@ -41,6 +41,38 @@ namespace OnlineShop.Services.Product
                 }
             }
 
+            var productsWithColors = new List<ProductsWithColors>();
+
+            if (input.ProductColors != null)
+            {
+                foreach (var color in input.ProductColors)
+                {
+                    var productWithColors = new ProductsWithColors()
+                    {
+                        ProductColorsId = color,
+                        ProductId = input.Id,
+                    };
+
+                    productsWithColors.Add(productWithColors);
+                }
+            }
+
+            var productsWithSizes = new List<ProductsWithSizes>();
+
+            if (input.ProductSizes != null)
+            {
+                foreach (var size in input.ProductSizes)
+                {
+                    var productWithSizes = new ProductsWithSizes()
+                    {
+                        ProductSizesId = size,
+                        ProductId = input.Id,
+                    };
+
+                    productsWithSizes.Add(productWithSizes);
+                }
+            }
+
             var product = new Models.Product()
             {
                 Description = input.Description,
@@ -48,8 +80,8 @@ namespace OnlineShop.Services.Product
                 Price = input.Price,
                 ProductTarget = input.ProductTarget,
                 ProductType = input.ProductType,
-                //ProductsWithColors = input.,
-                //ProductColors = input.ProductColors,
+                ProductsWithColors = productsWithColors,
+                ProductsWithSizes = productsWithSizes,
                 Pictures = images,
             };
 
