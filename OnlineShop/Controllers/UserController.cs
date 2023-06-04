@@ -50,7 +50,7 @@ namespace OnlineShop.Controllers
 
             var user = await userService.LoginAsync(userInput);
 
-            if(user == null)
+            if (user == null)
             {
                 throw new Exception("Incorrect username or password!");
             }

@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Http;
 using static System.Net.Mime.MediaTypeNames;
 using System.IO.Pipes;
 using OnlineShop.Models;
+using OnlineShop.Models.Enums;
+using System.Diagnostics;
 
 namespace OnlineShop.Services.Product
 {
@@ -111,16 +113,64 @@ namespace OnlineShop.Services.Product
                 throw new Exception("Object should not be null.");
             }
 
+            List<ImageUri> images = new List<ImageUri>();
+
+            if (input.Images != null && input.Images.Count > 0)
+            {
+                foreach (var imageFile in input.Images)
+                {
+                    byte[] img = ConvertIFormFileToByteArray(imageFile);
+                    img = ImageService.CompressAndResizeImage(img, 400, 400);
+                    var image = new ImageUri()
+                    {
+                        Image = img,
+                    };
+                    images.Add(image);
+                }
+            }
+
+            var productsWithColors = new List<ProductsWithColors>();
+
+            if (input.ProductColors != null)
+            {
+                foreach (var color in input.ProductColors)
+                {
+                    var productWithColors = new ProductsWithColors()
+                    {
+                        ProductColorsId = color,
+                        ProductId = input.Id,
+                    };
+
+                    productsWithColors.Add(productWithColors);
+                }
+            }
+
+            var productsWithSizes = new List<ProductsWithSizes>();
+
+            if (input.ProductSizes != null)
+            {
+                foreach (var size in input.ProductSizes)
+                {
+                    var productWithSizes = new ProductsWithSizes()
+                    {
+                        ProductSizesId = size,
+                        ProductId = input.Id,
+                    };
+
+                    productsWithSizes.Add(productWithSizes);
+                }
+            }
+
             product.Name = input.Name;
             product.Price = input.Price;
             product.Description = input.Description;
             product.ProductTarget = input.ProductTarget;
             product.ProductType = input.ProductType;
-            //product.ProductColors = input.ProductColors;
-            //product.ProductSizes = input.ProductSizes;
-            //product.Picture = ConvertIFormFileToByteArray(input.Image);
-
-            //product.Picture = ImageService.CompressAndResizeImage(product.Picture, 400, 400);
+            product.ProductTarget = input.ProductTarget;
+            product.ProductType = input.ProductType;
+            product.ProductsWithColors = productsWithColors;
+            product.ProductsWithSizes = productsWithSizes;
+            product.Pictures = images;
 
             productRepository.UpdateProduct(product);
             await productRepository.SaveChangesAsync();
