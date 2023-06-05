@@ -31,13 +31,14 @@ namespace OnlineShop.DAL.Repository.Product
             return await DbSet
                 .ToListAsync();
         }
-        public async Task<IEnumerable<Models.Product>> GetProductsByTypeAsync(string type)
+        public IQueryable<Models.Product> GetProductsByTypeAsync(string type, int skipCount)
         {
             var productType = Enum.Parse<ProductType>(type);
 
-            return await DbSet
+            return DbSet
                 .Where(x => x.ProductType == productType)
-                .ToListAsync();
+                .Skip(skipCount)
+                .Take(12);
         }
 
         public async Task<Models.Product?> GetProductByIdAsync(int id)

@@ -11,6 +11,7 @@ using System.IO.Pipes;
 using OnlineShop.Models;
 using OnlineShop.Models.Enums;
 using System.Diagnostics;
+using Microsoft.EntityFrameworkCore;
 
 namespace OnlineShop.Services.Product
 {
@@ -195,9 +196,9 @@ namespace OnlineShop.Services.Product
             return product;
         }
 
-        public async Task<IEnumerable<Models.Product>> GetProductsByTypeAsync(string type)
+        public async Task<IEnumerable<Models.Product>> GetProductsByTypeAsync(string type, int skipCount)
         {
-            var products = await productRepository.GetProductsByTypeAsync(type);
+            var products =  await productRepository.GetProductsByTypeAsync(type, skipCount).ToListAsync();
 
             if(products == null)
             {
