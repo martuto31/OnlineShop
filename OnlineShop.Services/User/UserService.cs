@@ -40,7 +40,7 @@ namespace OnlineShop.Services.User
                 return null;
             }
 
-            if(userInput.Password != userInput.Password)
+            if(userInput.Password != user.Password)
             {
                 return null;
             }
