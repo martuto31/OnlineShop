@@ -19,11 +19,13 @@ namespace OnlineShop.Services.Product
     {
         private readonly IProductRepository productRepository;
         private readonly IProductColorRepository productColorRepository;
+        private readonly IImageRepository imageRepository;
 
-        public ProductService(IProductRepository productRepository, IProductColorRepository productColorRepository)
+        public ProductService(IProductRepository productRepository, IProductColorRepository productColorRepository, IImageRepository imageRepository)
         {
             this.productRepository = productRepository;
             this.productColorRepository = productColorRepository;
+            this.imageRepository = imageRepository;
         }
 
         public async Task AddProductAsync(CreateProductDTO input)
@@ -109,25 +111,32 @@ namespace OnlineShop.Services.Product
         {
             var product = await productRepository.GetProductByIdAsync(input.Id);
 
-            if(product == null)
+            if (product == null)
             {
                 throw new Exception("Object should not be null.");
             }
 
             List<ImageUri> images = new List<ImageUri>();
 
-            if (input.Images != null && input.Images.Count > 0)
+            if (input.Images != null)
             {
-                foreach (var imageFile in input.Images)
+                if (input.Images != null && input.Images.Count > 0)
                 {
-                    byte[] img = ConvertIFormFileToByteArray(imageFile);
-                    img = ImageService.CompressAndResizeImage(img, 400, 400);
-                    var image = new ImageUri()
+                    foreach (var imageFile in input.Images)
                     {
-                        Image = img,
-                    };
-                    images.Add(image);
+                        byte[] img = ConvertIFormFileToByteArray(imageFile);
+                        img = ImageService.CompressAndResizeImage(img, 400, 400);
+                        var image = new ImageUri()
+                        {
+                            Image = img,
+                        };
+                        images.Add(image);
+                    }
                 }
+
+                this.imageRepository.DeleteAllImagesByProductId(product.Id);
+
+                product.Pictures = images;
             }
 
             var productsWithColors = new List<ProductsWithColors>();
@@ -171,7 +180,6 @@ namespace OnlineShop.Services.Product
             product.ProductType = input.ProductType;
             product.ProductsWithColors = productsWithColors;
             product.ProductsWithSizes = productsWithSizes;
-            product.Pictures = images;
 
             productRepository.UpdateProduct(product);
             await productRepository.SaveChangesAsync();

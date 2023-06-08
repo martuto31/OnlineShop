@@ -1,4 +1,5 @@
-﻿using OnlineShop.DAL.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using OnlineShop.DAL.Data;
 using OnlineShop.Models;
 using System;
 using System.Collections.Generic;
@@ -23,6 +24,13 @@ namespace OnlineShop.DAL.Repository.Product
             return DbSet
                 .Where(x => x.ProductId == productId)
                 .AsQueryable();
+        }
+
+        public void DeleteAllImagesByProductId(int id)
+        {
+            _context.Images
+                .Where(x => x.ProductId == id)
+                .ExecuteDelete();
         }
 
         public void DeleteImage(ImageUri imageUri)
