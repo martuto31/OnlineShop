@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace OnlineShop.Models.Enums
 {
-    internal class LightIntensity
+    public enum LightIntensity
     {
+        Little = 1,
+        Medium = 2,
+        Direct = 3,
     }
 }

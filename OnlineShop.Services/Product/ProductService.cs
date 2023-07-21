@@ -90,6 +90,7 @@ namespace OnlineShop.Services.Product
                 AirPurify = input.AirPurify,
                 LightIntensity = input.LightIntensity,
                 GrowDifficulty = input.GrowDifficulty,
+                ProductType = input.ProductType,
             };
 
             await productRepository.AddProductAsync(product);
@@ -182,6 +183,7 @@ namespace OnlineShop.Services.Product
             product.PetCompatibility = input.PetCompatibility;
             product.LightIntensity = input.LightIntensity;
             product.GrowDifficulty = input.GrowDifficulty;
+            product.ProductType = input.ProductType;
 
             productRepository.UpdateProduct(product);
             await productRepository.SaveChangesAsync();

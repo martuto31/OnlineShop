@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace OnlineShop.Models.Enums
 {
-    internal class GrowDifficulty
+    public enum GrowDifficulty
     {
+        Easy = 1,
+        Medium = 2,
+        Hard = 3,
     }
 }

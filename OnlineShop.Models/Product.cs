@@ -19,6 +19,8 @@ namespace OnlineShop.Models
         public bool PetCompatibility {  get; set; }
         public bool AirPurify { get; set; }
 
+        public ProductType ProductType { get; set; }
+
         public ICollection<ProductsWithColors> ProductsWithColors { get; set; }
         public ICollection<ProductsWithSizes> ProductsWithSizes { get; set; }
 

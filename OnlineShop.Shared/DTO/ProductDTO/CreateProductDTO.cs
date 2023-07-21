@@ -22,6 +22,8 @@ namespace OnlineShop.Shared.DTO.ProductDTO
         public bool PetCompatibility { get; set; }
         public bool AirPurify { get; set; }
 
+        public ProductType ProductType { get; set; }
+
         public int[] ProductSizes{ get; set; }
         public int[] ProductColors{ get; set; }
     }
