@@ -14,8 +14,10 @@ namespace OnlineShop.Models
         public string Name { get; set; }
         public string Description { get; set; }
         public double Price { get; set; }
-        public ProductTarget ProductTarget { get; set; }
-        public ProductType ProductType { get; set; }
+        public GrowDifficulty GrowDifficulty { get; set; }
+        public LightIntensity LightIntensity { get; set; }
+        public bool PetCompatibility {  get; set; }
+        public bool AirPurify { get; set; }
 
         public ICollection<ProductsWithColors> ProductsWithColors { get; set; }
         public ICollection<ProductsWithSizes> ProductsWithSizes { get; set; }
