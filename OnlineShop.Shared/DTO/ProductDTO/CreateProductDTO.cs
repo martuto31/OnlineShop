@@ -17,9 +17,10 @@ namespace OnlineShop.Shared.DTO.ProductDTO
         public string Description { get; set; }
         public IList<IFormFile> Images { get; set; }
         public double Price { get; set; }
-
-        public ProductTarget ProductTarget { get; set; }
-        public ProductType ProductType { get; set; }
+        public LightIntensity LightIntensity { get; set; }
+        public GrowDifficulty GrowDifficulty { get; set; }
+        public bool PetCompatibility { get; set; }
+        public bool AirPurify { get; set; }
 
         public int[] ProductSizes{ get; set; }
         public int[] ProductColors{ get; set; }

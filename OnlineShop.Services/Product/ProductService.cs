@@ -83,11 +83,13 @@ namespace OnlineShop.Services.Product
                 Description = input.Description,
                 Name = input.Name,
                 Price = input.Price,
-                ProductTarget = input.ProductTarget,
-                ProductType = input.ProductType,
                 ProductsWithColors = productsWithColors,
                 ProductsWithSizes = productsWithSizes,
                 Pictures = images,
+                PetCompatibility = input.PetCompatibility,
+                AirPurify = input.AirPurify,
+                LightIntensity = input.LightIntensity,
+                GrowDifficulty = input.GrowDifficulty,
             };
 
             await productRepository.AddProductAsync(product);
@@ -174,12 +176,12 @@ namespace OnlineShop.Services.Product
             product.Name = input.Name;
             product.Price = input.Price;
             product.Description = input.Description;
-            product.ProductTarget = input.ProductTarget;
-            product.ProductType = input.ProductType;
-            product.ProductTarget = input.ProductTarget;
-            product.ProductType = input.ProductType;
             product.ProductsWithColors = productsWithColors;
             product.ProductsWithSizes = productsWithSizes;
+            product.AirPurify = input.AirPurify;
+            product.PetCompatibility = input.PetCompatibility;
+            product.LightIntensity = input.LightIntensity;
+            product.GrowDifficulty = input.GrowDifficulty;
 
             productRepository.UpdateProduct(product);
             await productRepository.SaveChangesAsync();
