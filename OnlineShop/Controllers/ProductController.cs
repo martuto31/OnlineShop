@@ -120,6 +120,31 @@ namespace OnlineShop.Controllers
             return Ok(response);
         }
 
+        [HttpGet("GetAllFilteredProducts")]
+        public async Task<ActionResult<List<ProductResponseDTO>>> GetAllFilteredProducts(ProductFilterDTO filter)
+        {
+            var products = await productService.GetFilteredProductsAsync(filter);
+
+            var response = new List<ProductResponseDTO>();
+
+            // Refactor
+            foreach (var product in products)
+            {
+                var productResponse = mapper.Map<ProductResponseDTO>(product);
+                var images = await imageService.GetAllImagesForProductAsync(product.Id);
+
+                // Convert the binary byte array to base64
+                foreach (var image in images)
+                {
+                    productResponse.PicturesData.Add(Convert.ToBase64String(image.Image));
+                }
+
+                response.Add(productResponse);
+            }
+
+            return Ok(response);
+        }
+
         [HttpGet("GetAllProductSizes")]
         public async Task<ActionResult<List<ProductSizesResponseDTO>>> GetAllProductSizesAsync()
         {
