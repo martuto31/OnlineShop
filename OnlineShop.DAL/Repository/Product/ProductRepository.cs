@@ -7,6 +7,8 @@ using Microsoft.EntityFrameworkCore;
 using OnlineShop.DAL.Data;
 using OnlineShop.Models;
 using OnlineShop.Models.Enums;
+using OnlineShop.Shared
+using OnlineShop.Shared.DTO.ProductDTO;
 
 namespace OnlineShop.DAL.Repository.Product
 {
@@ -50,6 +52,40 @@ namespace OnlineShop.DAL.Repository.Product
                 .Include(x => x.ProductsWithColors)
                     .ThenInclude(ps => ps.ProductColors)
                 .FirstOrDefaultAsync();
+        }
+
+        public async Task<IEnumerable<Models.Product?>> GetFilteredProductsAsync(ProductFilterDTO productFilterDTO)
+        {
+            var filteredPlants = DbSet.AsQueryable();
+
+            if (productFilterDTO.LightIntensities != null && productFilterDTO.LightIntensities.Any())
+            {
+                filteredPlants = filteredPlants.Where(p => productFilterDTO.LightIntensities.Contains(p.LightIntensity));
+            }
+
+            //if (productFilterDTO.Sizes != null && productFilterDTO.Sizes.Any())
+            //{
+            //    filteredPlants = filteredPlants.Where(p => productFilterDTO.Sizes.Contains());
+            //}
+
+            if (productFilterDTO.PetCompatibility || productFilterDTO.AirPurifiable)
+            {
+                filteredPlants = filteredPlants.Where(p =>
+                    (productFilterDTO.PetCompatibility && p.PetCompatibility) ||
+                    (productFilterDTO.AirPurifiable && p.AirPurify));
+            }
+
+            //if (productFilterDTO.Colors != null && productFilterDTO.Colors.Any())
+            //{
+            //    filteredPlants = filteredPlants.Where(p => p.Colors.Any(c => productFilterDTO.Colors.Contains(c)));
+            //}
+
+            if (productFilterDTO.GrowDifficulties != null && productFilterDTO.GrowDifficulties.Any())
+            {
+                filteredPlants = filteredPlants.Where(p => productFilterDTO.GrowDifficulties.Contains(p.GrowDifficulty));
+            }
+
+            return await filteredPlants.ToListAsync();
         }
 
         public void UpdateProduct(Models.Product product)

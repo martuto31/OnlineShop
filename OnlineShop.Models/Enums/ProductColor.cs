@@ -11,9 +11,9 @@ namespace OnlineShop.Models.Enums
         Red = 1,
         Green = 2,
         Blue = 3,
-        Purple = 4,
-        Yellow = 5,
-        Black = 6,
-        White = 7,
+        //Purple = 4,
+        //Yellow = 5,
+        //Black = 6,
+        //White = 7,
     }
 }

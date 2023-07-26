@@ -31,7 +31,7 @@ namespace OnlineShop.Controllers
             this.productSizeService = productSizeService;
         }
 
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         [HttpPost("AddProduct")]
         public async Task<IActionResult> AddProductAsync([FromForm] CreateProductDTO userInput)
         {
