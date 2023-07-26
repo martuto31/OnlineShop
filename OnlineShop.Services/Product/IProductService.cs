@@ -9,6 +9,7 @@ namespace OnlineShop.Services.Product
         Task<IEnumerable<Models.Product>> GetAllProductsAsync();
         Task<Models.Product> GetProductByIdAsync(int id);
         Task<IEnumerable<Models.Product>> GetProductsByTypeAsync(string type, int skipCount);
+        Task<IEnumerable<Models.Product>> GetFilteredProductsAsync(ProductFilterDTO filter);
         Task<IEnumerable<ProductColors>> GetAllProductColorsAsync();
         Task AddProductAsync(CreateProductDTO input);
         Task EditProductAsync(CreateProductDTO input);
