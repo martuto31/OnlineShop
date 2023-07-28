@@ -220,6 +220,30 @@ namespace OnlineShop.Services.Product
             return products;
         }
 
+        public async Task<IEnumerable<Models.Product>> GetProductsSortedByPriceAscAsync(string type, int skipCount)
+        {
+            var products = await productRepository.GetProductsSortedByPriceAsc(type, skipCount).ToListAsync();
+
+            if (products == null)
+            {
+                throw new Exception("Object should not be null.");
+            }
+
+            return products;
+        }
+
+        public async Task<IEnumerable<Models.Product>> GetProductsSortedByPriceDescAsync(string type, int skipCount)
+        {
+            var products = await productRepository.GetProductsSortedByPriceDesc(type, skipCount).ToListAsync();
+
+            if (products == null)
+            {
+                throw new Exception("Object should not be null.");
+            }
+
+            return products;
+        }
+
         public async Task<IEnumerable<Models.Product>> GetFilteredProductsAsync(ProductFilterDTO filter, int skipCount)
         {
             var products = await productRepository.GetFilteredProductsAsync(filter, skipCount);

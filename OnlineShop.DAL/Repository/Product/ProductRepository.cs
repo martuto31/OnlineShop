@@ -54,9 +54,33 @@ namespace OnlineShop.DAL.Repository.Product
                 .FirstOrDefaultAsync();
         }
 
+        public IQueryable<Models.Product> GetProductsSortedByPriceAsc(string type, int skipCount)
+        {
+            var productType = Enum.Parse<ProductType>(type);
+
+            return DbSet
+                .AsQueryable()
+                .Where(x => x.ProductType == productType)
+                .OrderBy(x => x.Price)
+                .Skip(skipCount)
+                .Take(12);
+        }
+
+        public IQueryable<Models.Product> GetProductsSortedByPriceDesc(string type, int skipCount)
+        {
+            var productType = Enum.Parse<ProductType>(type);
+
+            return DbSet
+                .AsQueryable()
+                .Where(x => x.ProductType == productType)
+                .OrderByDescending(x => x.Price)
+                .Skip(skipCount)
+                .Take(12);
+        }
+
         public async Task<IEnumerable<Models.Product?>> GetFilteredProductsAsync(ProductFilterDTO productFilterDTO, int skipCount)
         {
-            var filteredPlants = DbSet.Where(x => x.ProductType == productFilterDTO.productType).AsQueryable();
+            var filteredPlants = DbSet.AsQueryable().Where(x => x.ProductType == productFilterDTO.productType);
 
             if (productFilterDTO.LightIntensities != null && productFilterDTO.LightIntensities.Any())
             {
