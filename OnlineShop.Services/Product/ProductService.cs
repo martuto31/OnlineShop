@@ -220,9 +220,9 @@ namespace OnlineShop.Services.Product
             return products;
         }
 
-        public async Task<IEnumerable<Models.Product>> GetFilteredProductsAsync(ProductFilterDTO filter)
+        public async Task<IEnumerable<Models.Product>> GetFilteredProductsAsync(ProductFilterDTO filter, int skipCount)
         {
-            var products = await productRepository.GetFilteredProductsAsync(filter);
+            var products = await productRepository.GetFilteredProductsAsync(filter, skipCount);
 
             if (products == null)
             {

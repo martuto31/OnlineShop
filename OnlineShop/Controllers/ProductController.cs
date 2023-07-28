@@ -21,8 +21,8 @@ namespace OnlineShop.Controllers
 
         public ProductController(
             IProductService productService,
-            IMapper mapper, 
-            IImageService imageService, 
+            IMapper mapper,
+            IImageService imageService,
             IProductSizeService productSizeService)
         {
             this.productService = productService;
@@ -101,7 +101,7 @@ namespace OnlineShop.Controllers
             var products = await productService.GetProductsByTypeAsync(type, skipCount);
 
             var response = new List<ProductResponseDTO>();
-            
+
             // Refactor
             foreach (var product in products)
             {
@@ -120,10 +120,10 @@ namespace OnlineShop.Controllers
             return Ok(response);
         }
 
-        [HttpGet("GetAllFilteredProducts")]
-        public async Task<ActionResult<List<ProductResponseDTO>>> GetAllFilteredProducts(ProductFilterDTO filter)
+        [HttpPost("GetAllFilteredProducts")]
+        public async Task<ActionResult<List<ProductResponseDTO>>> GetAllFilteredProducts([FromBody] ProductFilterDTO filter, int skipCount)
         {
-            var products = await productService.GetFilteredProductsAsync(filter);
+            var products = await productService.GetFilteredProductsAsync(filter, skipCount);
 
             var response = new List<ProductResponseDTO>();
 

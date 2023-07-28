@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using OnlineShop.DAL.Data;
 using OnlineShop.Models;
 using OnlineShop.Models.Enums;
-using OnlineShop.Shared
+using OnlineShop.Shared;
 using OnlineShop.Shared.DTO.ProductDTO;
 
 namespace OnlineShop.DAL.Repository.Product
@@ -54,9 +54,9 @@ namespace OnlineShop.DAL.Repository.Product
                 .FirstOrDefaultAsync();
         }
 
-        public async Task<IEnumerable<Models.Product?>> GetFilteredProductsAsync(ProductFilterDTO productFilterDTO)
+        public async Task<IEnumerable<Models.Product?>> GetFilteredProductsAsync(ProductFilterDTO productFilterDTO, int skipCount)
         {
-            var filteredPlants = DbSet.AsQueryable();
+            var filteredPlants = DbSet.Where(x => x.ProductType == productFilterDTO.productType).AsQueryable();
 
             if (productFilterDTO.LightIntensities != null && productFilterDTO.LightIntensities.Any())
             {
@@ -85,7 +85,10 @@ namespace OnlineShop.DAL.Repository.Product
                 filteredPlants = filteredPlants.Where(p => productFilterDTO.GrowDifficulties.Contains(p.GrowDifficulty));
             }
 
-            return await filteredPlants.ToListAsync();
+            return await filteredPlants
+                .Skip(skipCount)
+                .Take(12)
+                .ToListAsync();
         }
 
         public void UpdateProduct(Models.Product product)
