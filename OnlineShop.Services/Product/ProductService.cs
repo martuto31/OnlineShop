@@ -81,7 +81,10 @@ namespace OnlineShop.Services.Product
             var product = new Models.Product()
             {
                 Description = input.Description,
+                AdditionalDescription = input.AdditionalDescription,
                 Name = input.Name,
+                BotanicalName = input.BotanicalName,
+                CommonName = input.CommonName,
                 Price = input.Price,
                 ProductsWithColors = productsWithColors,
                 ProductsWithSizes = productsWithSizes,
@@ -175,7 +178,10 @@ namespace OnlineShop.Services.Product
             }
 
             product.Name = input.Name;
+            product.CommonName = input.CommonName;
+            product.BotanicalName = input.BotanicalName;
             product.Price = input.Price;
+            product.AdditionalDescription = input.AdditionalDescription;
             product.Description = input.Description;
             product.ProductsWithColors = productsWithColors;
             product.ProductsWithSizes = productsWithSizes;

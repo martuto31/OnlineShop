@@ -14,6 +14,9 @@ namespace OnlineShop.Shared.DTO.ProductDTO
     {
         public int Id { get; set; }
         public string Name { get; set; }
+        public string CommonName { get; set; }
+        public string BotanicalName { get; set; }
+        public string AdditionalDescription { get; set; }
         public string Description { get; set; }
         public IList<IFormFile> Images { get; set; }
         public double Price { get; set; }
