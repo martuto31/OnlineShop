@@ -11,8 +11,12 @@ namespace OnlineShop.Models
     public class Product
     {
         public int Id { get; set; }
+        public int Sales { get; set; }
         public string Name { get; set; }
+        public string CommonName { get; set; }
+        public string BotanicalName { get; set; }
         public string Description { get; set; }
+        public string AdditionalDescription { get; set; }
         public double Price { get; set; }
         public GrowDifficulty GrowDifficulty { get; set; }
         public LightIntensity LightIntensity { get; set; }
