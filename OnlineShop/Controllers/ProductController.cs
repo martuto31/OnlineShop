@@ -170,8 +170,58 @@ namespace OnlineShop.Controllers
             return Ok(response);
         }
 
+        [HttpGet("GetNewestProducts")]
+        public async Task<ActionResult<List<ProductResponseDTO>>> GetNewestProductsAsync(string type, int skipCount)
+        {
+            var products = await productService.GetNewestProductsAsync(type, skipCount);
+
+            var response = new List<ProductResponseDTO>();
+
+            // Refactor
+            foreach (var product in products)
+            {
+                var productResponse = mapper.Map<ProductResponseDTO>(product);
+                var images = await imageService.GetAllImagesForProductAsync(product.Id);
+
+                // Convert the binary byte array to base64
+                foreach (var image in images)
+                {
+                    productResponse.PicturesData.Add(Convert.ToBase64String(image.Image));
+                }
+
+                response.Add(productResponse);
+            }
+
+            return Ok(response);
+        }
+
+        [HttpGet("GetMostSoldProducts")]
+        public async Task<ActionResult<List<ProductResponseDTO>>> GetMostSoldProductsAsync(string type, int skipCount)
+        {
+            var products = await productService.GetMostSoldProductsAsync(type, skipCount);
+
+            var response = new List<ProductResponseDTO>();
+
+            // Refactor
+            foreach (var product in products)
+            {
+                var productResponse = mapper.Map<ProductResponseDTO>(product);
+                var images = await imageService.GetAllImagesForProductAsync(product.Id);
+
+                // Convert the binary byte array to base64
+                foreach (var image in images)
+                {
+                    productResponse.PicturesData.Add(Convert.ToBase64String(image.Image));
+                }
+
+                response.Add(productResponse);
+            }
+
+            return Ok(response);
+        }
+
         [HttpPost("GetAllFilteredProducts")]
-        public async Task<ActionResult<List<ProductResponseDTO>>> GetAllFilteredProducts([FromBody] ProductFilterDTO filter, int skipCount)
+        public async Task<ActionResult<List<ProductResponseDTO>>> GetAllFilteredProductsAsync([FromBody] ProductFilterDTO filter, int skipCount)
         {
             var products = await productService.GetFilteredProductsAsync(filter, skipCount);
 

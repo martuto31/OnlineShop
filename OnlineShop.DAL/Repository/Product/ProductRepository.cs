@@ -78,6 +78,30 @@ namespace OnlineShop.DAL.Repository.Product
                 .Take(12);
         }
 
+        public IQueryable<Models.Product> GetNewestProducts(string type, int skipCount)
+        {
+            var productType = Enum.Parse<ProductType>(type);
+
+            return DbSet
+                .AsQueryable()
+                .Where(x => x.ProductType == productType)
+                .OrderByDescending(x => x.CreatedOn)
+                .Skip(skipCount)
+                .Take(12);
+        }
+
+        public IQueryable<Models.Product> GetMostSoldProducts(string type, int skipCount)
+        {
+            var productType = Enum.Parse<ProductType>(type);
+
+            return DbSet
+                .AsQueryable()
+                .Where(x => x.ProductType == productType)
+                .OrderByDescending(x => x.Sales)
+                .Skip(skipCount)
+                .Take(12);
+        }
+
         public async Task<IEnumerable<Models.Product?>> GetFilteredProductsAsync(ProductFilterDTO productFilterDTO, int skipCount)
         {
             var filteredPlants = DbSet.AsQueryable().Where(x => x.ProductType == productFilterDTO.productType);

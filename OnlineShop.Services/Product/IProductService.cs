@@ -12,6 +12,8 @@ namespace OnlineShop.Services.Product
         Task<IEnumerable<Models.Product>> GetFilteredProductsAsync(ProductFilterDTO filter, int skipCount);
         Task<IEnumerable<Models.Product>> GetProductsSortedByPriceAscAsync(string type, int skipCount);
         Task<IEnumerable<Models.Product>> GetProductsSortedByPriceDescAsync(string type, int skipCount);
+        Task<IEnumerable<Models.Product>> GetNewestProductsAsync(string type, int skipCount);
+        Task<IEnumerable<Models.Product>> GetMostSoldProductsAsync(string type, int skipCount);
         Task<IEnumerable<ProductColors>> GetAllProductColorsAsync();
         Task AddProductAsync(CreateProductDTO input);
         Task EditProductAsync(CreateProductDTO input);
