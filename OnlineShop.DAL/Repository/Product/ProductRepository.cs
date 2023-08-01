@@ -54,30 +54,6 @@ namespace OnlineShop.DAL.Repository.Product
                 .FirstOrDefaultAsync();
         }
 
-        public IQueryable<Models.Product> GetProductsSortedByPriceAsc(string type, int skipCount)
-        {
-            var productType = Enum.Parse<ProductType>(type);
-
-            return DbSet
-                .AsQueryable()
-                .Where(x => x.ProductType == productType)
-                .OrderBy(x => x.Price)
-                .Skip(skipCount)
-                .Take(12);
-        }
-
-        public IQueryable<Models.Product> GetProductsSortedByPriceDesc(string type, int skipCount)
-        {
-            var productType = Enum.Parse<ProductType>(type);
-
-            return DbSet
-                .AsQueryable()
-                .Where(x => x.ProductType == productType)
-                .OrderByDescending(x => x.Price)
-                .Skip(skipCount)
-                .Take(12);
-        }
-
         public IQueryable<Models.Product> GetNewestProducts(string type, int skipCount)
         {
             var productType = Enum.Parse<ProductType>(type);
@@ -102,9 +78,45 @@ namespace OnlineShop.DAL.Repository.Product
                 .Take(12);
         }
 
-        public async Task<IEnumerable<Models.Product?>> GetFilteredProductsAsync(ProductFilterDTO productFilterDTO, int skipCount)
+        public async Task<IEnumerable<Models.Product?>> GetFilteredAndSortedProductsAsync(ProductFilterDTO productFilterDTO, int skipCount, string sortType)
         {
-            var filteredPlants = DbSet.AsQueryable().Where(x => x.ProductType == productFilterDTO.productType);
+            IQueryable<Models.Product> filteredPlants;
+            switch(sortType)
+            {
+                case "OrderByPriceDesc":
+                    filteredPlants = DbSet
+                        .AsQueryable()
+                        .Where(x => x.ProductType == productFilterDTO.productType)
+                        .OrderByDescending(x => x.Price);
+                    break;
+
+                case "OrderByPriceAsc":
+                    filteredPlants = DbSet
+                        .AsQueryable()
+                        .Where(x => x.ProductType == productFilterDTO.productType)
+                        .OrderBy(x => x.Price);
+                    break;
+
+                case "GetNewest":
+                    filteredPlants = DbSet
+                        .AsQueryable()
+                        .Where(x => x.ProductType == productFilterDTO.productType)
+                        .OrderByDescending(x => x.CreatedOn);
+                    break;
+
+                case "GetMostSold":
+                    filteredPlants = DbSet
+                        .AsQueryable()
+                        .Where(x => x.ProductType == productFilterDTO.productType)
+                        .OrderByDescending(x => x.Sales);
+                    break;
+
+                default:
+                    filteredPlants = DbSet
+                        .AsQueryable()
+                        .Where(x => x.ProductType == productFilterDTO.productType);
+                    break;
+            }
 
             if (productFilterDTO.LightIntensities != null && productFilterDTO.LightIntensities.Any())
             {

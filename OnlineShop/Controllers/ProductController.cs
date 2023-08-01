@@ -120,56 +120,6 @@ namespace OnlineShop.Controllers
             return Ok(response);
         }
 
-        [HttpGet("GetProductsSortedByPriceAsc")]
-        public async Task<ActionResult<List<ProductResponseDTO>>> GetProductsSortedByPriceAscAsync(string type, int skipCount)
-        {
-            var products = await productService.GetProductsSortedByPriceAscAsync(type, skipCount);
-
-            var response = new List<ProductResponseDTO>();
-
-            // Refactor
-            foreach (var product in products)
-            {
-                var productResponse = mapper.Map<ProductResponseDTO>(product);
-                var images = await imageService.GetAllImagesForProductAsync(product.Id);
-
-                // Convert the binary byte array to base64
-                foreach (var image in images)
-                {
-                    productResponse.PicturesData.Add(Convert.ToBase64String(image.Image));
-                }
-
-                response.Add(productResponse);
-            }
-
-            return Ok(response);
-        }
-
-        [HttpGet("GetProductsSortedByPriceDesc")]
-        public async Task<ActionResult<List<ProductResponseDTO>>> GetProductsSortedByPriceDescAsync(string type, int skipCount)
-        {
-            var products = await productService.GetProductsSortedByPriceDescAsync(type, skipCount);
-
-            var response = new List<ProductResponseDTO>();
-
-            // Refactor
-            foreach (var product in products)
-            {
-                var productResponse = mapper.Map<ProductResponseDTO>(product);
-                var images = await imageService.GetAllImagesForProductAsync(product.Id);
-
-                // Convert the binary byte array to base64
-                foreach (var image in images)
-                {
-                    productResponse.PicturesData.Add(Convert.ToBase64String(image.Image));
-                }
-
-                response.Add(productResponse);
-            }
-
-            return Ok(response);
-        }
-
         [HttpGet("GetNewestProducts")]
         public async Task<ActionResult<List<ProductResponseDTO>>> GetNewestProductsAsync(string type, int skipCount)
         {
@@ -220,10 +170,10 @@ namespace OnlineShop.Controllers
             return Ok(response);
         }
 
-        [HttpPost("GetAllFilteredProducts")]
-        public async Task<ActionResult<List<ProductResponseDTO>>> GetAllFilteredProductsAsync([FromBody] ProductFilterDTO filter, int skipCount)
+        [HttpPost("GetFilteredAndSortedProductsAsync")]
+        public async Task<ActionResult<List<ProductResponseDTO>>> GetFilteredAndSortedProductsAsync([FromBody] ProductFilterDTO filter, int skipCount, string sortType)
         {
-            var products = await productService.GetFilteredProductsAsync(filter, skipCount);
+            var products = await productService.GetFilteredAndSortedProductsAsync(filter, skipCount, sortType);
 
             var response = new List<ProductResponseDTO>();
 

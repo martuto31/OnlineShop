@@ -226,30 +226,6 @@ namespace OnlineShop.Services.Product
             return products;
         }
 
-        public async Task<IEnumerable<Models.Product>> GetProductsSortedByPriceAscAsync(string type, int skipCount)
-        {
-            var products = await productRepository.GetProductsSortedByPriceAsc(type, skipCount).ToListAsync();
-
-            if (products == null)
-            {
-                throw new Exception("Object should not be null.");
-            }
-
-            return products;
-        }
-
-        public async Task<IEnumerable<Models.Product>> GetProductsSortedByPriceDescAsync(string type, int skipCount)
-        {
-            var products = await productRepository.GetProductsSortedByPriceDesc(type, skipCount).ToListAsync();
-
-            if (products == null)
-            {
-                throw new Exception("Object should not be null.");
-            }
-
-            return products;
-        }
-
         public async Task<IEnumerable<Models.Product>> GetNewestProductsAsync(string type, int skipCount)
         {
             var products = await productRepository.GetNewestProducts(type, skipCount).ToListAsync();
@@ -274,9 +250,9 @@ namespace OnlineShop.Services.Product
             return products;
         }
 
-        public async Task<IEnumerable<Models.Product>> GetFilteredProductsAsync(ProductFilterDTO filter, int skipCount)
+        public async Task<IEnumerable<Models.Product>> GetFilteredAndSortedProductsAsync(ProductFilterDTO filter, int skipCount, string sortType)
         {
-            var products = await productRepository.GetFilteredProductsAsync(filter, skipCount);
+            var products = await productRepository.GetFilteredAndSortedProductsAsync(filter, skipCount, sortType);
 
             if (products == null)
             {
