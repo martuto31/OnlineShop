@@ -4,12 +4,13 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using OnlineShop.DAL.Data;
 using OnlineShop.DAL.Repository.Product;
-using OnlineShop.DAL.Repository.User;
 using OnlineShop.Services.Product;
 using OnlineShop.Services.User;
 using OnlineShop.Shared.Options;
 using System.Text;
 using System.IdentityModel.Tokens.Jwt;
+using Microsoft.AspNetCore.Identity;
+using OnlineShop.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -18,7 +19,12 @@ builder.Services.AddControllers();
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(configuration.GetConnectionString(OnlineShop.Constants.ConnectionString)));
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
 builder.Services.AddAuthorization();
+
+builder.Services.AddIdentity<User, Role>()
+            .AddEntityFrameworkStores<ApplicationDbContext>()
+            .AddDefaultTokenProviders();
 
 builder.Services.AddAuthentication(options =>
 {
@@ -44,7 +50,6 @@ builder.Services.AddAuthentication(options =>
 });
 
 // Data repositories
-builder.Services.AddTransient<IUserRepository, UserRepository>();
 builder.Services.AddTransient<IProductRepository, ProductRepository>();
 builder.Services.AddTransient<IReviewRepository, ReviewRepository>();
 builder.Services.AddTransient<IImageRepository, ImageRepository>();
@@ -52,8 +57,8 @@ builder.Services.AddTransient<IProductSizeRepository, ProductSizeRepository>();
 builder.Services.AddTransient<IProductColorRepository, ProductColorRepository>();
 
 // Application services
+builder.Services.AddScoped<UserManager<User>>();
 builder.Services.AddTransient<IJsonTokenService, JsonTokenService>();
-builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddTransient<IProductService, ProductService>();
 builder.Services.AddTransient<IReviewService, ReviewService>();
 builder.Services.AddTransient<IImageService, ImageService>();
