@@ -1,15 +1,17 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using OnlineShop.Models;
 
 namespace OnlineShop.DAL.Data
 {
-    public class ApplicationDbContext : DbContext
+    public class ApplicationDbContext : IdentityDbContext<User, Role, string>
     {
         public ApplicationDbContext()
         {
         }
 
-        public ApplicationDbContext(DbContextOptions options) : base(options)
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
         }
 
@@ -29,6 +31,21 @@ namespace OnlineShop.DAL.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(GetType().Assembly);
+
+            modelBuilder.Entity<IdentityUserLogin<string>>().HasKey(l => new { l.LoginProvider, l.ProviderKey });
+            modelBuilder.Entity<IdentityUserLogin<string>>().HasKey(l => new { l.LoginProvider, l.ProviderKey });
+            modelBuilder.Entity<IdentityUserToken<string>>().HasKey(t => new { t.UserId, t.LoginProvider, t.Name });
+            modelBuilder.Entity<IdentityUserRole<string>>().HasKey(r => new { r.UserId, r.RoleId });
+
+            this.SeedRoles(modelBuilder);
+        }
+
+        private void SeedRoles(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Role>().HasData(
+                new Role() { Name = "Admin", ConcurrencyStamp = "1", NormalizedName = "Admin"},
+                new Role() { Name = "User", ConcurrencyStamp = "2", NormalizedName = "User" }
+                );
         }
     }
 }

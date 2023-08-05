@@ -11,6 +11,8 @@ using System.Text;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Identity;
 using OnlineShop.Models;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using SixLabors.ImageSharp;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -23,8 +25,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddAuthorization();
 
 builder.Services.AddIdentity<User, Role>()
-            .AddEntityFrameworkStores<ApplicationDbContext>()
-            .AddDefaultTokenProviders();
+    .AddEntityFrameworkStores<ApplicationDbContext>()
+    .AddDefaultTokenProviders();
 
 builder.Services.AddAuthentication(options =>
 {

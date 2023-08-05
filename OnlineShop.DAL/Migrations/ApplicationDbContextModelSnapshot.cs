@@ -22,6 +22,101 @@ namespace OnlineShop.DAL.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RoleId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("RoleClaims", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("UserClaims", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
+                {
+                    b.Property<string>("LoginProvider")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ProviderKey")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ProviderDisplayName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("LoginProvider", "ProviderKey");
+
+                    b.ToTable("UserLogins", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("RoleId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("UserId", "RoleId");
+
+                    b.ToTable("UserRoles", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("LoginProvider")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Value")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("UserId", "LoginProvider", "Name");
+
+                    b.ToTable("UserTokens", (string)null);
+                });
+
             modelBuilder.Entity("OnlineShop.Models.ImageUri", b =>
                 {
                     b.Property<int>("Id")
@@ -41,7 +136,7 @@ namespace OnlineShop.DAL.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("Images");
+                    b.ToTable("Images", (string)null);
                 });
 
             modelBuilder.Entity("OnlineShop.Models.Product", b =>
@@ -70,7 +165,7 @@ namespace OnlineShop.DAL.Migrations
                     b.Property<DateTime>("CreatedOn")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2023, 8, 3, 15, 6, 55, 204, DateTimeKind.Utc).AddTicks(3954));
+                        .HasDefaultValue(new DateTime(2023, 8, 4, 18, 10, 22, 749, DateTimeKind.Utc).AddTicks(7197));
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -107,7 +202,7 @@ namespace OnlineShop.DAL.Migrations
                     b.HasIndex("Id")
                         .IsUnique();
 
-                    b.ToTable("Products");
+                    b.ToTable("Products", (string)null);
                 });
 
             modelBuilder.Entity("OnlineShop.Models.ProductColors", b =>
@@ -124,7 +219,7 @@ namespace OnlineShop.DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ProductColors");
+                    b.ToTable("ProductColors", (string)null);
                 });
 
             modelBuilder.Entity("OnlineShop.Models.ProductSizes", b =>
@@ -141,7 +236,7 @@ namespace OnlineShop.DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ProductSizes");
+                    b.ToTable("ProductSizes", (string)null);
                 });
 
             modelBuilder.Entity("OnlineShop.Models.ProductsWithColors", b =>
@@ -156,7 +251,7 @@ namespace OnlineShop.DAL.Migrations
 
                     b.HasIndex("ProductColorsId");
 
-                    b.ToTable("ProductsWithColors");
+                    b.ToTable("ProductsWithColors", (string)null);
                 });
 
             modelBuilder.Entity("OnlineShop.Models.ProductsWithSizes", b =>
@@ -171,7 +266,7 @@ namespace OnlineShop.DAL.Migrations
 
                     b.HasIndex("ProductSizesId");
 
-                    b.ToTable("ProductsWithSizes");
+                    b.ToTable("ProductsWithSizes", (string)null);
                 });
 
             modelBuilder.Entity("OnlineShop.Models.Review", b =>
@@ -192,8 +287,9 @@ namespace OnlineShop.DAL.Migrations
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
@@ -201,16 +297,13 @@ namespace OnlineShop.DAL.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Reviews");
+                    b.ToTable("Reviews", (string)null);
                 });
 
             modelBuilder.Entity("OnlineShop.Models.Role", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ConcurrencyStamp")
                         .HasColumnType("nvarchar(max)");
@@ -223,16 +316,29 @@ namespace OnlineShop.DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Roles");
+                    b.ToTable("Role", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "8389c099-72c8-47ad-9e4d-fc41b34ce276",
+                            ConcurrencyStamp = "1",
+                            Name = "Admin",
+                            NormalizedName = "Admin"
+                        },
+                        new
+                        {
+                            Id = "768e20a8-00a1-4bfc-bbc4-4bbff670e56c",
+                            ConcurrencyStamp = "2",
+                            Name = "User",
+                            NormalizedName = "User"
+                        });
                 });
 
             modelBuilder.Entity("OnlineShop.Models.User", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
@@ -267,8 +373,9 @@ namespace OnlineShop.DAL.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<int>("RoleId")
-                        .HasColumnType("int");
+                    b.Property<string>("RoleId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
@@ -283,7 +390,7 @@ namespace OnlineShop.DAL.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("Users");
+                    b.ToTable("User", (string)null);
                 });
 
             modelBuilder.Entity("OnlineShop.Models.ImageUri", b =>
