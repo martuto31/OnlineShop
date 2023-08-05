@@ -115,7 +115,7 @@ namespace OnlineShop.Controllers
                     claims.Add(new Claim(ClaimTypes.Role, "Admin"));
                 }
 
-                var token = _jsonTokenService.GenerateToken(user);
+                var token = _jsonTokenService.GenerateToken(user, claims);
 
                 return Ok(new { Token = token });
             }
