@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Identity;
 using OnlineShop.Models;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using SixLabors.ImageSharp;
+using OnlineShop.Shared.ErrorMessages;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -24,7 +25,17 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddAuthorization();
 
-builder.Services.AddIdentity<User, Role>()
+builder.Services.AddIdentity<User, Role>(options =>
+    {
+        options.Password.RequireDigit = false;
+        options.Password.RequireLowercase = false;
+        options.Password.RequireUppercase = false;
+        options.Password.RequireNonAlphanumeric = false;
+        options.Password.RequiredLength = 6;
+        options.User.RequireUniqueEmail = true;
+        options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
+    })
+    .AddErrorDescriber<CustomIdentityErrorDescriber>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
 

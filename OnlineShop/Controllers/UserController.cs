@@ -36,20 +36,23 @@ namespace OnlineShop.Controllers
             if (!ModelState.IsValid)
             {
                 // If the model state is not valid, return a bad request with validation errors
-                return BadRequest(ModelState);
+                var errors = ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage));
+                return BadRequest(new { Errors = errors });
             }
 
             // Check if a user with the same username or email already exists
             if (await _userManager.FindByNameAsync(registerDTO.Username) != null)
             {
-                ModelState.AddModelError("Username", "Username already taken.");
-                return BadRequest(ModelState);
+                ModelState.AddModelError("Username", "Потребителското име вече е заето.");
+                var errors = ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage));
+                return BadRequest(new { Errors = errors });
             }
 
             if (await _userManager.FindByEmailAsync(registerDTO.Email) != null)
             {
-                ModelState.AddModelError("Email", "Email already taken.");
-                return BadRequest(ModelState);
+                ModelState.AddModelError("Email", "Вече съществува акаунт с въведения имейл.");
+                var errors = ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage));
+                return BadRequest(new { Errors = errors });
             }
 
             // Create a new IdentityUser with the provided information
@@ -85,7 +88,8 @@ namespace OnlineShop.Controllers
                 {
                     ModelState.AddModelError("", error.Description);
                 }
-                return BadRequest(ModelState);
+                var errors = ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage));
+                return BadRequest(new { Errors = errors });
             }
 
             // Registration successful

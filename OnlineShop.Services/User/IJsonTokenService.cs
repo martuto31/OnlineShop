@@ -10,5 +10,5 @@ namespace OnlineShop.Services.User
     public interface IJsonTokenService
     {
         public string GenerateToken(Models.User user, List<Claim> claims);
-    }
+    } 
 }
