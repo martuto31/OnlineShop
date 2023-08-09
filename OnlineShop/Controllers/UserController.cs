@@ -21,13 +21,18 @@ namespace OnlineShop.Controllers
         private readonly UserManager<User> _userManager;
         private readonly RoleManager<Role> _roleManager;
         private readonly IJsonTokenService _jsonTokenService;
+        private readonly IEmailService _emailService;
 
-        public UserController(SignInManager<User> signInManager, UserManager<User> userManager, RoleManager<Role> roleManager, IJsonTokenService jsonTokenService)
+        public UserController(SignInManager<User> signInManager,
+                            UserManager<User> userManager, RoleManager<Role> roleManager,
+                            IJsonTokenService jsonTokenService, 
+                            IEmailService emailService)
         {
             _signInManager = signInManager;
             _userManager = userManager;
             _roleManager = roleManager;
-            _jsonTokenService = jsonTokenService;
+            _jsonTokenService = jsonTokenService;            _emailService = emailService;
+
         }
 
         [HttpPost("Register")]
@@ -134,6 +139,32 @@ namespace OnlineShop.Controllers
             await _signInManager.SignOutAsync();
 
             return Ok();
+        }
+
+        [HttpPost("ResetPassword")]
+        public async Task<IActionResult> ResetPassword(PasswordResetDTO model)
+        {
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            if (user == null)
+            {
+                return BadRequest("Няма регистриран акаунт с този имейл.");
+            }
+
+            var result = await _userManager.ResetPasswordAsync(user, model.Token, model.NewPassword);
+            if (!result.Succeeded)
+            {
+                return BadRequest(result.Errors);
+            }
+
+            // Send the token to the user's email
+            var resetToken = await _userManager.GeneratePasswordResetTokenAsync(user);
+            var resetLink = $"https://localhost:7260/api/reset-password?token={resetToken}";
+            var emailMessage = $"To reset your password, click <a href='{resetLink}'>here</a>.";
+
+            // Send the email
+            await _emailService.SendEmailAsync(user.Email, "Password Reset", emailMessage);
+
+            return Ok(new { Message = "Password reset link sent to your email." });
         }
     }
 }

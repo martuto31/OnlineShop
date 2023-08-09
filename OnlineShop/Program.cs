@@ -14,6 +14,8 @@ using OnlineShop.Models;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using SixLabors.ImageSharp;
 using OnlineShop.Shared.ErrorMessages;
+using SendGrid;
+using SendGrid.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -62,6 +64,11 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+builder.Services.AddSendGrid(options =>
+{
+    options.ApiKey = configuration["SendGrid:ApiKey"];
+});
+
 // Data repositories
 builder.Services.AddTransient<IProductRepository, ProductRepository>();
 builder.Services.AddTransient<IReviewRepository, ReviewRepository>();
@@ -76,6 +83,7 @@ builder.Services.AddTransient<IProductService, ProductService>();
 builder.Services.AddTransient<IReviewService, ReviewService>();
 builder.Services.AddTransient<IImageService, ImageService>();
 builder.Services.AddTransient<IProductSizeService, ProductSizeService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
 
 // Automapper
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
