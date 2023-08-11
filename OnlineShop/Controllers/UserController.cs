@@ -31,7 +31,8 @@ namespace OnlineShop.Controllers
             _signInManager = signInManager;
             _userManager = userManager;
             _roleManager = roleManager;
-            _jsonTokenService = jsonTokenService;            _emailService = emailService;
+            _jsonTokenService = jsonTokenService;
+            _emailService = emailService;
 
         }
 

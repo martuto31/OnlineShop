@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using OnlineShop.Mapping.Models;
 using OnlineShop.Models;
+using OnlineShop.Models.Enums;
 using OnlineShop.Services.Product;
 using OnlineShop.Services.User;
 using OnlineShop.Shared.DTO.ProductDTO;
@@ -213,6 +215,12 @@ namespace OnlineShop.Controllers
             var response = mapper.Map<List<ProductColorsResponseDTO>>(colors);
 
             return Ok(response);
+        }
+
+        [HttpPost("HasMoreProducts")]
+        public ActionResult<bool> HasMoreProducts([FromBody] ProductFilterDTO filter, int skipCount, string sortType)
+        {
+            return productService.HasMoreProducts(filter, skipCount, sortType);
         }
     }
 }

@@ -16,6 +16,7 @@ namespace OnlineShop.DAL.Repository.Product
         IQueryable<Models.Product> GetMostSoldProducts(string type, int skipCount);
         Task<IEnumerable<Models.Product?>> GetFilteredAndSortedProductsAsync(ProductFilterDTO productFilterDTO, int skipCount, string sortType);
         Task AddProductAsync(Models.Product product);
+        bool HasMoreProducts(ProductFilterDTO productFilterDTO, int skipCount, string sortType);
         void UpdateProduct(Models.Product product);
         void DeleteProduct (Models.Product product);
     }

@@ -40,7 +40,7 @@ namespace OnlineShop.DAL.Repository.Product
             return DbSet
                 .Where(x => x.ProductType == productType)
                 .Skip(skipCount)
-                .Take(12);
+                .Take(24);
         }
 
         public async Task<Models.Product?> GetProductByIdAsync(int id)
@@ -58,12 +58,13 @@ namespace OnlineShop.DAL.Repository.Product
         {
             var productType = Enum.Parse<ProductType>(type);
 
-            return DbSet
-                .AsQueryable()
+            var products = DbSet
                 .Where(x => x.ProductType == productType)
                 .OrderByDescending(x => x.CreatedOn)
                 .Skip(skipCount)
-                .Take(12);
+                .Take(24);
+
+            return products;
         }
 
         public IQueryable<Models.Product> GetMostSoldProducts(string type, int skipCount)
@@ -75,12 +76,13 @@ namespace OnlineShop.DAL.Repository.Product
                 .Where(x => x.ProductType == productType)
                 .OrderByDescending(x => x.Sales)
                 .Skip(skipCount)
-                .Take(12);
+                .Take(24);
         }
 
         public async Task<IEnumerable<Models.Product?>> GetFilteredAndSortedProductsAsync(ProductFilterDTO productFilterDTO, int skipCount, string sortType)
         {
             IQueryable<Models.Product> filteredPlants;
+
             switch(sortType)
             {
                 case "OrderByPriceDesc":
@@ -145,10 +147,89 @@ namespace OnlineShop.DAL.Repository.Product
                 filteredPlants = filteredPlants.Where(p => productFilterDTO.GrowDifficulties.Contains(p.GrowDifficulty));
             }
 
+            int totalProductCount = filteredPlants.Count();
+            int nextSkipCount = skipCount + 24;
+            bool hasMoreProducts = nextSkipCount < totalProductCount;
+
             return await filteredPlants
                 .Skip(skipCount)
-                .Take(12)
+                .Take(24)
                 .ToListAsync();
+        }
+
+        public bool HasMoreProducts(ProductFilterDTO productFilterDTO, int skipCount, string sortType)
+        {
+            IQueryable<Models.Product> filteredPlants;
+
+            switch (sortType)
+            {
+                case "OrderByPriceDesc":
+                    filteredPlants = DbSet
+                        .AsQueryable()
+                        .Where(x => x.ProductType == productFilterDTO.productType)
+                        .OrderByDescending(x => x.Price);
+                    break;
+
+                case "OrderByPriceAsc":
+                    filteredPlants = DbSet
+                        .AsQueryable()
+                        .Where(x => x.ProductType == productFilterDTO.productType)
+                        .OrderBy(x => x.Price);
+                    break;
+
+                case "GetNewest":
+                    filteredPlants = DbSet
+                        .AsQueryable()
+                        .Where(x => x.ProductType == productFilterDTO.productType)
+                        .OrderByDescending(x => x.CreatedOn);
+                    break;
+
+                case "GetMostSold":
+                    filteredPlants = DbSet
+                        .AsQueryable()
+                        .Where(x => x.ProductType == productFilterDTO.productType)
+                        .OrderByDescending(x => x.Sales);
+                    break;
+
+                default:
+                    filteredPlants = DbSet
+                        .AsQueryable()
+                        .Where(x => x.ProductType == productFilterDTO.productType);
+                    break;
+            }
+
+            if (productFilterDTO.LightIntensities != null && productFilterDTO.LightIntensities.Any())
+            {
+                filteredPlants = filteredPlants.Where(p => productFilterDTO.LightIntensities.Contains(p.LightIntensity));
+            }
+
+            //if (productFilterDTO.Sizes != null && productFilterDTO.Sizes.Any())
+            //{
+            //    filteredPlants = filteredPlants.Where(p => productFilterDTO.Sizes.Contains());
+            //}
+
+            if (productFilterDTO.PetCompatibility || productFilterDTO.AirPurifiable)
+            {
+                filteredPlants = filteredPlants.Where(p =>
+                    (productFilterDTO.PetCompatibility && p.PetCompatibility) ||
+                    (productFilterDTO.AirPurifiable && p.AirPurify));
+            }
+
+            //if (productFilterDTO.Colors != null && productFilterDTO.Colors.Any())
+            //{
+            //    filteredPlants = filteredPlants.Where(p => p.Colors.Any(c => productFilterDTO.Colors.Contains(c)));
+            //}
+
+            if (productFilterDTO.GrowDifficulties != null && productFilterDTO.GrowDifficulties.Any())
+            {
+                filteredPlants = filteredPlants.Where(p => productFilterDTO.GrowDifficulties.Contains(p.GrowDifficulty));
+            }
+
+            int totalProductCount = filteredPlants.Count();
+            int nextSkipCount = skipCount + 24;
+            bool hasMoreProducts = nextSkipCount < totalProductCount;
+
+            return hasMoreProducts;
         }
 
         public void UpdateProduct(Models.Product product)

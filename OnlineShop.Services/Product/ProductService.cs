@@ -274,6 +274,11 @@ namespace OnlineShop.Services.Product
             return colors;
         }
 
+        public bool HasMoreProducts(ProductFilterDTO filter, int skipCount, string sortType)
+        {
+            return productRepository.HasMoreProducts(filter, skipCount, sortType);
+        }
+
         private byte[] ConvertIFormFileToByteArray(IFormFile file)
         {
             using (var memoryStream = new MemoryStream())
