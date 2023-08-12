@@ -217,12 +217,18 @@ namespace OnlineShop.Controllers
             return Ok(response);
         }
 
+        [HttpPost("AddProductToUserFavourites")]
+        public async Task<ActionResult> AddProductToUserFavourites(string userId, int productId)
+        {
+            await productService.AddProductToUserFavouritesAsync(userId, productId);
+
+            return Ok();
+        }
+
         [HttpPost("HasMoreProducts")]
         public ActionResult<bool> HasMoreProducts([FromBody] ProductFilterDTO filter, int skipCount, string sortType)
         {
             return productService.HasMoreProducts(filter, skipCount, sortType);
         }
-
-        [HttpPost("AddProductToUserFavourites")]
     }
 }

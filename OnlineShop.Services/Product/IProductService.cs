@@ -14,7 +14,7 @@ namespace OnlineShop.Services.Product
         Task<IEnumerable<Models.Product>> GetFilteredAndSortedProductsAsync(ProductFilterDTO filter, int skipCount, string sortType);
         Task<IEnumerable<ProductColors>> GetAllProductColorsAsync();
         bool HasMoreProducts(ProductFilterDTO filter, int skipCount, string sortType);
-        Task AddProductToUserFavourites(string userId, int productId);
+        Task AddProductToUserFavouritesAsync(string userId, int productId);
         Task AddProductAsync(CreateProductDTO input);
         Task EditProductAsync(CreateProductDTO input);
         Task DeleteProductAsync(int id);
