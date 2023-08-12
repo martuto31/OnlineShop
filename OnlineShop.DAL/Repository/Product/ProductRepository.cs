@@ -51,6 +51,8 @@ namespace OnlineShop.DAL.Repository.Product
                     .ThenInclude(ps => ps.ProductSizes)
                 .Include(x => x.ProductsWithColors)
                     .ThenInclude(ps => ps.ProductColors)
+                .Include(x => x.Users)
+                    .ThenInclude(ps => ps.User)
                 .FirstOrDefaultAsync();
         }
 
