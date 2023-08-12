@@ -12,6 +12,7 @@ using OnlineShop.Models;
 using OnlineShop.Models.Enums;
 using System.Diagnostics;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 
 namespace OnlineShop.Services.Product
 {
@@ -20,12 +21,14 @@ namespace OnlineShop.Services.Product
         private readonly IProductRepository productRepository;
         private readonly IProductColorRepository productColorRepository;
         private readonly IImageRepository imageRepository;
+        private readonly UserManager<Models.User> userManager;
 
-        public ProductService(IProductRepository productRepository, IProductColorRepository productColorRepository, IImageRepository imageRepository)
+        public ProductService(IProductRepository productRepository, IProductColorRepository productColorRepository, IImageRepository imageRepository, UserManager<Models.User> userManager)
         {
             this.productRepository = productRepository;
             this.productColorRepository = productColorRepository;
             this.imageRepository = imageRepository;
+            this.userManager = userManager;
         }
 
         public async Task AddProductAsync(CreateProductDTO input)
@@ -272,6 +275,26 @@ namespace OnlineShop.Services.Product
             }
 
             return colors;
+        }
+
+        public async Task AddProductToUserFavourites(string userId, int productId)
+        {
+            var user = await userManager.FindByIdAsync(userId);
+
+            if (user == null)
+            {
+                throw new Exception("Не съществува такъв акаунт.");
+            }
+
+            var product = await productRepository.GetProductByIdAsync(productId);
+
+            if (product == null)
+            {
+                throw new Exception("Не съществува такъв продукт.");
+            }
+
+            product.Users.Add(new UserWithProducts { UserId = user.Id, ProductId = product.Id });
+            await productRepository.SaveChangesAsync();
         }
 
         public bool HasMoreProducts(ProductFilterDTO filter, int skipCount, string sortType)
