@@ -222,5 +222,7 @@ namespace OnlineShop.Controllers
         {
             return productService.HasMoreProducts(filter, skipCount, sortType);
         }
+
+        [HttpPost("AddProductToUserFavourites")]
     }
 }

@@ -277,7 +277,7 @@ namespace OnlineShop.Services.Product
             return colors;
         }
 
-        public async Task AddProductToUserFavourites(string userId, int productId)
+        public async Task AddProductToUserFavouritesAsync(string userId, int productId)
         {
             var user = await userManager.FindByIdAsync(userId);
 
