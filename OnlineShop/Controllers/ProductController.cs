@@ -217,6 +217,31 @@ namespace OnlineShop.Controllers
             return Ok(response);
         }
 
+        [HttpGet("GetAllUserFavouriteProducts")]
+        public async Task<ActionResult<List<Models.Product>>> GetAllUserFavouriteProducts(string userId)
+        {
+            var products = await productService.GetAllUserFavouriteProducts(userId);
+
+            var response = new List<ProductResponseDTO>();
+
+            // Refactor
+            foreach (var product in products)
+            {
+                var productResponse = mapper.Map<ProductResponseDTO>(product);
+                var images = await imageService.GetAllImagesForProductAsync(product.Id);
+
+                // Convert the binary byte array to base64
+                foreach (var image in images)
+                {
+                    productResponse.PicturesData.Add(Convert.ToBase64String(image.Image));
+                }
+
+                response.Add(productResponse);
+            }
+
+            return Ok(response);
+        }
+
         [HttpPost("AddProductToUserFavourites")]
         public async Task<ActionResult> AddProductToUserFavourites(string userId, int productId)
         {

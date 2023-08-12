@@ -79,6 +79,14 @@ namespace OnlineShop.DAL.Repository.Product
                 .Take(24);
         }
 
+        public IQueryable<Models.Product> GetAllUserFavouriteProducts(string userId)
+        {
+            return _context.UserWithProducts
+                .Where(x => x.UserId == userId)
+                .Select(x => x.Product)
+                .AsQueryable();
+        }
+
         public async Task<IEnumerable<Models.Product?>> GetFilteredAndSortedProductsAsync(ProductFilterDTO productFilterDTO, int skipCount, string sortType)
         {
             IQueryable<Models.Product> filteredPlants;

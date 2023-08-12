@@ -13,6 +13,7 @@ namespace OnlineShop.Services.Product
         Task<IEnumerable<Models.Product>> GetNewestProductsAsync(string type, int skipCount);
         Task<IEnumerable<Models.Product>> GetFilteredAndSortedProductsAsync(ProductFilterDTO filter, int skipCount, string sortType);
         Task<IEnumerable<ProductColors>> GetAllProductColorsAsync();
+        Task<IEnumerable<Models.Product>> GetAllUserFavouriteProducts(string userId);
         bool HasMoreProducts(ProductFilterDTO filter, int skipCount, string sortType);
         Task AddProductToUserFavouritesAsync(string userId, int productId);
         Task AddProductAsync(CreateProductDTO input);

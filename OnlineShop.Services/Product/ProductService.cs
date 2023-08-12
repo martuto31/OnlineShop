@@ -277,6 +277,18 @@ namespace OnlineShop.Services.Product
             return colors;
         }
 
+        public async Task<IEnumerable<Models.Product>> GetAllUserFavouriteProducts(string userId)
+        {
+            var products = await productRepository.GetAllUserFavouriteProducts(userId).ToListAsync();
+
+            if(!products.Any())
+            {
+                throw new Exception("Потребителят няма продукти под категория 'любими'.");
+            }
+
+            return products;
+        }
+
         public async Task AddProductToUserFavouritesAsync(string userId, int productId)
         {
             var user = await userManager.FindByIdAsync(userId);
