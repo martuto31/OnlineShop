@@ -1,5 +1,4 @@
-﻿using Microsoft.Identity.Client;
-using OnlineShop.Models;
+﻿using OnlineShop.Models;
 using OnlineShop.Models.Enums;
 using System;
 using System.Collections.Generic;

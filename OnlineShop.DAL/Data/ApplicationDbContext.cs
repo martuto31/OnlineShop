@@ -7,11 +7,8 @@ namespace OnlineShop.DAL.Data
 {
     public class ApplicationDbContext : IdentityDbContext<User, Role, string>
     {
-        public ApplicationDbContext()
-        {
-        }
-
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+             : base(options)
         {
         }
 
@@ -19,6 +16,7 @@ namespace OnlineShop.DAL.Data
         public DbSet<ProductSizes> ProductSizes { get; set; }
         public DbSet<ProductColors> ProductColors { get; set; }
         public DbSet<ProductsWithSizes> ProductsWithSizes { get; set; }
+        public DbSet<UserWithProducts> UserWithProducts { get; set; }
         public DbSet<Review> Reviews { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Role> Roles { get; set; }
