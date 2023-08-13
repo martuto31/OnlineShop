@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OnlineShop.Mapping.Models;
@@ -9,6 +10,7 @@ using OnlineShop.Services.Product;
 using OnlineShop.Services.User;
 using OnlineShop.Shared.DTO.ProductDTO;
 using OnlineShop.Shared.DTO.UserDTO;
+using System.Security.Claims;
 
 namespace OnlineShop.Controllers
 {
@@ -16,6 +18,8 @@ namespace OnlineShop.Controllers
     [ApiController]
     public class ProductController : ControllerBase
     {
+        private readonly SignInManager<User> signInManager;
+        private readonly UserManager<User> userManager;
         private readonly IProductService productService;
         private readonly IProductSizeService productSizeService;
         private readonly IImageService imageService;
@@ -25,12 +29,16 @@ namespace OnlineShop.Controllers
             IProductService productService,
             IMapper mapper,
             IImageService imageService,
-            IProductSizeService productSizeService)
+            IProductSizeService productSizeService,
+            SignInManager<User> signInManager,
+            UserManager<User> userManager)
         {
             this.productService = productService;
             this.mapper = mapper;
             this.imageService = imageService;
             this.productSizeService = productSizeService;
+            this.signInManager = signInManager;
+            this.userManager = userManager;
         }
 
         //[Authorize(Roles = "Admin")]
@@ -218,8 +226,15 @@ namespace OnlineShop.Controllers
         }
 
         [HttpGet("GetAllUserFavouriteProducts")]
-        public async Task<ActionResult<List<Models.Product>>> GetAllUserFavouriteProducts(string userId)
+        public async Task<ActionResult<List<Models.Product>>> GetAllUserFavouriteProducts()
         {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+            if(userId == null)
+            {
+                return BadRequest("Не сте влезли в акаунта си.");
+            }
+
             var products = await productService.GetAllUserFavouriteProducts(userId);
 
             var response = new List<ProductResponseDTO>();
@@ -243,8 +258,15 @@ namespace OnlineShop.Controllers
         }
 
         [HttpPost("AddProductToUserFavourites")]
-        public async Task<ActionResult> AddProductToUserFavourites(string userId, int productId)
+        public async Task<ActionResult> AddProductToUserFavourites(int productId)
         {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+            if (userId == null)
+            {
+                return BadRequest("Не сте влезли в акаунта си.");
+            }
+
             await productService.AddProductToUserFavouritesAsync(userId, productId);
 
             return Ok();
