@@ -230,7 +230,7 @@ namespace OnlineShop.Controllers
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
-            if(userId == null)
+            if (userId == null)
             {
                 return BadRequest("Не сте влезли в акаунта си.");
             }
@@ -260,7 +260,7 @@ namespace OnlineShop.Controllers
         [HttpPost("AddProductToUserFavourites")]
         public async Task<ActionResult> AddProductToUserFavourites(int productId)
         {
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
             if (userId == null)
             {

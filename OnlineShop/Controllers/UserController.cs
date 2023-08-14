@@ -22,18 +22,20 @@ namespace OnlineShop.Controllers
         private readonly RoleManager<Role> _roleManager;
         private readonly IJsonTokenService _jsonTokenService;
         private readonly IEmailService _emailService;
+        private readonly IConfiguration _configuration;
 
         public UserController(SignInManager<User> signInManager,
                             UserManager<User> userManager, RoleManager<Role> roleManager,
                             IJsonTokenService jsonTokenService, 
-                            IEmailService emailService)
+                            IEmailService emailService,
+                            IConfiguration configuration)
         {
             _signInManager = signInManager;
             _userManager = userManager;
             _roleManager = roleManager;
             _jsonTokenService = jsonTokenService;
             _emailService = emailService;
-
+            _configuration = configuration;
         }
 
         [HttpPost("Register")]
@@ -106,31 +108,27 @@ namespace OnlineShop.Controllers
         [HttpPost("SignIn")]
         public async Task<IActionResult> SignIn(LoginDTO model)
         {
-            var result = await _signInManager.PasswordSignInAsync(model.Username, model.Password, isPersistent: false, lockoutOnFailure: false);
-
-            if (result.Succeeded)
+            var user = await _userManager.FindByNameAsync(model.Username);
+            if (user != null && await _userManager.CheckPasswordAsync(user, model.Password))
             {
-                var user = await _userManager.FindByNameAsync(model.Username);
+                var userRoles = await _userManager.GetRolesAsync(user);
 
-                // Create claims for the user
-                var claims = new List<Claim>
+                var authClaims = new List<Claim>
                 {
+                    new Claim(ClaimTypes.Name, user.UserName),
                     new Claim(ClaimTypes.NameIdentifier, user.Id),
-                    new Claim(ClaimTypes.Name, user.UserName)
                 };
 
-                // Check if the user is an Admin and add the "Admin" claim
-                if (await _userManager.IsInRoleAsync(user, "Admin"))
+                foreach (var userRole in userRoles)
                 {
-                    claims.Add(new Claim(ClaimTypes.Role, "Admin"));
+                    authClaims.Add(new Claim(ClaimTypes.Role, userRole));
                 }
 
-                var token = _jsonTokenService.GenerateToken(user, claims);
+                var jwt = GetToken(authClaims);
+                var token = new JwtSecurityTokenHandler().WriteToken(jwt);
 
-                return Ok(new { Token = token });
+                return Ok(token);
             }
-
-            // If sign-in fails, return a 401 Unauthorized response
             return Unauthorized();
         }
 
@@ -166,6 +164,21 @@ namespace OnlineShop.Controllers
             await _emailService.SendEmailAsync(user.Email, "Password Reset", emailMessage);
 
             return Ok(new { Message = "Password reset link sent to your email." });
+        }
+
+        private JwtSecurityToken GetToken(List<Claim> authClaims)
+        {
+            var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
+
+            var token = new JwtSecurityToken(
+                issuer: _configuration["Jwt:Issuer"],
+                audience: _configuration["Jwt:Audience"],
+                expires: DateTime.Now.AddHours(3),
+                claims: authClaims,
+                signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
+                );
+
+            return token;
         }
     }
 }
