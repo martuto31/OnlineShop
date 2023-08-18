@@ -13,6 +13,7 @@ using OnlineShop.Models.Enums;
 using System.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using OnlineShop.DAL.Repository.User;
 
 namespace OnlineShop.Services.Product
 {
@@ -21,14 +22,17 @@ namespace OnlineShop.Services.Product
         private readonly IProductRepository productRepository;
         private readonly IProductColorRepository productColorRepository;
         private readonly IImageRepository imageRepository;
+        private readonly IUserRepository userRepository;
         private readonly UserManager<Models.User> userManager;
 
-        public ProductService(IProductRepository productRepository, IProductColorRepository productColorRepository, IImageRepository imageRepository, UserManager<Models.User> userManager)
+        public ProductService(IProductRepository productRepository, IProductColorRepository productColorRepository, 
+                                IImageRepository imageRepository, IUserRepository userRepository, UserManager<Models.User> userManager)
         {
             this.productRepository = productRepository;
             this.productColorRepository = productColorRepository;
             this.imageRepository = imageRepository;
             this.userManager = userManager;
+            this.userRepository = userRepository;
         }
 
         public async Task AddProductAsync(CreateProductDTO input)
@@ -311,7 +315,7 @@ namespace OnlineShop.Services.Product
 
         public async Task DeleteProductFromFavourite(string userId, int productId)
         {
-            var user = await userManager.FindByIdAsync(userId);
+            var user = await userRepository.GetUserByIdAsync(userId);
 
             if (user == null)
             {

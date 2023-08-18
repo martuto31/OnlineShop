@@ -17,6 +17,7 @@ using OnlineShop.Shared.ErrorMessages;
 using SendGrid;
 using SendGrid.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using OnlineShop.DAL.Repository.User;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -76,6 +77,7 @@ builder.Services.AddTransient<IReviewRepository, ReviewRepository>();
 builder.Services.AddTransient<IImageRepository, ImageRepository>();
 builder.Services.AddTransient<IProductSizeRepository, ProductSizeRepository>();
 builder.Services.AddTransient<IProductColorRepository, ProductColorRepository>();
+builder.Services.AddTransient<IUserRepository, UserRepository>();
 
 // Application services
 builder.Services.AddScoped<UserManager<User>>();
