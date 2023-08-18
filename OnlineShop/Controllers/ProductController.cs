@@ -272,6 +272,21 @@ namespace OnlineShop.Controllers
             return Ok();
         }
 
+        [HttpDelete("DeleteProductFromFavourites")]
+        public async Task<ActionResult> DeleteProductFromFavourites(int productId)
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (userId == null)
+            {
+                return BadRequest("Не сте влезли в акаунта си.");
+            }
+
+            await this.productService.DeleteProductFromFavourite(userId, productId);
+
+            return Ok();
+        }
+
         [HttpPost("HasMoreProducts")]
         public ActionResult<bool> HasMoreProducts([FromBody] ProductFilterDTO filter, int skipCount, string sortType)
         {

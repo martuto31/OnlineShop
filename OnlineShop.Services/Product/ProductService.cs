@@ -107,7 +107,7 @@ namespace OnlineShop.Services.Product
         {
             var product = await productRepository.GetProductByIdAsync(id);
 
-            if(product == null)
+            if (product == null)
             {
                 throw new Exception("Object should not be null.");
             }
@@ -209,7 +209,7 @@ namespace OnlineShop.Services.Product
         {
             var product = await productRepository.GetProductByIdAsync(id);
 
-            if(product == null)
+            if (product == null)
             {
                 throw new Exception("Object should not be null.");
             }
@@ -221,7 +221,7 @@ namespace OnlineShop.Services.Product
         {
             var products = await productRepository.GetProductsByTypeAsync(type, skipCount).ToListAsync();
 
-            if(products == null)
+            if (products == null)
             {
                 throw new Exception("Object should not be null.");
             }
@@ -269,7 +269,7 @@ namespace OnlineShop.Services.Product
         {
             var colors = await productColorRepository.GetAllProductColorsAsync();
 
-            if(colors == null)
+            if (colors == null)
             {
                 throw new Exception("No colors found in database.");
             }
@@ -281,7 +281,7 @@ namespace OnlineShop.Services.Product
         {
             var products = await productRepository.GetAllUserFavouriteProducts(userId).ToListAsync();
 
-            if(!products.Any())
+            if (!products.Any())
             {
                 throw new Exception("Потребителят няма продукти под категория 'любими'.");
             }
@@ -306,6 +306,26 @@ namespace OnlineShop.Services.Product
             }
 
             product.Users.Add(new UserWithProducts { UserId = user.Id, ProductId = product.Id });
+            await productRepository.SaveChangesAsync();
+        }
+
+        public async Task DeleteProductFromFavourite(string userId, int productId)
+        {
+            var user = await userManager.FindByIdAsync(userId);
+
+            if (user == null)
+            {
+                throw new Exception("Не съществува такъв акаунт.");
+            }
+
+            var product = user.Products.FirstOrDefault(x => x.ProductId == productId);
+
+            if (product == null)
+            {
+                throw new Exception("Не съществува такъв продукт.");
+            }
+
+            user.Products.Remove(product);
             await productRepository.SaveChangesAsync();
         }
 

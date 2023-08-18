@@ -19,5 +19,6 @@ namespace OnlineShop.Services.Product
         Task AddProductAsync(CreateProductDTO input);
         Task EditProductAsync(CreateProductDTO input);
         Task DeleteProductAsync(int id);
+        Task DeleteProductFromFavourite(string userId, int productId);
     }
 }
