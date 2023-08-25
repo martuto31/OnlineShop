@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OnlineShop.Models", "Online
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OnlineShop.Shared", "OnlineShop.Shared\OnlineShop.Shared.csproj", "{9BD6498E-F841-485B-8AAA-47469E9D47A7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnlineShop.UnitTests", "OnlineShop.UnitTests\OnlineShop.UnitTests.csproj", "{952249DB-76DC-41C1-8272-0D484850FCD7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{9BD6498E-F841-485B-8AAA-47469E9D47A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9BD6498E-F841-485B-8AAA-47469E9D47A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9BD6498E-F841-485B-8AAA-47469E9D47A7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{952249DB-76DC-41C1-8272-0D484850FCD7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{952249DB-76DC-41C1-8272-0D484850FCD7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{952249DB-76DC-41C1-8272-0D484850FCD7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{952249DB-76DC-41C1-8272-0D484850FCD7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

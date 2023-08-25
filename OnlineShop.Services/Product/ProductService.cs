@@ -34,6 +34,14 @@ namespace OnlineShop.Services.Product
             this.userManager = userManager;
             this.userRepository = userRepository;
         }
+        public ProductService(IProductRepository productRepository, IProductColorRepository productColorRepository,
+                                IImageRepository imageRepository, IUserRepository userRepository)
+        {
+            this.productRepository = productRepository;
+            this.productColorRepository = productColorRepository;
+            this.imageRepository = imageRepository;
+            this.userRepository = userRepository;
+        }
 
         public async Task AddProductAsync(CreateProductDTO input)
         {
