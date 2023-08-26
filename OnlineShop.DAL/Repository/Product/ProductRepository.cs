@@ -33,7 +33,7 @@ namespace OnlineShop.DAL.Repository.Product
             return await DbSet
                 .ToListAsync();
         }
-        public IQueryable<Models.Product> GetProductsByTypeAsync(string type, int skipCount)
+        public IQueryable<Models.Product> GetProductsByType(string type, int skipCount)
         {
             var productType = Enum.Parse<ProductType>(type);
 

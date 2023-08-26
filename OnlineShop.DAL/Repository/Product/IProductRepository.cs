@@ -11,7 +11,7 @@ namespace OnlineShop.DAL.Repository.Product
     {
         Task<IEnumerable<Models.Product>> GetAllProductsAsync();
         Task<Models.Product?> GetProductByIdAsync(int id);
-        IQueryable<Models.Product> GetProductsByTypeAsync(string type, int skipCount);
+        IQueryable<Models.Product> GetProductsByType(string type, int skipCount);
         IQueryable<Models.Product> GetNewestProducts(string type, int skipCount);
         IQueryable<Models.Product> GetMostSoldProducts(string type, int skipCount);
         IQueryable<Models.Product> GetAllUserFavouriteProducts(string userId);

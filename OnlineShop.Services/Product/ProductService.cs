@@ -231,9 +231,9 @@ namespace OnlineShop.Services.Product
 
         public async Task<IEnumerable<Models.Product>> GetProductsByTypeAsync(string type, int skipCount)
         {
-            var products = await productRepository.GetProductsByTypeAsync(type, skipCount).ToListAsync();
+            var products = await productRepository.GetProductsByType(type, skipCount).ToListAsync();
 
-            if (products == null)
+            if (!products.Any())
             {
                 throw new Exception("Object should not be null.");
             }

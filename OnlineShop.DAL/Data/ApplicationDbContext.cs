@@ -12,15 +12,20 @@ namespace OnlineShop.DAL.Data
         {
         }
 
-        public DbSet<Product> Products { get; set; }
-        public DbSet<ProductSizes> ProductSizes { get; set; }
-        public DbSet<ProductColors> ProductColors { get; set; }
-        public DbSet<ProductsWithSizes> ProductsWithSizes { get; set; }
-        public DbSet<UserWithProducts> UserWithProducts { get; set; }
-        public DbSet<Review> Reviews { get; set; }
-        public DbSet<User> Users { get; set; }
-        public DbSet<Role> Roles { get; set; }
-        public DbSet<ImageUri> Images { get; set; }
+        public ApplicationDbContext()
+        {
+
+        }
+
+        public virtual DbSet<Product> Products { get; set; }
+        public virtual DbSet<ProductSizes> ProductSizes { get; set; }
+        public virtual DbSet<ProductColors> ProductColors { get; set; }
+        public virtual DbSet<ProductsWithSizes> ProductsWithSizes { get; set; }
+        public virtual DbSet<UserWithProducts> UserWithProducts { get; set; }
+        public virtual DbSet<Review> Reviews { get; set; }
+        public virtual DbSet<User> Users { get; set; }
+        public virtual DbSet<Role> Roles { get; set; }
+        public virtual DbSet<ImageUri> Images { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
