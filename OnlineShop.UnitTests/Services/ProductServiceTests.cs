@@ -11,8 +11,8 @@ using OnlineShop.Models;
 using OnlineShop.Models.Enums;
 using OnlineShop.Services.Product;
 using OnlineShop.UnitTests.Helpers;
-using OnlineShop.UnitTests.Helpers.Products;
 using SixLabors.ImageSharp.Processing.Processors.Quantization;
+using System.Data.Entity.Core.Metadata.Edm;
 using System.Data.Entity.Infrastructure;
 using System.Net.Sockets;
 using System.Reflection.Metadata;
@@ -68,34 +68,21 @@ namespace OnlineShop.UnitTests.Services
         }
 
         [Theory, CustomAutoData]
-        public async Task GetProductsByTypeAsync_ProductsExist_ReturnsProducts(ProductType productType, int skipCount)
+        public async Task GetProductsByTypeAsync_ProductsExist_ReturnsProducts(ProductType productType)
         {
             // Arrange
-            var products = new List<Product>
-            {
-                new Product {Id = 1, ProductType = productType},
-                new Product {Id = 2, ProductType = productType},
-                new Product {Id = 3, ProductType = productType}
-            }.AsQueryable();
+            var products = _fixture.Build<Product>()
+                .With(x => x.ProductType, productType)
+                .CreateMany(5)
+                .AsQueryable();
 
+            var mockDbSet = GetMockDbSet(products);
 
-            var mockDbSet = new Mock<DbSet<Product>>();
-            mockDbSet.As<IAsyncEnumerable<Product>>()
-                .Setup(m => m.GetAsyncEnumerator(It.IsAny<CancellationToken>()))
-                .Returns(new TestAsyncEnumerator<Product>(products.GetEnumerator()));
-
-            _productRepoMock.Setup(x => x.GetProductsByType(productType.ToString(), skipCount))
+            _productRepoMock.Setup(x => x.GetProductsByType(productType.ToString(), It.IsAny<int>()))
                             .Returns(mockDbSet.Object);
 
-            _productService = new ProductService(
-                _productRepoMock.Object,
-                _productColorRepoMock.Object,
-                _imageRepoMock.Object,
-                _userRepoMock.Object
-            );
-
             // Act
-            var result = await _productService.GetProductsByTypeAsync(productType.ToString(), skipCount);
+            var result = await _productService.GetProductsByTypeAsync(productType.ToString(), It.IsAny<int>());
 
             // Assert
             Assert.NotNull(result);
@@ -114,47 +101,15 @@ namespace OnlineShop.UnitTests.Services
             _fixture.Behaviors.Add(new OmitOnRecursionBehavior());
         }
 
-        private void SetupVirtualDB(IQueryable<Product> productsQuery)
+        private Mock<DbSet<T>> GetMockDbSet<T>(IQueryable<T> items) 
+            where T : class
         {
-            _productsSetMock.As<IQueryable<Product>>().Setup(m => m.Provider).Returns(productsQuery.Provider);
-            _productsSetMock.As<IQueryable<Product>>().Setup(m => m.Expression).Returns(productsQuery.Expression);
-            _productsSetMock.As<IQueryable<Product>>().Setup(m => m.ElementType).Returns(productsQuery.ElementType);
-            _productsSetMock.As<IQueryable<Product>>().Setup(m => m.GetEnumerator()).Returns(() => productsQuery.GetEnumerator());
+            var mockDbSet = new Mock<DbSet<T>>();
+            mockDbSet.As<IAsyncEnumerable<T>>()
+                .Setup(m => m.GetAsyncEnumerator(It.IsAny<CancellationToken>()))
+                .Returns(new TestAsyncEnumerator<T>(items.GetEnumerator()));
 
-            _applicationDbContextMock.Setup(x => x.Products).Returns(_productsSetMock.Object);
-            _productRepository = new ProductRepository(_applicationDbContextMock.Object);
-        }
-
-        private void SetupService()
-        {
-            _productService = new ProductService(
-                _productRepository,
-                _productColorRepoMock.Object,
-                _imageRepoMock.Object,
-                _userRepoMock.Object
-            );
-        }
-    }
-    public class TestAsyncEnumerator<T> : IAsyncEnumerator<T>
-    {
-        private readonly IEnumerator<T> _enumerator;
-
-        public TestAsyncEnumerator(IEnumerator<T> enumerator)
-        {
-            _enumerator = enumerator;
-        }
-
-        public T Current => _enumerator.Current;
-
-        public ValueTask DisposeAsync()
-        {
-            _enumerator.Dispose();
-            return new ValueTask(Task.CompletedTask);
-        }
-
-        public ValueTask<bool> MoveNextAsync()
-        {
-            return new ValueTask<bool>(_enumerator.MoveNext());
+            return mockDbSet;
         }
     }
 }
