@@ -247,22 +247,12 @@ namespace OnlineShop.Services.Product
         {
             var products = await productRepository.GetMostSoldProducts(type, skipCount).ToListAsync();
 
-            if (products == null)
-            {
-                throw new Exception("Object should not be null.");
-            }
-
             return products;
         }
 
         public async Task<IEnumerable<Models.Product>> GetFilteredAndSortedProductsAsync(ProductFilterDTO filter, int skipCount, string sortType)
         {
             var products = await productRepository.GetFilteredAndSortedProductsAsync(filter, skipCount, sortType);
-
-            if (products == null)
-            {
-                throw new Exception("Object should not be null.");
-            }
 
             return products;
         }

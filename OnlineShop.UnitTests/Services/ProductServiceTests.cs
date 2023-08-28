@@ -84,7 +84,7 @@ namespace OnlineShop.UnitTests.Services
         }
 
         [Fact]
-        public async Task GetAllProductsAsync_ReturnsProducts()
+        public async Task GetAllProductsAsync_ProductsExist_ReturnsProducts()
         {
             // Arrange
             IEnumerable<Product> products = _fixture.Build<Product>().CreateMany(5);
@@ -96,7 +96,24 @@ namespace OnlineShop.UnitTests.Services
 
             // Assert
             Assert.NotNull(result);
+            Assert.NotEmpty(result);
             Assert.Equal(products, result);
+        }
+
+        [Fact]
+        public async Task GetAllProductsAsync_NoProducts_EmptyCollection()
+        {
+            // Arrange
+            IEnumerable<Product> products = Enumerable.Empty<Product>();
+            _productRepoMock.Setup(x => x.GetAllProductsAsync())
+                .ReturnsAsync(products);
+
+            // Act
+            var result = await _productService.GetAllProductsAsync();
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Empty(result);
         }
 
         [Theory, CustomAutoData]
@@ -156,7 +173,7 @@ namespace OnlineShop.UnitTests.Services
         }
 
         [Fact]
-        public async Task GetProductsByTypeAsync_EmptyCollection_ReturnsEmptyCollection()
+        public async Task GetProductsByTypeAsync_NoProducts__ReturnsEmptyCollection()
         {
             // Arrange
             var emptyProducts = Enumerable.Empty<Product>().AsQueryable();
@@ -173,8 +190,9 @@ namespace OnlineShop.UnitTests.Services
             Assert.Empty(result);
         }
 
+        // REFACTOR, NOT TESTING ORDER BY
         [Theory, CustomAutoData]
-        public async Task GetNewestProductsAsync_ProductsExist_ReturnsProducts(ProductType productType)
+        public async Task GetNewestProductsAsync_ProductsExist_ReturnsNewestProducts(ProductType productType)
         {
             // Arrange
             var products = _fixture.Build<Product>()
@@ -199,6 +217,71 @@ namespace OnlineShop.UnitTests.Services
                 Assert.Equal(productType, product.ProductType);
             }
 
+        }
+
+        [Fact]
+        public async Task GetNewestProductsAsync_NoProducts__ReturnsEmptyCollection()
+        {
+            // Arrange
+            var emptyProducts = Enumerable.Empty<Product>().AsQueryable();
+            var mockDbSet = GetMockDbSet<Product>(emptyProducts);
+
+            _productRepoMock.Setup(x => x.GetNewestProducts(It.IsAny<string>(), It.IsAny<int>()))
+                            .Returns((mockDbSet.Object));
+
+            // Act
+            var result = await _productService.GetNewestProductsAsync(It.IsAny<string>(), It.IsAny<int>());
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Empty(result);
+        }
+
+        // REFACTOR, NOT TESTING ORDER BY
+        [Theory, CustomAutoData]
+        public async Task GetMostSoldProductsAsync_ProductsExist_ReturnsMostSoldProducts(ProductType productType)
+        {
+            // Arrange
+            var products = _fixture.Build<Product>()
+                .With(x => x.ProductType, productType)
+                .CreateMany(5)
+                .OrderByDescending(x => x.Sales)
+                .AsQueryable();
+
+            var mockDbSet = GetMockDbSet<Product>(products);
+
+            _productRepoMock.Setup(x => x.GetMostSoldProducts(productType.ToString(), It.IsAny<int>()))
+                            .Returns(mockDbSet.Object);
+
+            // Act
+            var result = await _productService.GetMostSoldProductsAsync(productType.ToString(), It.IsAny<int>());
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal(products, result);
+            foreach (var product in result)
+            {
+                Assert.Equal(productType, product.ProductType);
+            }
+
+        }
+
+        [Fact]
+        public async Task GetMostSoldProductsAsync_NoProducts__ReturnsEmptyCollection()
+        {
+            // Arrange
+            var emptyProducts = Enumerable.Empty<Product>().AsQueryable();
+            var mockDbSet = GetMockDbSet<Product>(emptyProducts);
+
+            _productRepoMock.Setup(x => x.GetMostSoldProducts(It.IsAny<string>(), It.IsAny<int>()))
+                            .Returns((mockDbSet.Object));
+
+            // Act
+            var result = await _productService.GetMostSoldProductsAsync(It.IsAny<string>(), It.IsAny<int>());
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Empty(result);
         }
 
         private void SetupFixture()
