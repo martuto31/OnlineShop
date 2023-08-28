@@ -67,6 +67,68 @@ namespace OnlineShop.UnitTests.Services
             _productRepoMock.Verify(repo => repo.SaveChangesAsync(), Times.Once);
         }
 
+        [Theory]
+        [AutoData]
+        public async Task DeleteProductAsync_ProductNotFound_ThrowsException(int productId)
+        {
+            // Arrange
+            _productRepoMock.Setup(x => x.GetProductByIdAsync(productId))
+                .ReturnsAsync((Product)null); // Simulate product not found
+
+            // Act
+            await Assert.ThrowsAsync<Exception>(async () => await _productService.DeleteProductAsync(productId));
+
+            // Assert
+            _productRepoMock.Verify(repo => repo.DeleteProduct(It.IsAny<Product>()), Times.Never);
+            _productRepoMock.Verify(repo => repo.SaveChangesAsync(), Times.Never);
+        }
+
+        [Fact]
+        public async Task GetAllProductsAsync_ReturnsProducts()
+        {
+            // Arrange
+            IEnumerable<Product> products = _fixture.Build<Product>().CreateMany(5);
+            _productRepoMock.Setup(x => x.GetAllProductsAsync())
+                .ReturnsAsync(products);
+
+            // Act
+            var result = await _productService.GetAllProductsAsync();
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal(products, result);
+        }
+
+        [Theory, CustomAutoData]
+        public async Task GetProductByIdAsync_ProductExists_ReturnsProduct([Frozen] Product product)
+        {
+            // Arrange
+            _productRepoMock.Setup(x => x.GetProductByIdAsync(product.Id))
+                .ReturnsAsync(product);
+
+            // Act
+            var result = await _productService.GetProductByIdAsync(product.Id);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal(product.Id, result.Id);
+        }
+
+        [Theory, CustomAutoData]
+        public async Task GetProductByIdAsync_ProductNotFound_ThrowsException([Frozen] Product product)
+        {
+            // Arrange
+            _productRepoMock.Setup(x => x.GetProductByIdAsync(product.Id))
+                .ReturnsAsync((Product)null);
+
+            // Act
+            var exception = await Assert.ThrowsAsync<Exception>(() => _productService.GetProductByIdAsync(product.Id));
+
+            // Assert
+            // HARDCODED STRING!!!
+            Assert.Equal("Object should not be null.", exception.Message);
+        }
+
         [Theory, CustomAutoData]
         public async Task GetProductsByTypeAsync_ProductsExist_ReturnsProducts(ProductType productType)
         {
@@ -76,7 +138,7 @@ namespace OnlineShop.UnitTests.Services
                 .CreateMany(5)
                 .AsQueryable();
 
-            var mockDbSet = GetMockDbSet(products);
+            var mockDbSet = GetMockDbSet<Product>(products);
 
             _productRepoMock.Setup(x => x.GetProductsByType(productType.ToString(), It.IsAny<int>()))
                             .Returns(mockDbSet.Object);
@@ -91,6 +153,52 @@ namespace OnlineShop.UnitTests.Services
             {
                 Assert.Equal(productType, product.ProductType);
             }
+        }
+
+        [Fact]
+        public async Task GetProductsByTypeAsync_EmptyCollection_ReturnsEmptyCollection()
+        {
+            // Arrange
+            var emptyProducts = Enumerable.Empty<Product>().AsQueryable();
+            var mockDbSet = GetMockDbSet<Product>(emptyProducts);
+
+            _productRepoMock.Setup(x => x.GetProductsByType(It.IsAny<string>(), It.IsAny<int>()))
+                            .Returns((mockDbSet.Object));
+
+            // Act
+            var result = await _productService.GetProductsByTypeAsync(It.IsAny<string>(), It.IsAny<int>());
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Empty(result);
+        }
+
+        [Theory, CustomAutoData]
+        public async Task GetNewestProductsAsync_ProductsExist_ReturnsProducts(ProductType productType)
+        {
+            // Arrange
+            var products = _fixture.Build<Product>()
+                .With(x => x.ProductType, productType)
+                .CreateMany(5)
+                .OrderByDescending(x => x.CreatedOn)
+                .AsQueryable();
+
+            var mockDbSet = GetMockDbSet<Product>(products);
+
+            _productRepoMock.Setup(x => x.GetNewestProducts(productType.ToString(), It.IsAny<int>()))
+                            .Returns(mockDbSet.Object);
+
+            // Act
+            var result = await _productService.GetNewestProductsAsync(productType.ToString(), It.IsAny<int>());
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal(products, result);
+            foreach (var product in result)
+            {
+                Assert.Equal(productType, product.ProductType);
+            }
+
         }
 
         private void SetupFixture()

@@ -233,22 +233,12 @@ namespace OnlineShop.Services.Product
         {
             var products = await productRepository.GetProductsByType(type, skipCount).ToListAsync();
 
-            if (!products.Any())
-            {
-                throw new Exception("Object should not be null.");
-            }
-
             return products;
         }
 
         public async Task<IEnumerable<Models.Product>> GetNewestProductsAsync(string type, int skipCount)
         {
             var products = await productRepository.GetNewestProducts(type, skipCount).ToListAsync();
-
-            if (products == null)
-            {
-                throw new Exception("Object should not be null.");
-            }
 
             return products;
         }
