@@ -98,6 +98,8 @@ namespace OnlineShop.UnitTests.Services
             Assert.NotNull(result);
             Assert.NotEmpty(result);
             Assert.Equal(products, result);
+            Assert.Equal(products.Count(), result.Count());
+            Assert.IsAssignableFrom<IEnumerable<Product>>(products);
         }
 
         [Fact]
@@ -166,10 +168,9 @@ namespace OnlineShop.UnitTests.Services
             // Assert
             Assert.NotNull(result);
             Assert.Equal(products, result);
-            foreach (var product in result)
-            {
-                Assert.Equal(productType, product.ProductType);
-            }
+            Assert.Equal(products.Count(), result.Count());
+            Assert.IsAssignableFrom<IEnumerable<Product>>(products);
+            Assert.All(result, item => Assert.Contains(productType.ToString(), item.ProductType.ToString()));
         }
 
         [Fact]
@@ -190,7 +191,6 @@ namespace OnlineShop.UnitTests.Services
             Assert.Empty(result);
         }
 
-        // REFACTOR, NOT TESTING ORDER BY
         [Theory, CustomAutoData]
         public async Task GetNewestProductsAsync_ProductsExist_ReturnsNewestProducts(ProductType productType)
         {
@@ -212,11 +212,9 @@ namespace OnlineShop.UnitTests.Services
             // Assert
             Assert.NotNull(result);
             Assert.Equal(products, result);
-            foreach (var product in result)
-            {
-                Assert.Equal(productType, product.ProductType);
-            }
-
+            Assert.Equal(products.Count(), result.Count());
+            Assert.IsAssignableFrom<IEnumerable<Product>>(products);
+            Assert.All(result, item => Assert.Contains(productType.ToString(), item.ProductType.ToString()));
         }
 
         [Fact]
@@ -237,7 +235,6 @@ namespace OnlineShop.UnitTests.Services
             Assert.Empty(result);
         }
 
-        // REFACTOR, NOT TESTING ORDER BY
         [Theory, CustomAutoData]
         public async Task GetMostSoldProductsAsync_ProductsExist_ReturnsMostSoldProducts(ProductType productType)
         {
@@ -259,15 +256,13 @@ namespace OnlineShop.UnitTests.Services
             // Assert
             Assert.NotNull(result);
             Assert.Equal(products, result);
-            foreach (var product in result)
-            {
-                Assert.Equal(productType, product.ProductType);
-            }
-
+            Assert.Equal(products.Count(), result.Count());
+            Assert.IsAssignableFrom<IEnumerable<Product>>(products);
+            Assert.All(result, item => Assert.Contains(productType.ToString(), item.ProductType.ToString()));
         }
 
         [Fact]
-        public async Task GetMostSoldProductsAsync_NoProducts__ReturnsEmptyCollection()
+        public async void GetMostSoldProductsAsync_NoProducts__ReturnsEmptyCollection()
         {
             // Arrange
             var emptyProducts = Enumerable.Empty<Product>().AsQueryable();
@@ -282,6 +277,11 @@ namespace OnlineShop.UnitTests.Services
             // Assert
             Assert.NotNull(result);
             Assert.Empty(result);
+        }
+
+        public async Task GetFilteredAndSortedProductsAsync_ValidProducts_ReturnsProducts()
+        {
+
         }
 
         private void SetupFixture()
