@@ -10,6 +10,7 @@ using OnlineShop.DAL.Repository.User;
 using OnlineShop.Models;
 using OnlineShop.Models.Enums;
 using OnlineShop.Services.Product;
+using OnlineShop.Shared.DTO.ProductDTO;
 using OnlineShop.UnitTests.Helpers;
 using SixLabors.ImageSharp.Processing.Processors.Quantization;
 using System.Data.Entity.Core.Metadata.Edm;
@@ -26,6 +27,7 @@ namespace OnlineShop.UnitTests.Services
         private readonly Mock<IProductColorRepository> _productColorRepoMock;
         private readonly Mock<IImageRepository> _imageRepoMock;
         private readonly Mock<IUserRepository> _userRepoMock;
+        private readonly Mock<UserManager<User>> _userManagerMock;
         private readonly Mock<DbSet<Product>> _productsSetMock;
         private readonly Mock<ApplicationDbContext> _applicationDbContextMock;
         private IProductRepository _productRepository;
@@ -40,6 +42,7 @@ namespace OnlineShop.UnitTests.Services
             _productColorRepoMock = _fixture.Freeze<Mock<IProductColorRepository>>();
             _imageRepoMock = _fixture.Freeze<Mock<IImageRepository>>();
             _userRepoMock = _fixture.Freeze<Mock<IUserRepository>>();
+            _userManagerMock = _fixture.Freeze<Mock<UserManager<User>>>();
             _productsSetMock = new Mock<DbSet<Product>>();
             _applicationDbContextMock = new Mock<ApplicationDbContext>();
 
@@ -47,7 +50,8 @@ namespace OnlineShop.UnitTests.Services
                 _productRepoMock.Object,
                 _productColorRepoMock.Object,
                 _imageRepoMock.Object,
-                _userRepoMock.Object
+                _userRepoMock.Object,
+                _userManagerMock.Object
             );
         }
 
@@ -279,9 +283,253 @@ namespace OnlineShop.UnitTests.Services
             Assert.Empty(result);
         }
 
-        public async Task GetFilteredAndSortedProductsAsync_ValidProducts_ReturnsProducts()
+        [Theory, CustomAutoData]
+        public async Task GetFilteredAndSortedProductsAsync_ValidProducts_ReturnsProducts(Task<IEnumerable<Product>> products)
         {
+            // Arrange
+            _productRepoMock.Setup(x => x.GetFilteredAndSortedProductsAsync(It.IsAny<ProductFilterDTO>(), It.IsAny<int>(), It.IsAny<SortType>()))
+                .Returns(products);
 
+            // Act
+            var result = await _productService.GetFilteredAndSortedProductsAsync(It.IsAny<ProductFilterDTO>(), It.IsAny<int>(), It.IsAny<SortType>());
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal(products.Result, result);
+            Assert.Equal(products.Result.Count(), result.Count());
+        }
+
+        [Fact]
+        public async Task GetFilteredAndSortedProductsAsync_NoProducts_ReturnsEmptyCollection()
+        {
+            // Arrange
+            var emptyProducts = Enumerable.Empty<Product>().AsEnumerable();
+            _productRepoMock.Setup(x => x.GetFilteredAndSortedProductsAsync(It.IsAny<ProductFilterDTO>(), It.IsAny<int>(), It.IsAny<SortType>()))
+                .ReturnsAsync(emptyProducts);
+
+            // Act
+            var result = await _productService.GetFilteredAndSortedProductsAsync(It.IsAny<ProductFilterDTO>(), It.IsAny<int>(), It.IsAny<SortType>());
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Empty(result);
+            Assert.IsAssignableFrom<IEnumerable<Product>>(result);
+        }
+
+        [Fact]
+        public async Task GetAllUserFavouriteProducts_UserHasProducts_ReturnsFavouriteProducts()
+        {
+            // Arrange
+            var products = _fixture.Build<Product>()
+                .CreateMany(5)
+                .AsQueryable();
+
+            var mockDbSet = this.GetMockDbSet(products);
+            _productRepoMock.Setup(x => x.GetAllUserFavouriteProducts(It.IsAny<string>()))
+                .Returns(mockDbSet.Object);
+
+            // Act
+            var result = await _productService.GetAllUserFavouriteProductsAsync(It.IsAny<string>());
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.NotEmpty(result);
+            Assert.Equal(products, result);
+            Assert.IsAssignableFrom<IEnumerable<Product>>(result);
+        }
+
+        [Fact]
+        public void GetAllUserFavouriteProducts_NoProducts_ReturnsEmptyCollection()
+        {
+            // Arrange
+            var products = Enumerable.Empty<Product>().AsQueryable();
+
+            var mockDbSet = this.GetMockDbSet(products);
+            _productRepoMock.Setup(x => x.GetAllUserFavouriteProducts(It.IsAny<string>()))
+                .Returns(mockDbSet.Object);
+
+            // Act & Assert
+            var exception = Assert.ThrowsAsync<Exception>(async () => await _productService.GetAllUserFavouriteProductsAsync(It.IsAny<string>()));
+        }
+
+        [Theory, CustomAutoData]
+        public async Task GetAllProductColorsAsync_ReturnsProducts(IEnumerable<ProductColors> colors)
+        {
+            // Arrange
+            _productColorRepoMock.Setup(x => x.GetAllProductColorsAsync())
+                .ReturnsAsync(colors);
+
+            // Act
+            var result = await _productService.GetAllProductColorsAsync();
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.NotEmpty(result);
+            Assert.Equal(colors, result);
+            Assert.IsAssignableFrom<IEnumerable<ProductColors>>(result);
+        }
+
+        [Fact]
+        public async Task GetAllProductColorsAsync_ReturnsEmptyCollection()
+        {
+            // Arrange
+            var colors = Enumerable.Empty<ProductColors>();
+            _productColorRepoMock.Setup(x => x.GetAllProductColorsAsync())
+                .ReturnsAsync(colors);
+
+            // Act
+            var result = await _productService.GetAllProductColorsAsync();
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Empty(result);
+            Assert.Equal(colors, result);
+            Assert.IsAssignableFrom<IEnumerable<ProductColors>>(result);
+        }
+
+        // TESTING NOTHING - STATIC SERVICE
+        [Theory, CustomAutoData]
+        public async Task AddProductToUserFavouritesAsync_UserAndProductFound_AddsProductToFavourites(User user, Product product)
+        {
+            // Arrange
+            _userManagerMock.Setup(x => x.FindByIdAsync(It.IsAny<string>()))
+                .ReturnsAsync(user);
+            _productRepoMock.Setup(x => x.GetProductByIdAsync(It.IsAny<int>()))
+                .ReturnsAsync(product);
+
+            // Act
+            var result = _productService.AddProductToUserFavouritesAsync(It.IsAny<string>(), It.IsAny<int>());
+
+            // Assert
+            Assert.NotNull(result);
+        }
+
+        [Theory, CustomAutoData]
+        public async Task AddProductToUserFavouritesAsync_ProductNotFound_ThrowsException(User user)
+        {
+            // Arrange
+            _userManagerMock.Setup(x => x.FindByIdAsync(It.IsAny<string>()))
+                .ReturnsAsync(user);
+            _productRepoMock.Setup(x => x.GetProductByIdAsync(It.IsAny<int>()))
+                .ReturnsAsync((Product)null);
+
+            // Act & Assert
+            await Assert.ThrowsAsync<Exception>(() => _productService.AddProductToUserFavouritesAsync(It.IsAny<string>(), It.IsAny<int>()));
+        }
+
+        [Theory, CustomAutoData]
+        public async Task AddProductToUserFavouritesAsync_UserNotFound_ThrowsException(Product product)
+        {
+            // Arrange
+            _userManagerMock.Setup(x => x.FindByIdAsync(It.IsAny<string>()))
+                .ReturnsAsync((User)null);
+            _productRepoMock.Setup(x => x.GetProductByIdAsync(It.IsAny<int>()))
+                .ReturnsAsync(product);
+
+            // Act & Assert
+            await Assert.ThrowsAsync<Exception>(() => _productService.AddProductToUserFavouritesAsync(It.IsAny<string>(), It.IsAny<int>()));
+        }
+
+        [Fact]
+        public async void DeleteProductFromFavouriteAsync_UserNotFound_ThrowsException()
+        {
+            // Arrange
+            _userRepoMock.Setup(x => x.GetUserByIdAsync(It.IsAny<string>()))
+                .ReturnsAsync((User)null);
+
+            // Act & Assert
+            await Assert.ThrowsAsync<Exception>(() => _productService.DeleteProductFromFavouriteAsync(It.IsAny<string>(), It.IsAny<int>()));
+        }
+
+        [Fact]
+        public async Task DeleteProductFromFavouriteAsync_ProductNotInFavorites_ThrowsException()
+        {
+            // Arrange
+            _userRepoMock.Setup(repo => repo.GetUserByIdAsync(It.IsAny<string>()))
+                .ReturnsAsync(new User { Id = It.IsAny<string>(), Products = new List<UserWithProducts>() });
+
+            // Act & Assert
+            await Assert.ThrowsAsync<Exception>(() => _productService.DeleteProductFromFavouriteAsync(It.IsAny<string>(), It.IsAny<int>()));
+        }
+
+        [Fact]
+        public async Task DeleteProductFromFavouriteAsync_UserAndProductFound_DeletesFromFavorites()
+        {
+            // Arrange
+            var user = new User { Id = "userId", Products = new List<UserWithProducts> { new UserWithProducts { ProductId = 123 } } };
+
+            _userRepoMock.Setup(repo => repo.GetUserByIdAsync(It.IsAny<string>()))
+                .ReturnsAsync(user);
+            _productRepoMock.Setup(repo => repo.SaveChangesAsync())
+                .Verifiable();
+
+            // Act
+            await _productService.DeleteProductFromFavouriteAsync("userId", 123);
+
+            // Assert
+            Assert.Empty(user.Products);
+            _productRepoMock.Verify();
+        }
+
+        [Fact]
+        public void HasMoreProducts_NoMoreProducts_ReturnsFalse()
+        {
+            // Arrange
+            _productRepoMock.Setup(x => x.HasMoreProducts(It.IsAny<ProductFilterDTO>(), It.IsAny<int>(), It.IsAny<string>()))
+                .Returns(false);
+
+            // Act
+            var result = _productService.HasMoreProducts(It.IsAny<ProductFilterDTO>(), It.IsAny<int>(), It.IsAny<string>());
+
+            // Assert
+            Assert.False(result);
+        }
+
+        [Fact]
+        public void HasMoreProducts_HasMoreProducts_ReturnsTrue()
+        {
+            // Arrange
+            _productRepoMock.Setup(x => x.HasMoreProducts(It.IsAny<ProductFilterDTO>(), It.IsAny<int>(), It.IsAny<string>()))
+                .Returns(true);
+
+            // Act
+            var result = _productService.HasMoreProducts(It.IsAny<ProductFilterDTO>(), It.IsAny<int>(), It.IsAny<string>());
+
+            // Assert
+            Assert.True(result);
+        }
+
+        [Theory, CustomAutoData]
+        public async void EditProductAsync_ProductNotFound_ThrowsException(CreateProductDTO createProductDTO)
+        {
+            // Arrange
+            _productRepoMock.Setup(repo => repo.GetProductByIdAsync(It.IsAny<int>()))
+                .ReturnsAsync((Product)null);
+
+            // Act & Assert
+            await Assert.ThrowsAsync<Exception>(() => _productService.EditProductAsync(createProductDTO));
+        }
+
+        [Fact]
+        public async Task EditProductAsync_ValidInput_UpdatesProduct()
+        {
+            // Arrange
+            var existingProduct = new Product { Id = 123};
+
+            _productRepoMock.Setup(repo => repo.GetProductByIdAsync(It.IsAny<int>()))
+                .ReturnsAsync(existingProduct);
+            _productRepoMock.Setup(repo => repo.UpdateProduct(It.IsAny<Product>()))
+                .Verifiable();
+            _productRepoMock.Setup(repo => repo.SaveChangesAsync())
+                .Verifiable();
+
+            var input = new CreateProductDTO { Id = 123 };
+
+            // Act
+            await _productService.EditProductAsync(input);
+
+            // Assert
+            _productRepoMock.Verify();
         }
 
         private void SetupFixture()

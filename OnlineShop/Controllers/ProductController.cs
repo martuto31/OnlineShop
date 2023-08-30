@@ -181,7 +181,7 @@ namespace OnlineShop.Controllers
         }
 
         [HttpPost("GetFilteredAndSortedProductsAsync")]
-        public async Task<ActionResult<List<ProductResponseDTO>>> GetFilteredAndSortedProductsAsync([FromBody] ProductFilterDTO filter, int skipCount, string sortType)
+        public async Task<ActionResult<List<ProductResponseDTO>>> GetFilteredAndSortedProductsAsync([FromBody] ProductFilterDTO filter, int skipCount, SortType sortType)
         {
             var products = await productService.GetFilteredAndSortedProductsAsync(filter, skipCount, sortType);
 
@@ -235,7 +235,7 @@ namespace OnlineShop.Controllers
                 return BadRequest("Не сте влезли в акаунта си.");
             }
 
-            var products = await productService.GetAllUserFavouriteProducts(userId);
+            var products = await productService.GetAllUserFavouriteProductsAsync(userId);
 
             var response = new List<ProductResponseDTO>();
 
@@ -282,7 +282,7 @@ namespace OnlineShop.Controllers
                 return BadRequest("Не сте влезли в акаунта си.");
             }
 
-            await this.productService.DeleteProductFromFavourite(userId, productId);
+            await this.productService.DeleteProductFromFavouriteAsync(userId, productId);
 
             return Ok();
         }

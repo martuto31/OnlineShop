@@ -1,4 +1,5 @@
-﻿using OnlineShop.Shared.DTO.ProductDTO;
+﻿using OnlineShop.Models.Enums;
+using OnlineShop.Shared.DTO.ProductDTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,7 +16,7 @@ namespace OnlineShop.DAL.Repository.Product
         IQueryable<Models.Product> GetNewestProducts(string type, int skipCount);
         IQueryable<Models.Product> GetMostSoldProducts(string type, int skipCount);
         IQueryable<Models.Product> GetAllUserFavouriteProducts(string userId);
-        Task<IEnumerable<Models.Product>> GetFilteredAndSortedProductsAsync(ProductFilterDTO productFilterDTO, int skipCount, string sortType);
+        Task<IEnumerable<Models.Product>> GetFilteredAndSortedProductsAsync(ProductFilterDTO productFilterDTO, int skipCount, SortType sortType);
         Task AddProductAsync(Models.Product product);
         bool HasMoreProducts(ProductFilterDTO productFilterDTO, int skipCount, string sortType);
         void UpdateProduct(Models.Product product);

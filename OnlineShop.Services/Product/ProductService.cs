@@ -34,14 +34,6 @@ namespace OnlineShop.Services.Product
             this.userManager = userManager;
             this.userRepository = userRepository;
         }
-        public ProductService(IProductRepository productRepository, IProductColorRepository productColorRepository,
-                                IImageRepository imageRepository, IUserRepository userRepository)
-        {
-            this.productRepository = productRepository;
-            this.productColorRepository = productColorRepository;
-            this.imageRepository = imageRepository;
-            this.userRepository = userRepository;
-        }
 
         public async Task AddProductAsync(CreateProductDTO input)
         {
@@ -250,7 +242,7 @@ namespace OnlineShop.Services.Product
             return products;
         }
 
-        public async Task<IEnumerable<Models.Product>> GetFilteredAndSortedProductsAsync(ProductFilterDTO filter, int skipCount, string sortType)
+        public async Task<IEnumerable<Models.Product>> GetFilteredAndSortedProductsAsync(ProductFilterDTO filter, int skipCount, SortType sortType)
         {
             var products = await productRepository.GetFilteredAndSortedProductsAsync(filter, skipCount, sortType);
 
@@ -261,15 +253,10 @@ namespace OnlineShop.Services.Product
         {
             var colors = await productColorRepository.GetAllProductColorsAsync();
 
-            if (colors == null)
-            {
-                throw new Exception("No colors found in database.");
-            }
-
             return colors;
         }
 
-        public async Task<IEnumerable<Models.Product>> GetAllUserFavouriteProducts(string userId)
+        public async Task<IEnumerable<Models.Product>> GetAllUserFavouriteProductsAsync(string userId)
         {
             var products = await productRepository.GetAllUserFavouriteProducts(userId).ToListAsync();
 
@@ -301,7 +288,7 @@ namespace OnlineShop.Services.Product
             await productRepository.SaveChangesAsync();
         }
 
-        public async Task DeleteProductFromFavourite(string userId, int productId)
+        public async Task DeleteProductFromFavouriteAsync(string userId, int productId)
         {
             var user = await userRepository.GetUserByIdAsync(userId);
 

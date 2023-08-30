@@ -89,9 +89,10 @@ namespace OnlineShop.DAL.Repository.Product
                 .AsQueryable();
         }
 
-        public async Task<IEnumerable<Models.Product>> GetFilteredAndSortedProductsAsync(ProductFilterDTO productFilterDTO, int skipCount, string sortType)
+        public async Task<IEnumerable<Models.Product>> GetFilteredAndSortedProductsAsync(ProductFilterDTO productFilterDTO, int skipCount, SortType sort)
         {
             IQueryable<Models.Product> filteredPlants;
+            string sortType = sort.ToString();
 
             switch(sortType)
             {
