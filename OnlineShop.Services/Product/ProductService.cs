@@ -101,6 +101,8 @@ namespace OnlineShop.Services.Product
                 LightIntensity = input.LightIntensity,
                 GrowDifficulty = input.GrowDifficulty,
                 ProductType = input.ProductType,
+                CreatedOn = DateTime.Now,
+                Sales = 0,
             };
 
             await productRepository.AddProductAsync(product);

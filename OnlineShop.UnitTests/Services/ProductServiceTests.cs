@@ -1,6 +1,7 @@
 ﻿using AutoFixture;
 using AutoFixture.AutoMoq;
 using AutoFixture.Xunit2;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Moq;
@@ -398,10 +399,10 @@ namespace OnlineShop.UnitTests.Services
                 .ReturnsAsync(product);
 
             // Act
-            var result = _productService.AddProductToUserFavouritesAsync(It.IsAny<string>(), It.IsAny<int>());
+            await _productService.AddProductToUserFavouritesAsync(It.IsAny<string>(), It.IsAny<int>());
 
             // Assert
-            Assert.NotNull(result);
+            _productRepoMock.Verify(repo => repo.SaveChangesAsync(), Times.Once);
         }
 
         [Theory, CustomAutoData]
@@ -499,6 +500,28 @@ namespace OnlineShop.UnitTests.Services
             Assert.True(result);
         }
 
+        [Fact]
+        public async Task EditProductAsync_ValidInput_UpdatesProduct()
+        {
+            // Arrange
+            var existingProduct = new Product { Id = 123 };
+            var input = new CreateProductDTO { Id = 123 };
+
+            _productRepoMock.Setup(repo => repo.GetProductByIdAsync(It.IsAny<int>()))
+                .ReturnsAsync(existingProduct);
+            _productRepoMock.Setup(repo => repo.UpdateProduct(It.IsAny<Product>()))
+                .Verifiable();
+            _productRepoMock.Setup(repo => repo.SaveChangesAsync())
+                .Verifiable();
+
+            // Act
+            await _productService.EditProductAsync(input);
+
+            // Assert
+            _productRepoMock.Verify(repo => repo.UpdateProduct(It.IsAny<Product>()), Times.Once);
+            _productRepoMock.Verify(repo => repo.SaveChangesAsync(), Times.Once);
+        }
+
         [Theory, CustomAutoData]
         public async void EditProductAsync_ProductNotFound_ThrowsException(CreateProductDTO createProductDTO)
         {
@@ -511,25 +534,22 @@ namespace OnlineShop.UnitTests.Services
         }
 
         [Fact]
-        public async Task EditProductAsync_ValidInput_UpdatesProduct()
+        public async Task AddProductAsync_ValidInput_AddsProductToRepository()
         {
             // Arrange
-            var existingProduct = new Product { Id = 123};
-
-            _productRepoMock.Setup(repo => repo.GetProductByIdAsync(It.IsAny<int>()))
-                .ReturnsAsync(existingProduct);
-            _productRepoMock.Setup(repo => repo.UpdateProduct(It.IsAny<Product>()))
-                .Verifiable();
-            _productRepoMock.Setup(repo => repo.SaveChangesAsync())
-                .Verifiable();
-
             var input = new CreateProductDTO { Id = 123 };
+            var existingProduct = new Product { Id = 123 };
+
+            _productRepoMock.Setup(x => x.AddProductAsync(It.IsAny<Product>()))
+                .Verifiable();
+            _productRepoMock.Setup(x => x.SaveChangesAsync())
+                .Verifiable();
 
             // Act
-            await _productService.EditProductAsync(input);
+            await _productService.AddProductAsync(input);
 
             // Assert
-            _productRepoMock.Verify();
+            _productRepoMock.VerifyAll();
         }
 
         private void SetupFixture()
