@@ -39,7 +39,7 @@ namespace OnlineShop.Controllers
         }
 
         [HttpPost("Register")]
-        public async Task<IActionResult> Register(RegisterDTO registerDTO)
+        public async Task<IActionResult> RegisterAsync(RegisterDTO registerDTO)
         {
             if (!ModelState.IsValid)
             {
@@ -101,12 +101,12 @@ namespace OnlineShop.Controllers
             }
 
             // Registration successful
-            return Ok(new { Message = "Registration successful." });
+            return Ok(new { Message = "Успешна регистрация." });
         }
 
         [AllowAnonymous]
         [HttpPost("SignIn")]
-        public async Task<IActionResult> SignIn(LoginDTO model)
+        public async Task<IActionResult> SignInAsync(LoginDTO model)
         {
             var user = await _userManager.FindByNameAsync(model.Username);
             if (user != null && await _userManager.CheckPasswordAsync(user, model.Password))
@@ -133,7 +133,7 @@ namespace OnlineShop.Controllers
         }
 
         [HttpPost("SignOut")]
-        public async Task<IActionResult> SignOut()
+        public async Task<IActionResult> SignOutAsync()
         {
             await _signInManager.SignOutAsync();
 
@@ -141,7 +141,7 @@ namespace OnlineShop.Controllers
         }
 
         [HttpPost("ResetPassword")]
-        public async Task<IActionResult> ResetPassword(PasswordResetDTO model)
+        public async Task<IActionResult> ResetPasswordAsync(PasswordResetDTO model)
         {
             var user = await _userManager.FindByEmailAsync(model.Email);
             if (user == null)
