@@ -29,7 +29,6 @@ namespace OnlineShop.UnitTests.Controllers
         private readonly Mock<RoleManager<Role>> _roleManagerMock;
         private readonly Mock<IJsonTokenService> _jsonTokenServiceMock;
         private readonly Mock<IEmailService> _emailServiceMock;
-        private readonly Mock<IConfiguration> _configurationMock;
         private readonly UserController _userController;
         private IFixture _fixture;
 
@@ -42,7 +41,10 @@ namespace OnlineShop.UnitTests.Controllers
             _roleManagerMock = _fixture.Freeze<Mock<RoleManager<Role>>>();
             _jsonTokenServiceMock = _fixture.Freeze<Mock<IJsonTokenService>>();
             _emailServiceMock = _fixture.Freeze<Mock<IEmailService>>();
-            _configurationMock = _fixture.Freeze<Mock<IConfiguration>>();
+            var configuration = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json")
+                .Build();
 
             _userController = new UserController(
                 _signInManagerMock.Object,
@@ -50,11 +52,11 @@ namespace OnlineShop.UnitTests.Controllers
                 _roleManagerMock.Object,
                 _jsonTokenServiceMock.Object,
                 _emailServiceMock.Object,
-                _configurationMock.Object);
+                configuration);
         }
 
         [Theory, CustomAutoData]
-        public async Task Register_UsernameAlreadyExists_ReturnsBadRequest(string username)
+        public async Task RegisterAsync_UsernameAlreadyExists_ReturnsBadRequest(string username)
         {
             // Arrange
             var existingUser = _fixture.Build<User>()
@@ -76,7 +78,7 @@ namespace OnlineShop.UnitTests.Controllers
         }
 
         [Theory, CustomAutoData]
-        public async Task Register_EmailAlreadyExists_ReturnsBadRequest(string email)
+        public async Task RegisterAsync_EmailAlreadyExists_ReturnsBadRequest(string email)
         {
             // Arrange
             var existingUser = _fixture.Build<User>()
@@ -98,7 +100,7 @@ namespace OnlineShop.UnitTests.Controllers
         }
 
         [Fact]
-        public void Register_NoRole_ThrowsException()
+        public void RegisterAsync_NoRole_ThrowsException()
         {
             // Arrange
             var registerDTO = _fixture.Create<RegisterDTO>();
@@ -115,7 +117,7 @@ namespace OnlineShop.UnitTests.Controllers
         }
 
         [Fact]
-        public async Task Register_ValidInput_ReturnsOkObjectResult()
+        public async Task RegisterAsync_ValidInput_ReturnsOkObjectResult()
         {
             // Arrange
             var registerDTO = _fixture.Create<RegisterDTO>();
@@ -134,6 +136,67 @@ namespace OnlineShop.UnitTests.Controllers
 
             // Act
             var result = await _userController.RegisterAsync(registerDTO);
+
+            // Assert
+            Assert.IsType<OkObjectResult>(result);
+        }
+
+        [Fact]
+        public async void SignInAsync_InvalidUsername_ReturnsUnauthorized()
+        {
+            // Arrange
+            var loginDTO = _fixture.Create<LoginDTO>();
+
+            _userManagerMock.Setup(x => x.FindByNameAsync(It.IsAny<string>()))
+                .ReturnsAsync((User)null);
+
+            // Act
+            var result = await _userController.SignInAsync(loginDTO);
+
+            // Assert
+            Assert.IsType<UnauthorizedResult>(result);
+        }
+
+        [Fact]
+        public async void SignInAsync_InvalidPassword_ReturnsUnauthorized()
+        {
+            // Arrange
+            var loginDTO = _fixture.Create<LoginDTO>();
+            var user = _fixture.Create<User>();
+
+            _userManagerMock.Setup(x => x.FindByNameAsync(user.UserName))
+                .ReturnsAsync(user);
+            _userManagerMock.Setup(x => x.CheckPasswordAsync(It.IsAny<User>(), It.IsAny<string>()))
+                .ReturnsAsync(false);
+
+            // Act
+            var result = await _userController.SignInAsync(loginDTO);
+
+            // Assert
+            Assert.IsType<UnauthorizedResult>(result);
+        }
+
+        [Theory, CustomAutoData]
+        public async void SingInAsync_ValidInput_ReturnsOkObjectResultWithToken(string username)
+        {
+            // Arrange
+            var loginDTO = _fixture.Create<LoginDTO>();
+            var user = _fixture.Build<User>()
+                .With(x => x.UserName, username)
+                .Create();
+            var roles = _fixture.Build<string>()
+                .CreateMany(2)
+                .ToList();
+
+            _userManagerMock.Setup(x => x.FindByNameAsync(It.IsAny<string>()))
+                .ReturnsAsync(user);
+            _userManagerMock.Setup(x => x.CheckPasswordAsync(It.IsAny<User>(), It.IsAny<string>()))
+                .ReturnsAsync(true);
+            _userManagerMock.Setup(x => x.GetRolesAsync(It.IsAny<User>()))
+                .ReturnsAsync(roles);
+
+            // Act
+            var result = await _userController.SignInAsync(loginDTO);
 
             // Assert
             Assert.IsType<OkObjectResult>(result);
