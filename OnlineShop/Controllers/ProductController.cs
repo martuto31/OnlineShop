@@ -159,7 +159,7 @@ namespace OnlineShop.Controllers
         }
 
         [HttpGet("GetAllUserFavouriteProducts")]
-        public async Task<ActionResult<List<ProductResponseDTO>>> GetAllUserFavouriteProducts()
+        public async Task<ActionResult<List<ProductResponseDTO>>> GetAllUserFavouriteProductsAsync()
         {
             var userId = User?.FindFirst(ClaimTypes.NameIdentifier).Value;
 
@@ -176,7 +176,7 @@ namespace OnlineShop.Controllers
         }
 
         [HttpPost("AddProductToUserFavourites")]
-        public async Task<IActionResult> AddProductToUserFavourites(int productId)
+        public async Task<IActionResult> AddProductToUserFavouritesAsync(int productId)
         {
             var userId = User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
@@ -191,7 +191,7 @@ namespace OnlineShop.Controllers
         }
 
         [HttpDelete("DeleteProductFromFavourites")]
-        public async Task<IActionResult> DeleteProductFromFavourites(int productId)
+        public async Task<IActionResult> DeleteProductFromFavouritesAsync(int productId)
         {
             var userId = User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 

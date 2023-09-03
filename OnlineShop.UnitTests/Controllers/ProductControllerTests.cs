@@ -350,7 +350,7 @@ namespace OnlineShop.UnitTests.Controllers
             // Arrange
 
             // Act
-            var result = await _productController.GetAllUserFavouriteProducts();
+            var result = await _productController.GetAllUserFavouriteProductsAsync();
 
             // Assert
             Assert.IsType<BadRequestObjectResult>(result.Result);
@@ -377,7 +377,7 @@ namespace OnlineShop.UnitTests.Controllers
                 .Returns(response);
 
             // Act
-            var result = await _productController.GetAllUserFavouriteProducts();
+            var result = await _productController.GetAllUserFavouriteProductsAsync();
             var resultValue = TestHelpers.GetObjectResultContent(result);
 
             // Assert
@@ -389,7 +389,7 @@ namespace OnlineShop.UnitTests.Controllers
         public async void AddProductToUserFavourites_NotLoggedIn_ReturnsBadRequest()
         {
             // Act
-            var result = await _productController.AddProductToUserFavourites(It.IsAny<int>());
+            var result = await _productController.AddProductToUserFavouritesAsync(It.IsAny<int>());
 
             // Assert
             Assert.IsType<BadRequestObjectResult>(result);
@@ -404,7 +404,7 @@ namespace OnlineShop.UnitTests.Controllers
                 .Verifiable();
 
             // Act
-            var result = await _productController.AddProductToUserFavourites(productId);
+            var result = await _productController.AddProductToUserFavouritesAsync(productId);
 
             // Assert
             _productServiceMock.Verify();
@@ -415,7 +415,7 @@ namespace OnlineShop.UnitTests.Controllers
         public async void DeleteProductFromFavourites_NotLoggedIn_ReturnsBadRequest()
         {
             // Act
-            var result = await _productController.DeleteProductFromFavourites(It.IsAny<int>());
+            var result = await _productController.DeleteProductFromFavouritesAsync(It.IsAny<int>());
 
             // Assert
             Assert.IsType<BadRequestObjectResult>(result);
@@ -430,7 +430,7 @@ namespace OnlineShop.UnitTests.Controllers
                 .Verifiable();
 
             // Act
-            var result = await _productController.DeleteProductFromFavourites(productId);
+            var result = await _productController.DeleteProductFromFavouritesAsync(productId);
 
             // Assert
             _productServiceMock.Verify();
