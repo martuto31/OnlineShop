@@ -1,6 +1,7 @@
 ﻿using AutoFixture;
 using AutoFixture.AutoMoq;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -8,12 +9,14 @@ using OnlineShop.Controllers;
 using OnlineShop.DAL.Repository.Product;
 using OnlineShop.Mapping.Models;
 using OnlineShop.Models;
+using OnlineShop.Models.Enums;
 using OnlineShop.Services.Product;
 using OnlineShop.Shared.DTO.ProductDTO;
 using OnlineShop.UnitTests.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -145,7 +148,7 @@ namespace OnlineShop.UnitTests.Controllers
 
             // Act
             var result = await _productController.GetProductByIdAsync(product.Id);
-            var resultValue = TestHelpers.GetObjectResultContent<ProductResponseDTO>(result);
+            var resultValue = TestHelpers.GetObjectResultContent(result);
 
             // Assert
             Assert.IsType<OkObjectResult>(result.Result);
@@ -172,7 +175,7 @@ namespace OnlineShop.UnitTests.Controllers
 
             // Act
             var result = await _productController.GetAllProductsAsync();
-            var resultValue = TestHelpers.GetObjectResultContent<List<ProductResponseDTO>>(result);
+            var resultValue = TestHelpers.GetObjectResultContent(result);
 
             // Assert
             Assert.IsType<OkObjectResult>(result.Result);
@@ -194,12 +197,272 @@ namespace OnlineShop.UnitTests.Controllers
             _productServiceMock.Setup(x => x.GetProductsByTypeAsync(type, skipCount))
                 .ReturnsAsync(products);
 
-            //_mapperMock.Setup(x => x.Map<ProductResponseDTO>(products))
-            //    .Returns(response);
+            _mapperMock.Setup(x => x.Map<List<ProductResponseDTO>>(products))
+                .Returns(response);
 
             // Act
+            var result = await _productController.GetAllProductsByTypeAsync(type, skipCount);
+            var resultValue = TestHelpers.GetObjectResultContent(result);
 
             // Assert
+            Assert.IsType<OkObjectResult>(result.Result);
+            Assert.Equal(response, resultValue);
+        }
+
+        [Theory, CustomAutoData]
+        public async void GetNewestProducts_ValidInput_ReturnsOkObjectResult(string type, int skipCount)
+        {
+            // Arrange
+            var products = _fixture.Build<Product>()
+                .CreateMany(5)
+                .AsEnumerable();
+
+            var response = _fixture.Build<ProductResponseDTO>()
+                .CreateMany(5)
+                .ToList();
+
+            _productServiceMock.Setup(x => x.GetNewestProductsAsync(type, skipCount))
+                .ReturnsAsync(products);
+
+            _mapperMock.Setup(x => x.Map<List<ProductResponseDTO>>(products))
+                .Returns(response);
+
+            // Act
+            var result = await _productController.GetNewestProductsAsync(type, skipCount);
+            var resultValue = TestHelpers.GetObjectResultContent(result);
+
+            // Assert
+            Assert.IsType<OkObjectResult>(result.Result);
+            Assert.Equal(response, resultValue);
+        }
+
+        [Theory, CustomAutoData]
+        public async void GetMostSoldProducts_ValidInput_ReturnsOkObjectResult(string type, int skipCount)
+        {
+            // Arrange
+            var products = _fixture.Build<Product>()
+                .CreateMany(5)
+                .AsEnumerable();
+
+            var response = _fixture.Build<ProductResponseDTO>()
+                .CreateMany(5)
+                .ToList();
+
+            _productServiceMock.Setup(x => x.GetMostSoldProductsAsync(type, skipCount))
+                .ReturnsAsync(products);
+
+            _mapperMock.Setup(x => x.Map<List<ProductResponseDTO>>(products))
+                .Returns(response);
+
+            // Act
+            var result = await _productController.GetMostSoldProductsAsync(type, skipCount);
+            var resultValue = TestHelpers.GetObjectResultContent(result);
+
+            // Assert
+            Assert.IsType<OkObjectResult>(result.Result);
+            Assert.Equal(response, resultValue);
+        }
+
+        [Theory, CustomAutoData]
+        public async void GetFilteredAndSortedProductsAsync_ValidInput_ReturnsOkObjectResult(ProductFilterDTO filter, SortType sortType, int skipCount)
+        {
+            // Arrange
+            var products = _fixture.Build<Product>()
+                .CreateMany(5)
+                .AsEnumerable();
+
+            var response = _fixture.Build<ProductResponseDTO>()
+                .CreateMany(5)
+                .ToList();
+
+            _productServiceMock.Setup(x => x.GetFilteredAndSortedProductsAsync(filter, skipCount, sortType))
+                .ReturnsAsync(products);
+
+            _mapperMock.Setup(x => x.Map<List<ProductResponseDTO>>(products))
+                .Returns(response);
+
+            // Act
+            var result = await _productController.GetFilteredAndSortedProductsAsync(filter, skipCount, sortType);
+            var resultValue = TestHelpers.GetObjectResultContent(result);
+
+            // Assert
+            Assert.IsType<OkObjectResult>(result.Result);
+            Assert.Equal(response, resultValue);
+        }
+
+        [Fact]
+        public async void GetAllProductSizes_ValidInput_ReturnsOkObjectResult()
+        {
+            // Arrange
+            var sizes = _fixture.Build<ProductSizes>()
+                .CreateMany(5)
+                .AsEnumerable();
+
+            var response = _fixture.Build<ProductSizesResponseDTO>()
+                .CreateMany(5)
+                .ToList();
+
+            _productSizeServiceMock.Setup(x => x.GetAllProductSizesAsync())
+                .ReturnsAsync(sizes);
+
+            _mapperMock.Setup(x => x.Map<List<ProductSizesResponseDTO>>(sizes))
+                .Returns(response);
+
+            // Act
+            var result = await _productController.GetAllProductSizesAsync();
+            var resultValue = TestHelpers.GetObjectResultContent(result);
+
+            // Assert
+            Assert.IsType<OkObjectResult>(result.Result);
+            Assert.Equal(response, resultValue);
+        }
+
+        [Fact]
+        public async void GetAllProductColors_ValidInput_ReturnsOkObjectResult()
+        {
+            // Arrange
+            var colors = _fixture.Build<ProductColors>()
+                .CreateMany(5)
+                .AsEnumerable();
+
+            var response = _fixture.Build<ProductColorsResponseDTO>()
+                .CreateMany(5)
+                .ToList();
+
+            _productServiceMock.Setup(x => x.GetAllProductColorsAsync())
+                .ReturnsAsync(colors);
+
+            _mapperMock.Setup(x => x.Map<List<ProductColorsResponseDTO>>(colors))
+                .Returns(response);
+
+            // Act
+            var result = await _productController.GetAllProductColorsAsync();
+            var resultValue = TestHelpers.GetObjectResultContent(result);
+
+            // Assert
+            Assert.IsType<OkObjectResult>(result.Result);
+            Assert.Equal(response, resultValue);
+        }
+
+        [Fact]
+        public async void GetAllUserFavouriteProducts_NotLoggedIn_ReturnsBadRequest()
+        {
+            // Arrange
+
+            // Act
+            var result = await _productController.GetAllUserFavouriteProducts();
+
+            // Assert
+            Assert.IsType<BadRequestObjectResult>(result.Result);
+        }
+
+        [Theory, CustomAutoData]
+        public async void GetAllUserFavouriteProducts_LoggedIn_ReturnsOkObjectResult(string userId)
+        {
+            // Arrange
+            SetUserClaims(userId);
+
+            var products = _fixture.Build<Product>()
+                .CreateMany(5)
+                .AsEnumerable();
+
+            var response = _fixture.Build<ProductResponseDTO>()
+                .CreateMany(5)
+                .ToList();
+
+            _productServiceMock.Setup(x => x.GetAllUserFavouriteProductsAsync(userId))
+                .ReturnsAsync(products);
+
+            _mapperMock.Setup(x => x.Map<List<ProductResponseDTO>>(products))
+                .Returns(response);
+
+            // Act
+            var result = await _productController.GetAllUserFavouriteProducts();
+            var resultValue = TestHelpers.GetObjectResultContent(result);
+
+            // Assert
+            Assert.IsType<OkObjectResult>(result.Result);
+            Assert.Equal(response, resultValue);
+        }
+
+        [Fact]
+        public async void AddProductToUserFavourites_NotLoggedIn_ReturnsBadRequest()
+        {
+            // Act
+            var result = await _productController.AddProductToUserFavourites(It.IsAny<int>());
+
+            // Assert
+            Assert.IsType<BadRequestObjectResult>(result);
+        }
+
+        [Theory, CustomAutoData]
+        public async void AddProductToUserFavourites_LoggedIn_ReturnsOkResult(int productId, string userId)
+        {
+            // Arrange
+            SetUserClaims(userId);
+            _productServiceMock.Setup(x => x.AddProductToUserFavouritesAsync(userId, productId))
+                .Verifiable();
+
+            // Act
+            var result = await _productController.AddProductToUserFavourites(productId);
+
+            // Assert
+            _productServiceMock.Verify();
+            Assert.IsType<OkResult>(result);
+        }
+
+        [Fact]
+        public async void DeleteProductFromFavourites_NotLoggedIn_ReturnsBadRequest()
+        {
+            // Act
+            var result = await _productController.DeleteProductFromFavourites(It.IsAny<int>());
+
+            // Assert
+            Assert.IsType<BadRequestObjectResult>(result);
+        }
+
+        [Theory, CustomAutoData]
+        public async void DeleteProductFromFavourites_LoggedIn_ReturnsOkResult(int productId, string userId)
+        {
+            // Arrange
+            SetUserClaims(userId);
+            _productServiceMock.Setup(x => x.DeleteProductFromFavouriteAsync(userId, productId))
+                .Verifiable();
+
+            // Act
+            var result = await _productController.DeleteProductFromFavourites(productId);
+
+            // Assert
+            _productServiceMock.Verify();
+            Assert.IsType<OkResult>(result);
+        }
+
+        [Theory, CustomAutoData]
+        public void HasMoreProduct_NoMore_ReturnsFalse(ProductFilterDTO filter, int skipCount, string sortType)
+        {
+            // Arrange
+            _productServiceMock.Setup(x => x.HasMoreProducts(filter, skipCount, sortType))
+                .Returns(false);
+
+            // Act
+            var result = _productController.HasMoreProducts(filter, skipCount, sortType);
+
+            // Assert
+            Assert.False(result.Value);
+        }
+
+        [Theory, CustomAutoData]
+        public void HasMoreProduct_HasMore_ReturnsTrue(ProductFilterDTO filter, int skipCount, string sortType)
+        {
+            // Arrange
+            _productServiceMock.Setup(x => x.HasMoreProducts(filter, skipCount, sortType))
+                .Returns(true);
+
+            // Act
+            var result = _productController.HasMoreProducts(filter, skipCount, sortType);
+
+            // Assert
+            Assert.True(result.Value);
         }
 
         private void SetupFixture()
@@ -208,6 +471,17 @@ namespace OnlineShop.UnitTests.Controllers
             _fixture.Behaviors.OfType<ThrowingRecursionBehavior>().ToList()
                 .ForEach(b => _fixture.Behaviors.Remove(b));
             _fixture.Behaviors.Add(new OmitOnRecursionBehavior());
+        }
+
+        private void SetUserClaims(string userId)
+        {
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.NameIdentifier, userId)
+            };
+            var identity = new ClaimsIdentity(claims, "TestAuth");
+            var claimsPrincipal = new ClaimsPrincipal(identity);
+            _productController.ControllerContext.HttpContext = new DefaultHttpContext { User = claimsPrincipal };
         }
     }
 }

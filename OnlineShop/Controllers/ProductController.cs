@@ -84,8 +84,6 @@ namespace OnlineShop.Controllers
             var product = await productService.GetProductByIdAsync(id);
 
             var productResponse = mapper.Map<ProductResponseDTO>(product);
-            var images = await imageService.GetAllImagesForProductAsBase64Async(product.Id);
-            productResponse.PicturesData = images.ToList();
 
             return Ok(productResponse);
         }
@@ -161,9 +159,9 @@ namespace OnlineShop.Controllers
         }
 
         [HttpGet("GetAllUserFavouriteProducts")]
-        public async Task<ActionResult<List<Models.Product>>> GetAllUserFavouriteProducts()
+        public async Task<ActionResult<List<ProductResponseDTO>>> GetAllUserFavouriteProducts()
         {
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var userId = User?.FindFirst(ClaimTypes.NameIdentifier).Value;
 
             if (userId == null)
             {
@@ -178,9 +176,9 @@ namespace OnlineShop.Controllers
         }
 
         [HttpPost("AddProductToUserFavourites")]
-        public async Task<ActionResult> AddProductToUserFavourites(int productId)
+        public async Task<IActionResult> AddProductToUserFavourites(int productId)
         {
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var userId = User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
             if (userId == null)
             {
@@ -193,16 +191,16 @@ namespace OnlineShop.Controllers
         }
 
         [HttpDelete("DeleteProductFromFavourites")]
-        public async Task<ActionResult> DeleteProductFromFavourites(int productId)
+        public async Task<IActionResult> DeleteProductFromFavourites(int productId)
         {
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var userId = User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
             if (userId == null)
             {
                 return BadRequest("Не сте влезли в акаунта си.");
             }
 
-            await this.productService.DeleteProductFromFavouriteAsync(userId, productId);
+            await productService.DeleteProductFromFavouriteAsync(userId, productId);
 
             return Ok();
         }
