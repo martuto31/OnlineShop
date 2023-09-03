@@ -3,14 +3,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
-
 namespace OnlineShop.DAL.Migrations
 {
-    /// <inheritdoc />
-    public partial class InitialMigration : Migration
+    public partial class Initial : Migration
     {
-        /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
@@ -39,7 +35,7 @@ namespace OnlineShop.DAL.Migrations
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     AdditionalDescription = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Price = table.Column<double>(type: "float", nullable: false),
-                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2023, 8, 4, 18, 10, 22, 749, DateTimeKind.Utc).AddTicks(7197)),
+                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2023, 9, 3, 12, 19, 46, 954, DateTimeKind.Utc).AddTicks(9133)),
                     GrowDifficulty = table.Column<int>(type: "int", nullable: false),
                     LightIntensity = table.Column<int>(type: "int", nullable: false),
                     PetCompatibility = table.Column<bool>(type: "bit", nullable: false),
@@ -203,15 +199,15 @@ namespace OnlineShop.DAL.Migrations
                 {
                     table.PrimaryKey("PK_ProductsWithSizes", x => new { x.ProductId, x.ProductSizesId });
                     table.ForeignKey(
-                        name: "FK_ProductsWithSizes_ProductSizes_ProductSizesId",
-                        column: x => x.ProductSizesId,
-                        principalTable: "ProductSizes",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
                         name: "FK_ProductsWithSizes_Products_ProductId",
                         column: x => x.ProductId,
                         principalTable: "Products",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ProductsWithSizes_ProductSizes_ProductSizesId",
+                        column: x => x.ProductSizesId,
+                        principalTable: "ProductSizes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -276,14 +272,39 @@ namespace OnlineShop.DAL.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "UserWithProducts",
+                columns: table => new
+                {
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ProductId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserWithProducts", x => new { x.UserId, x.ProductId });
+                    table.ForeignKey(
+                        name: "FK_UserWithProducts_Products_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "Products",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_UserWithProducts_User_UserId",
+                        column: x => x.UserId,
+                        principalTable: "User",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.InsertData(
                 table: "Role",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[,]
-                {
-                    { "768e20a8-00a1-4bfc-bbc4-4bbff670e56c", "2", "User", "User" },
-                    { "8389c099-72c8-47ad-9e4d-fc41b34ce276", "1", "Admin", "Admin" }
-                });
+                values: new object[] { "966fb185-7211-4d25-ac5d-7f04be1f9bd9", "2", "User", "User" });
+
+            migrationBuilder.InsertData(
+                table: "Role",
+                columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
+                values: new object[] { "dbb99b8c-cab8-494e-8c08-d6bf5f86d87b", "1", "Admin", "Admin" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Images_ProductId",
@@ -320,9 +341,13 @@ namespace OnlineShop.DAL.Migrations
                 name: "IX_User_RoleId",
                 table: "User",
                 column: "RoleId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserWithProducts_ProductId",
+                table: "UserWithProducts",
+                column: "ProductId");
         }
 
-        /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
@@ -351,6 +376,9 @@ namespace OnlineShop.DAL.Migrations
 
             migrationBuilder.DropTable(
                 name: "UserTokens");
+
+            migrationBuilder.DropTable(
+                name: "UserWithProducts");
 
             migrationBuilder.DropTable(
                 name: "ProductColors");

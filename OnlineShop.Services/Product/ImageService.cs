@@ -1,6 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using OnlineShop.DAL.Repository.Product;
 using OnlineShop.Models;
+using SendGrid;
 using SixLabors.ImageSharp.Formats.Jpeg;
 
 namespace OnlineShop.Services.Product
@@ -38,11 +40,47 @@ namespace OnlineShop.Services.Product
             }
         }
 
-        public async Task<IEnumerable<ImageUri>> GetAllImagesForProductAsync(int productId)
+        public async Task<IEnumerable<string>> GetAllImagesForProductAsBase64Async(int productId)
         {
-            var images = imageRepository.GetAllImagesForProductAsync(productId);
+            var imageFiles = await imageRepository.GetAllImagesForProductAsync(productId).ToListAsync();
 
-            return await images.ToListAsync();
+            var images = new List<string>();
+            foreach (var imageFile in imageFiles)
+            {
+                images.Add(Convert.ToBase64String(imageFile.Image));
+            }
+
+            return images;
+        }
+
+        public List<ImageUri> GetImageFiles(IList<IFormFile> images)
+        {
+            var imageFiles = new List<ImageUri>();
+
+            if (images != null && images.Count > 0)
+            {
+                foreach (var imageFile in images)
+                {
+                    byte[] img = ConvertIFormFileToByteArray(imageFile);
+                    img = ImageService.CompressAndResizeImage(img, 400, 400);
+                    var image = new ImageUri()
+                    {
+                        Image = img,
+                    };
+                    imageFiles.Add(image);
+                }
+            }
+
+            return imageFiles;
+        }
+
+        private byte[] ConvertIFormFileToByteArray(IFormFile file)
+        {
+            using (var memoryStream = new MemoryStream())
+            {
+                file.CopyToAsync(memoryStream).GetAwaiter().GetResult();
+                return memoryStream.ToArray();
+            }
         }
     }
 }

@@ -84,13 +84,8 @@ namespace OnlineShop.Controllers
             var product = await productService.GetProductByIdAsync(id);
 
             var productResponse = mapper.Map<ProductResponseDTO>(product);
-            var images = await imageService.GetAllImagesForProductAsync(product.Id);
-
-            // Convert the binary byte array to base64
-            foreach (var image in images)
-            {
-                productResponse.PicturesData.Add(Convert.ToBase64String(image.Image));
-            }
+            var images = await imageService.GetAllImagesForProductAsBase64Async(product.Id);
+            productResponse.PicturesData = images.ToList();
 
             return Ok(productResponse);
         }
@@ -110,22 +105,7 @@ namespace OnlineShop.Controllers
         {
             var products = await productService.GetProductsByTypeAsync(type, skipCount);
 
-            var response = new List<ProductResponseDTO>();
-
-            // Refactor
-            foreach (var product in products)
-            {
-                var productResponse = mapper.Map<ProductResponseDTO>(product);
-                var images = await imageService.GetAllImagesForProductAsync(product.Id);
-
-                // Convert the binary byte array to base64
-                foreach (var image in images)
-                {
-                    productResponse.PicturesData.Add(Convert.ToBase64String(image.Image));
-                }
-
-                response.Add(productResponse);
-            }
+            var response = mapper.Map<List<ProductResponseDTO>>(products);
 
             return Ok(response);
         }
@@ -135,22 +115,7 @@ namespace OnlineShop.Controllers
         {
             var products = await productService.GetNewestProductsAsync(type, skipCount);
 
-            var response = new List<ProductResponseDTO>();
-
-            // Refactor
-            foreach (var product in products)
-            {
-                var productResponse = mapper.Map<ProductResponseDTO>(product);
-                var images = await imageService.GetAllImagesForProductAsync(product.Id);
-
-                // Convert the binary byte array to base64
-                foreach (var image in images)
-                {
-                    productResponse.PicturesData.Add(Convert.ToBase64String(image.Image));
-                }
-
-                response.Add(productResponse);
-            }
+            var response = mapper.Map<List<ProductResponseDTO>>(products);
 
             return Ok(response);
         }
@@ -160,22 +125,7 @@ namespace OnlineShop.Controllers
         {
             var products = await productService.GetMostSoldProductsAsync(type, skipCount);
 
-            var response = new List<ProductResponseDTO>();
-
-            // Refactor
-            foreach (var product in products)
-            {
-                var productResponse = mapper.Map<ProductResponseDTO>(product);
-                var images = await imageService.GetAllImagesForProductAsync(product.Id);
-
-                // Convert the binary byte array to base64
-                foreach (var image in images)
-                {
-                    productResponse.PicturesData.Add(Convert.ToBase64String(image.Image));
-                }
-
-                response.Add(productResponse);
-            }
+            var response = mapper.Map<List<ProductResponseDTO>>(products);
 
             return Ok(response);
         }
@@ -185,22 +135,7 @@ namespace OnlineShop.Controllers
         {
             var products = await productService.GetFilteredAndSortedProductsAsync(filter, skipCount, sortType);
 
-            var response = new List<ProductResponseDTO>();
-
-            // Refactor
-            foreach (var product in products)
-            {
-                var productResponse = mapper.Map<ProductResponseDTO>(product);
-                var images = await imageService.GetAllImagesForProductAsync(product.Id);
-
-                // Convert the binary byte array to base64
-                foreach (var image in images)
-                {
-                    productResponse.PicturesData.Add(Convert.ToBase64String(image.Image));
-                }
-
-                response.Add(productResponse);
-            }
+            var response = mapper.Map<List<ProductResponseDTO>>(products);
 
             return Ok(response);
         }
@@ -237,22 +172,7 @@ namespace OnlineShop.Controllers
 
             var products = await productService.GetAllUserFavouriteProductsAsync(userId);
 
-            var response = new List<ProductResponseDTO>();
-
-            // Refactor
-            foreach (var product in products)
-            {
-                var productResponse = mapper.Map<ProductResponseDTO>(product);
-                var images = await imageService.GetAllImagesForProductAsync(product.Id);
-
-                // Convert the binary byte array to base64
-                foreach (var image in images)
-                {
-                    productResponse.PicturesData.Add(Convert.ToBase64String(image.Image));
-                }
-
-                response.Add(productResponse);
-            }
+           var response = mapper.Map<List<ProductResponseDTO>>(products);
 
             return Ok(response);
         }

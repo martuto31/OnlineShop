@@ -22,35 +22,28 @@ namespace OnlineShop.Services.Product
         private readonly IProductRepository productRepository;
         private readonly IProductColorRepository productColorRepository;
         private readonly IImageRepository imageRepository;
+        private readonly IImageService imageService;
         private readonly IUserRepository userRepository;
         private readonly UserManager<Models.User> userManager;
 
         public ProductService(IProductRepository productRepository, IProductColorRepository productColorRepository, 
-                                IImageRepository imageRepository, IUserRepository userRepository, UserManager<Models.User> userManager)
+                                IImageRepository imageRepository, IUserRepository userRepository, UserManager<Models.User> userManager, IImageService imageService)
         {
             this.productRepository = productRepository;
             this.productColorRepository = productColorRepository;
             this.imageRepository = imageRepository;
             this.userManager = userManager;
             this.userRepository = userRepository;
+            this.imageService = imageService;
         }
 
         public async Task AddProductAsync(CreateProductDTO input)
         {
-            List<ImageUri> images = new List<ImageUri>();
+            List<ImageUri> images = imageService.GetImageFiles(input.Images);
 
-            if (input.Images != null && input.Images.Count > 0)
+            if(images == null)
             {
-                foreach (var imageFile in input.Images)
-                {
-                    byte[] img = ConvertIFormFileToByteArray(imageFile);
-                    img = ImageService.CompressAndResizeImage(img, 400, 400);
-                    var image = new ImageUri()
-                    {
-                        Image = img,
-                    };
-                    images.Add(image);
-                }
+                throw new Exception("Продуктът няма снимки.");
             }
 
             var productsWithColors = new List<ProductsWithColors>();
@@ -131,28 +124,17 @@ namespace OnlineShop.Services.Product
                 throw new Exception("Object should not be null.");
             }
 
-            List<ImageUri> images = new List<ImageUri>();
-
-            if (input.Images != null)
+            List<ImageUri> imageFiles = imageService.GetImageFiles(input.Images);
+            if (imageFiles == null)
             {
-                if (input.Images != null && input.Images.Count > 0)
-                {
-                    foreach (var imageFile in input.Images)
-                    {
-                        byte[] img = ConvertIFormFileToByteArray(imageFile);
-                        img = ImageService.CompressAndResizeImage(img, 400, 400);
-                        var image = new ImageUri()
-                        {
-                            Image = img,
-                        };
-                        images.Add(image);
-                    }
-                }
-
-                this.imageRepository.DeleteAllImagesByProductId(product.Id);
-
-                product.Pictures = images;
+                throw new Exception("Продуктът няма снимки.");
             }
+
+            List<ImageUri> images = imageService.GetImageFiles(input.Images);
+
+            this.imageRepository.DeleteAllImagesByProductId(product.Id);
+            
+            product.Pictures = images;
 
             var productsWithColors = new List<ProductsWithColors>();
 

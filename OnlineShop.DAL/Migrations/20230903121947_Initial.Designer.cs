@@ -12,18 +12,17 @@ using OnlineShop.DAL.Data;
 namespace OnlineShop.DAL.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230804181022_InitialMigration")]
-    partial class InitialMigration
+    [Migration("20230903121947_Initial")]
+    partial class Initial
     {
-        /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.5")
+                .HasAnnotation("ProductVersion", "6.0.20")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
-            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
@@ -31,7 +30,7 @@ namespace OnlineShop.DAL.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("ClaimType")
                         .HasColumnType("nvarchar(max)");
@@ -53,7 +52,7 @@ namespace OnlineShop.DAL.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("ClaimType")
                         .HasColumnType("nvarchar(max)");
@@ -126,7 +125,7 @@ namespace OnlineShop.DAL.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<byte[]>("Image")
                         .IsRequired()
@@ -148,7 +147,7 @@ namespace OnlineShop.DAL.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("AdditionalDescription")
                         .IsRequired()
@@ -168,7 +167,7 @@ namespace OnlineShop.DAL.Migrations
                     b.Property<DateTime>("CreatedOn")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2023, 8, 4, 18, 10, 22, 749, DateTimeKind.Utc).AddTicks(7197));
+                        .HasDefaultValue(new DateTime(2023, 9, 3, 12, 19, 46, 954, DateTimeKind.Utc).AddTicks(9133));
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -214,7 +213,7 @@ namespace OnlineShop.DAL.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("Color")
                         .IsRequired()
@@ -231,7 +230,7 @@ namespace OnlineShop.DAL.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("Size")
                         .IsRequired()
@@ -278,7 +277,7 @@ namespace OnlineShop.DAL.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("Content")
                         .IsRequired()
@@ -324,14 +323,14 @@ namespace OnlineShop.DAL.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "8389c099-72c8-47ad-9e4d-fc41b34ce276",
+                            Id = "dbb99b8c-cab8-494e-8c08-d6bf5f86d87b",
                             ConcurrencyStamp = "1",
                             Name = "Admin",
                             NormalizedName = "Admin"
                         },
                         new
                         {
-                            Id = "768e20a8-00a1-4bfc-bbc4-4bbff670e56c",
+                            Id = "966fb185-7211-4d25-ac5d-7f04be1f9bd9",
                             ConcurrencyStamp = "2",
                             Name = "User",
                             NormalizedName = "User"
@@ -394,6 +393,21 @@ namespace OnlineShop.DAL.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("User");
+                });
+
+            modelBuilder.Entity("OnlineShop.Models.UserWithProducts", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.HasKey("UserId", "ProductId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("UserWithProducts");
                 });
 
             modelBuilder.Entity("OnlineShop.Models.ImageUri", b =>
@@ -475,6 +489,25 @@ namespace OnlineShop.DAL.Migrations
                     b.Navigation("Role");
                 });
 
+            modelBuilder.Entity("OnlineShop.Models.UserWithProducts", b =>
+                {
+                    b.HasOne("OnlineShop.Models.Product", "Product")
+                        .WithMany("Users")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("OnlineShop.Models.User", "User")
+                        .WithMany("Products")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("OnlineShop.Models.Product", b =>
                 {
                     b.Navigation("Pictures");
@@ -484,6 +517,8 @@ namespace OnlineShop.DAL.Migrations
                     b.Navigation("ProductsWithSizes");
 
                     b.Navigation("Reviews");
+
+                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("OnlineShop.Models.ProductColors", b =>
@@ -503,6 +538,8 @@ namespace OnlineShop.DAL.Migrations
 
             modelBuilder.Entity("OnlineShop.Models.User", b =>
                 {
+                    b.Navigation("Products");
+
                     b.Navigation("Reviews");
                 });
 #pragma warning restore 612, 618

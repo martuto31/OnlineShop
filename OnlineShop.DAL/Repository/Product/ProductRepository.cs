@@ -31,6 +31,14 @@ namespace OnlineShop.DAL.Repository.Product
         public async Task<IEnumerable<Models.Product>> GetAllProductsAsync()
         {
             return await DbSet
+                .Include(x => x.Pictures)
+                    .ThenInclude(p => p.Image)
+                .Include(x => x.ProductsWithColors)
+                    .ThenInclude(p => p.ProductColors)
+                .Include(x => x.ProductsWithSizes)
+                    .ThenInclude(p => p.ProductSizes)
+                .Include(x => x.Users)
+                    .ThenInclude(p => p.User)
                 .ToListAsync();
         }
         public IQueryable<Models.Product> GetProductsByType(string type, int skipCount)
@@ -40,6 +48,14 @@ namespace OnlineShop.DAL.Repository.Product
             return DbSet
                 .Where(x => x.ProductType == productType)
                 .Skip(skipCount)
+                .Include(x => x.Pictures)
+                    .ThenInclude(p => p.Image)
+                .Include(x => x.ProductsWithColors)
+                    .ThenInclude(p => p.ProductColors)
+                .Include(x => x.ProductsWithSizes)
+                    .ThenInclude(p => p.ProductSizes)
+                .Include(x => x.Users)
+                    .ThenInclude(p => p.User)
                 .Take(24);
         }
 
@@ -47,12 +63,14 @@ namespace OnlineShop.DAL.Repository.Product
         {
             return await DbSet
                 .Where(x => x.Id == id)
-                .Include(x => x.ProductsWithSizes)
-                    .ThenInclude(ps => ps.ProductSizes)
+                .Include(x => x.Pictures)
+                    .ThenInclude(p => p.Image)
                 .Include(x => x.ProductsWithColors)
-                    .ThenInclude(ps => ps.ProductColors)
+                    .ThenInclude(p => p.ProductColors)
+                .Include(x => x.ProductsWithSizes)
+                    .ThenInclude(p => p.ProductSizes)
                 .Include(x => x.Users)
-                    .ThenInclude(ps => ps.User)
+                    .ThenInclude(p => p.User)
                 .FirstOrDefaultAsync();
         }
 
@@ -64,6 +82,14 @@ namespace OnlineShop.DAL.Repository.Product
                 .Where(x => x.ProductType == productType)
                 .OrderByDescending(x => x.CreatedOn)
                 .Skip(skipCount)
+                .Include(x => x.Pictures)
+                    .ThenInclude(p => p.Image)
+                .Include(x => x.ProductsWithColors)
+                    .ThenInclude(p => p.ProductColors)
+                .Include(x => x.ProductsWithSizes)
+                    .ThenInclude(p => p.ProductSizes)
+                .Include(x => x.Users)
+                    .ThenInclude(p => p.User)
                 .Take(24);
 
             return products;
@@ -78,6 +104,14 @@ namespace OnlineShop.DAL.Repository.Product
                 .Where(x => x.ProductType == productType)
                 .OrderByDescending(x => x.Sales)
                 .Skip(skipCount)
+                .Include(x => x.Pictures)
+                    .ThenInclude(p => p.Image)
+                .Include(x => x.ProductsWithColors)
+                    .ThenInclude(p => p.ProductColors)
+                .Include(x => x.ProductsWithSizes)
+                    .ThenInclude(p => p.ProductSizes)
+                .Include(x => x.Users)
+                    .ThenInclude(p => p.User)
                 .Take(24);
         }
 
@@ -86,6 +120,14 @@ namespace OnlineShop.DAL.Repository.Product
             return _context.UserWithProducts
                 .Where(x => x.UserId == userId)
                 .Select(x => x.Product)
+                .Include(x => x.Pictures)
+                    .ThenInclude(p => p.Image)
+                .Include(x => x.ProductsWithColors)
+                    .ThenInclude(p => p.ProductColors)
+                .Include(x => x.ProductsWithSizes)
+                    .ThenInclude(p => p.ProductSizes)
+                .Include(x => x.Users)
+                    .ThenInclude(p => p.User)
                 .AsQueryable();
         }
 
@@ -165,6 +207,14 @@ namespace OnlineShop.DAL.Repository.Product
             return await filteredPlants
                 .Skip(skipCount)
                 .Take(24)
+                .Include(x => x.Pictures)
+                    .ThenInclude(p => p.Image)
+                .Include(x => x.ProductsWithColors)
+                    .ThenInclude(p => p.ProductColors)
+                .Include(x => x.ProductsWithSizes)
+                    .ThenInclude(p => p.ProductSizes)
+                .Include(x => x.Users)
+                    .ThenInclude(p => p.User)
                 .ToListAsync();
         }
 

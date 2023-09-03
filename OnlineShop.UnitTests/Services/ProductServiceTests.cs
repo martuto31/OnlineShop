@@ -31,6 +31,7 @@ namespace OnlineShop.UnitTests.Services
         private readonly Mock<UserManager<User>> _userManagerMock;
         private readonly Mock<DbSet<Product>> _productsSetMock;
         private readonly Mock<ApplicationDbContext> _applicationDbContextMock;
+        private readonly Mock<IImageService> _imageServiceMock;
         private IProductRepository _productRepository;
         private IProductService _productService;
         private IFixture _fixture;
@@ -46,13 +47,15 @@ namespace OnlineShop.UnitTests.Services
             _userManagerMock = _fixture.Freeze<Mock<UserManager<User>>>();
             _productsSetMock = new Mock<DbSet<Product>>();
             _applicationDbContextMock = new Mock<ApplicationDbContext>();
+            _imageServiceMock = new Mock<IImageService>();
 
             _productService = new ProductService(
                 _productRepoMock.Object,
                 _productColorRepoMock.Object,
                 _imageRepoMock.Object,
                 _userRepoMock.Object,
-                _userManagerMock.Object
+                _userManagerMock.Object,
+                _imageServiceMock.Object
             );
         }
 
@@ -506,6 +509,9 @@ namespace OnlineShop.UnitTests.Services
             // Arrange
             var existingProduct = new Product { Id = 123 };
             var input = new CreateProductDTO { Id = 123 };
+            var images = _fixture.Build<ImageUri>()
+                .CreateMany(5)
+                .ToList();
 
             _productRepoMock.Setup(repo => repo.GetProductByIdAsync(It.IsAny<int>()))
                 .ReturnsAsync(existingProduct);
@@ -513,6 +519,8 @@ namespace OnlineShop.UnitTests.Services
                 .Verifiable();
             _productRepoMock.Setup(repo => repo.SaveChangesAsync())
                 .Verifiable();
+            _imageServiceMock.Setup(x => x.GetImageFiles(It.IsAny<IList<IFormFile>>()))
+                .Returns(images);
 
             // Act
             await _productService.EditProductAsync(input);
@@ -539,11 +547,16 @@ namespace OnlineShop.UnitTests.Services
             // Arrange
             var input = new CreateProductDTO { Id = 123 };
             var existingProduct = new Product { Id = 123 };
+            var images = _fixture.Build<ImageUri>()
+                .CreateMany(5)
+                .ToList();
 
             _productRepoMock.Setup(x => x.AddProductAsync(It.IsAny<Product>()))
                 .Verifiable();
             _productRepoMock.Setup(x => x.SaveChangesAsync())
                 .Verifiable();
+            _imageServiceMock.Setup(x => x.GetImageFiles(It.IsAny<IList<IFormFile>>()))
+                .Returns(images);
 
             // Act
             await _productService.AddProductAsync(input);

@@ -165,7 +165,7 @@ namespace OnlineShop.DAL.Migrations
                     b.Property<DateTime>("CreatedOn")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2023, 8, 12, 14, 2, 2, 221, DateTimeKind.Utc).AddTicks(6783));
+                        .HasDefaultValue(new DateTime(2023, 9, 3, 12, 19, 46, 954, DateTimeKind.Utc).AddTicks(9133));
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -321,14 +321,14 @@ namespace OnlineShop.DAL.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "aa955bce-5940-4404-928e-749047647791",
+                            Id = "dbb99b8c-cab8-494e-8c08-d6bf5f86d87b",
                             ConcurrencyStamp = "1",
                             Name = "Admin",
                             NormalizedName = "Admin"
                         },
                         new
                         {
-                            Id = "2dbc598b-0fdf-415b-a0cb-fcb5c1b31c1c",
+                            Id = "966fb185-7211-4d25-ac5d-7f04be1f9bd9",
                             ConcurrencyStamp = "2",
                             Name = "User",
                             NormalizedName = "User"
