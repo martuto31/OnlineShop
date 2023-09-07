@@ -24,6 +24,12 @@ namespace OnlineShop.DAL.Data.Configurations
 
             product.HasMany(x => x.Reviews)
                 .WithOne(x => x.Product);
+
+            product.Property(x => x.Sales)
+                .HasDefaultValue(0);
+
+            product.Property(x => x.CreatedOn)
+                .HasDefaultValue(DateTime.UtcNow);
         }
     }
 }

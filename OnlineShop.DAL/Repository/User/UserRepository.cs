@@ -10,36 +10,16 @@ namespace OnlineShop.DAL.Repository.User
 {
     public class UserRepository : GenericRepository<Models.User>, IUserRepository
     {
-        public UserRepository(ApplicationDbContext applicationDbContext) : base(applicationDbContext) { }
+        public UserRepository(ApplicationDbContext context ) : base(context) { }
 
-        public async Task AddUserAsync(Models.User user)
+        public async Task<Models.User?> GetUserByIdAsync(string id)
         {
-            await _context.Users.AddAsync(user);
-        }
-
-        public void DeleteUser(Models.User user)
-        {
-            _context.Users.Remove(user);
-        }
-
-        public async Task<Models.User?> GetUserByIdAsync(int id)
-        {
-            return await DbSet
+            return await _context
+                .Users
                 .Where(x => x.Id == id)
+                .Include(x => x.Products)
+                .ThenInclude(pr => pr.Product)
                 .FirstOrDefaultAsync();
-        }
-
-        public async Task<Models.User?> GetUserByUsernameAsync(string username)
-        {
-            return await DbSet
-                .Where(x => x.Username == username)
-                .Include(x => x.Role)
-                .FirstOrDefaultAsync();
-        }
-
-        public void UpdateUser(Models.User user)
-        {
-            _context.Users.Update(user);
         }
     }
 }

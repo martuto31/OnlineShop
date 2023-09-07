@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Options;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using OnlineShop.Shared.Options;
 using System;
@@ -19,17 +20,10 @@ namespace OnlineShop.Services.User
         //{
         //    _tokenOptions = tokenOptions.Value;
         //}
-        public string GenerateToken(Models.User user)
+        public string GenerateToken(Models.User user, List<Claim> claims)
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(JsonTokenOptions.Key));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
-
-            var claims = new[]
-            {
-                new Claim(ClaimTypes.NameIdentifier, user.Username),
-                new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.Role, user.Role.Name)
-            };
 
             var token = new JwtSecurityToken(
                 JsonTokenOptions.Issuer,

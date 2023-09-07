@@ -28,9 +28,9 @@ namespace OnlineShop.DAL.Repository.Product
 
         public void DeleteAllImagesByProductId(int id)
         {
-            _context.Images
-                .Where(x => x.ProductId == id)
-                .ExecuteDelete();
+            //_context.Images
+            //    .Where(x => x.ProductId == id)
+            //    .ExecuteDelete();
         }
 
         public void DeleteImage(ImageUri imageUri)

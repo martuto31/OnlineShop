@@ -1,12 +1,16 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using OnlineShop.Mapping.Models;
 using OnlineShop.Models;
+using OnlineShop.Models.Enums;
 using OnlineShop.Services.Product;
 using OnlineShop.Services.User;
 using OnlineShop.Shared.DTO.ProductDTO;
 using OnlineShop.Shared.DTO.UserDTO;
+using System.Security.Claims;
 
 namespace OnlineShop.Controllers
 {
@@ -14,6 +18,8 @@ namespace OnlineShop.Controllers
     [ApiController]
     public class ProductController : ControllerBase
     {
+        private readonly SignInManager<User> signInManager;
+        private readonly UserManager<User> userManager;
         private readonly IProductService productService;
         private readonly IProductSizeService productSizeService;
         private readonly IImageService imageService;
@@ -21,17 +27,21 @@ namespace OnlineShop.Controllers
 
         public ProductController(
             IProductService productService,
-            IMapper mapper, 
-            IImageService imageService, 
-            IProductSizeService productSizeService)
+            IMapper mapper,
+            IImageService imageService,
+            IProductSizeService productSizeService,
+            SignInManager<User> signInManager,
+            UserManager<User> userManager)
         {
             this.productService = productService;
             this.mapper = mapper;
             this.imageService = imageService;
             this.productSizeService = productSizeService;
+            this.signInManager = signInManager;
+            this.userManager = userManager;
         }
 
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         [HttpPost("AddProduct")]
         public async Task<IActionResult> AddProductAsync([FromForm] CreateProductDTO userInput)
         {
@@ -74,13 +84,6 @@ namespace OnlineShop.Controllers
             var product = await productService.GetProductByIdAsync(id);
 
             var productResponse = mapper.Map<ProductResponseDTO>(product);
-            var images = await imageService.GetAllImagesForProductAsync(product.Id);
-
-            // Convert the binary byte array to base64
-            foreach (var image in images)
-            {
-                productResponse.PicturesData.Add(Convert.ToBase64String(image.Image));
-            }
 
             return Ok(productResponse);
         }
@@ -100,22 +103,37 @@ namespace OnlineShop.Controllers
         {
             var products = await productService.GetProductsByTypeAsync(type, skipCount);
 
-            var response = new List<ProductResponseDTO>();
-            
-            // Refactor
-            foreach (var product in products)
-            {
-                var productResponse = mapper.Map<ProductResponseDTO>(product);
-                var images = await imageService.GetAllImagesForProductAsync(product.Id);
+            var response = mapper.Map<List<ProductResponseDTO>>(products);
 
-                // Convert the binary byte array to base64
-                foreach (var image in images)
-                {
-                    productResponse.PicturesData.Add(Convert.ToBase64String(image.Image));
-                }
+            return Ok(response);
+        }
 
-                response.Add(productResponse);
-            }
+        [HttpGet("GetNewestProducts")]
+        public async Task<ActionResult<List<ProductResponseDTO>>> GetNewestProductsAsync(string type, int skipCount)
+        {
+            var products = await productService.GetNewestProductsAsync(type, skipCount);
+
+            var response = mapper.Map<List<ProductResponseDTO>>(products);
+
+            return Ok(response);
+        }
+
+        [HttpGet("GetMostSoldProducts")]
+        public async Task<ActionResult<List<ProductResponseDTO>>> GetMostSoldProductsAsync(string type, int skipCount)
+        {
+            var products = await productService.GetMostSoldProductsAsync(type, skipCount);
+
+            var response = mapper.Map<List<ProductResponseDTO>>(products);
+
+            return Ok(response);
+        }
+
+        [HttpPost("GetFilteredAndSortedProductsAsync")]
+        public async Task<ActionResult<List<ProductResponseDTO>>> GetFilteredAndSortedProductsAsync([FromBody] ProductFilterDTO filter, int skipCount, SortType sortType)
+        {
+            var products = await productService.GetFilteredAndSortedProductsAsync(filter, skipCount, sortType);
+
+            var response = mapper.Map<List<ProductResponseDTO>>(products);
 
             return Ok(response);
         }
@@ -138,6 +156,59 @@ namespace OnlineShop.Controllers
             var response = mapper.Map<List<ProductColorsResponseDTO>>(colors);
 
             return Ok(response);
+        }
+
+        [HttpGet("GetAllUserFavouriteProducts")]
+        public async Task<ActionResult<List<ProductResponseDTO>>> GetAllUserFavouriteProductsAsync()
+        {
+            var userId = User?.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+            if (userId == null)
+            {
+                return BadRequest("Не сте влезли в акаунта си.");
+            }
+
+            var products = await productService.GetAllUserFavouriteProductsAsync(userId);
+
+           var response = mapper.Map<List<ProductResponseDTO>>(products);
+
+            return Ok(response);
+        }
+
+        [HttpPost("AddProductToUserFavourites")]
+        public async Task<IActionResult> AddProductToUserFavouritesAsync(int productId)
+        {
+            var userId = User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (userId == null)
+            {
+                return BadRequest("Не сте влезли в акаунта си.");
+            }
+
+            await productService.AddProductToUserFavouritesAsync(userId, productId);
+
+            return Ok();
+        }
+
+        [HttpDelete("DeleteProductFromFavourites")]
+        public async Task<IActionResult> DeleteProductFromFavouritesAsync(int productId)
+        {
+            var userId = User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (userId == null)
+            {
+                return BadRequest("Не сте влезли в акаунта си.");
+            }
+
+            await productService.DeleteProductFromFavouriteAsync(userId, productId);
+
+            return Ok();
+        }
+
+        [HttpPost("HasMoreProducts")]
+        public ActionResult<bool> HasMoreProducts([FromBody] ProductFilterDTO filter, int skipCount, string sortType)
+        {
+            return productService.HasMoreProducts(filter, skipCount, sortType);
         }
     }
 }

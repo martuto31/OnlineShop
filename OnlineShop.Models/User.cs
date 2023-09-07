@@ -1,22 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
+﻿using Microsoft.AspNetCore.Identity;
 
 namespace OnlineShop.Models
 {
-    public class User
+    public class User : IdentityUser
     {
-        public int Id { get; set; }
-        public string Username { get; set; }
-        public string Password { get; set; }
-        public string Email { get; set; }
-
-        public int RoleId { get; set; }
         public Role Role { get; set; }
-
+        public string RoleId { get; set; }
         public virtual ICollection<Review> Reviews { get; set; }
+        public ICollection<UserWithProducts> Products { get; set; }
     }
 }

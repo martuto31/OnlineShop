@@ -6,12 +6,8 @@ using System.Threading.Tasks;
 
 namespace OnlineShop.DAL.Repository.User
 {
-    public interface IUserRepository : IGenericRepository<Models.User>
+    public interface IUserRepository
     {
-        Task AddUserAsync(Models.User user);
-        void DeleteUser(Models.User user);
-        void UpdateUser(Models.User user);
-        Task<Models.User?> GetUserByIdAsync(int id);
-        Task<Models.User?> GetUserByUsernameAsync(string username);
+        Task<Models.User?> GetUserByIdAsync(string id);
     }
 }

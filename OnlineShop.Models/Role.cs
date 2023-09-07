@@ -1,16 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Identity;
 
 namespace OnlineShop.Models
 {
-    public class Role
+    public class Role : IdentityRole
     {
-        public int Id { get; set; }
-        public string Name { get; set; }
-
         public virtual ICollection<User> Users { get; set; }
     }
 }

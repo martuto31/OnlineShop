@@ -25,7 +25,7 @@ namespace OnlineShop.Services.Product
                 Content = input.Content,
                 PostenOn = input.PostenOn,
                 ProductId = input.ProductId,
-                UserId = input.UserId
+                //UserId = input.UserId
             };
 
             await reviewRepository.AddReviewAsync(review);

@@ -4,12 +4,20 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using OnlineShop.DAL.Data;
 using OnlineShop.DAL.Repository.Product;
-using OnlineShop.DAL.Repository.User;
 using OnlineShop.Services.Product;
 using OnlineShop.Services.User;
 using OnlineShop.Shared.Options;
 using System.Text;
 using System.IdentityModel.Tokens.Jwt;
+using Microsoft.AspNetCore.Identity;
+using OnlineShop.Models;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using SixLabors.ImageSharp;
+using OnlineShop.Shared.ErrorMessages;
+using SendGrid;
+using SendGrid.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using OnlineShop.DAL.Repository.User;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -18,7 +26,22 @@ builder.Services.AddControllers();
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(configuration.GetConnectionString(OnlineShop.Constants.ConnectionString)));
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
 builder.Services.AddAuthorization();
+
+builder.Services.AddIdentity<User, Role>(options =>
+    {
+        options.Password.RequireDigit = false;
+        options.Password.RequireLowercase = false;
+        options.Password.RequireUppercase = false;
+        options.Password.RequireNonAlphanumeric = false;
+        options.Password.RequiredLength = 6;
+        options.User.RequireUniqueEmail = true;
+        options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
+    })
+    .AddErrorDescriber<CustomIdentityErrorDescriber>()
+    .AddEntityFrameworkStores<ApplicationDbContext>()
+    .AddDefaultTokenProviders();
 
 builder.Services.AddAuthentication(options =>
 {
@@ -43,21 +66,28 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+builder.Services.AddSendGrid(options =>
+{
+    options.ApiKey = configuration["SendGrid:ApiKey"];
+});
+
 // Data repositories
-builder.Services.AddTransient<IUserRepository, UserRepository>();
 builder.Services.AddTransient<IProductRepository, ProductRepository>();
 builder.Services.AddTransient<IReviewRepository, ReviewRepository>();
 builder.Services.AddTransient<IImageRepository, ImageRepository>();
 builder.Services.AddTransient<IProductSizeRepository, ProductSizeRepository>();
 builder.Services.AddTransient<IProductColorRepository, ProductColorRepository>();
+builder.Services.AddTransient<IUserRepository, UserRepository>();
 
 // Application services
+builder.Services.AddScoped<UserManager<User>>();
 builder.Services.AddTransient<IJsonTokenService, JsonTokenService>();
-builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddTransient<IProductService, ProductService>();
 builder.Services.AddTransient<IReviewService, ReviewService>();
 builder.Services.AddTransient<IImageService, ImageService>();
 builder.Services.AddTransient<IProductSizeService, ProductSizeService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
 // Automapper
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());

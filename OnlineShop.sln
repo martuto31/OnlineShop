@@ -3,15 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.3.32922.545
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnlineShop", "OnlineShop\OnlineShop.csproj", "{EA89E576-4E31-423C-9DDA-FF13A6AE2825}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OnlineShop", "OnlineShop\OnlineShop.csproj", "{EA89E576-4E31-423C-9DDA-FF13A6AE2825}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnlineShop.Services", "OnlineShop.Services\OnlineShop.Services.csproj", "{0C760917-E9E2-4FE1-80A7-B04DD6FADCAF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OnlineShop.Services", "OnlineShop.Services\OnlineShop.Services.csproj", "{0C760917-E9E2-4FE1-80A7-B04DD6FADCAF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnlineShop.DAL", "OnlineShop.DAL\OnlineShop.DAL.csproj", "{402AEC90-141F-44EB-A1A1-F5440508DB58}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OnlineShop.DAL", "OnlineShop.DAL\OnlineShop.DAL.csproj", "{402AEC90-141F-44EB-A1A1-F5440508DB58}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnlineShop.Models", "OnlineShop.Models\OnlineShop.Models.csproj", "{94A7EFAE-BF16-44D4-B8E9-8C82B7497025}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OnlineShop.Models", "OnlineShop.Models\OnlineShop.Models.csproj", "{94A7EFAE-BF16-44D4-B8E9-8C82B7497025}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnlineShop.Shared", "OnlineShop.Shared\OnlineShop.Shared.csproj", "{9BD6498E-F841-485B-8AAA-47469E9D47A7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OnlineShop.Shared", "OnlineShop.Shared\OnlineShop.Shared.csproj", "{9BD6498E-F841-485B-8AAA-47469E9D47A7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnlineShop.UnitTests", "OnlineShop.UnitTests\OnlineShop.UnitTests.csproj", "{952249DB-76DC-41C1-8272-0D484850FCD7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{9BD6498E-F841-485B-8AAA-47469E9D47A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9BD6498E-F841-485B-8AAA-47469E9D47A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9BD6498E-F841-485B-8AAA-47469E9D47A7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{952249DB-76DC-41C1-8272-0D484850FCD7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{952249DB-76DC-41C1-8272-0D484850FCD7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{952249DB-76DC-41C1-8272-0D484850FCD7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{952249DB-76DC-41C1-8272-0D484850FCD7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

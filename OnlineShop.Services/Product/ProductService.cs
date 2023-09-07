@@ -12,6 +12,8 @@ using OnlineShop.Models;
 using OnlineShop.Models.Enums;
 using System.Diagnostics;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+using OnlineShop.DAL.Repository.User;
 
 namespace OnlineShop.Services.Product
 {
@@ -20,30 +22,28 @@ namespace OnlineShop.Services.Product
         private readonly IProductRepository productRepository;
         private readonly IProductColorRepository productColorRepository;
         private readonly IImageRepository imageRepository;
+        private readonly IImageService imageService;
+        private readonly IUserRepository userRepository;
+        private readonly UserManager<Models.User> userManager;
 
-        public ProductService(IProductRepository productRepository, IProductColorRepository productColorRepository, IImageRepository imageRepository)
+        public ProductService(IProductRepository productRepository, IProductColorRepository productColorRepository, 
+                                IImageRepository imageRepository, IUserRepository userRepository, UserManager<Models.User> userManager, IImageService imageService)
         {
             this.productRepository = productRepository;
             this.productColorRepository = productColorRepository;
             this.imageRepository = imageRepository;
+            this.userManager = userManager;
+            this.userRepository = userRepository;
+            this.imageService = imageService;
         }
 
         public async Task AddProductAsync(CreateProductDTO input)
         {
-            List<ImageUri> images = new List<ImageUri>();
+            List<ImageUri> images = imageService.GetImageFiles(input.Images);
 
-            if (input.Images != null && input.Images.Count > 0)
+            if(images == null)
             {
-                foreach (var imageFile in input.Images)
-                {
-                    byte[] img = ConvertIFormFileToByteArray(imageFile);
-                    img = ImageService.CompressAndResizeImage(img, 400, 400);
-                    var image = new ImageUri()
-                    {
-                        Image = img,
-                    };
-                    images.Add(image);
-                }
+                throw new Exception("Продуктът няма снимки.");
             }
 
             var productsWithColors = new List<ProductsWithColors>();
@@ -81,13 +81,21 @@ namespace OnlineShop.Services.Product
             var product = new Models.Product()
             {
                 Description = input.Description,
+                AdditionalDescription = input.AdditionalDescription,
                 Name = input.Name,
+                BotanicalName = input.BotanicalName,
+                CommonName = input.CommonName,
                 Price = input.Price,
-                ProductTarget = input.ProductTarget,
-                ProductType = input.ProductType,
                 ProductsWithColors = productsWithColors,
                 ProductsWithSizes = productsWithSizes,
                 Pictures = images,
+                PetCompatibility = input.PetCompatibility,
+                AirPurify = input.AirPurify,
+                LightIntensity = input.LightIntensity,
+                GrowDifficulty = input.GrowDifficulty,
+                ProductType = input.ProductType,
+                CreatedOn = DateTime.Now,
+                Sales = 0,
             };
 
             await productRepository.AddProductAsync(product);
@@ -98,7 +106,7 @@ namespace OnlineShop.Services.Product
         {
             var product = await productRepository.GetProductByIdAsync(id);
 
-            if(product == null)
+            if (product == null)
             {
                 throw new Exception("Object should not be null.");
             }
@@ -116,28 +124,17 @@ namespace OnlineShop.Services.Product
                 throw new Exception("Object should not be null.");
             }
 
-            List<ImageUri> images = new List<ImageUri>();
-
-            if (input.Images != null)
+            List<ImageUri> imageFiles = imageService.GetImageFiles(input.Images);
+            if (imageFiles == null)
             {
-                if (input.Images != null && input.Images.Count > 0)
-                {
-                    foreach (var imageFile in input.Images)
-                    {
-                        byte[] img = ConvertIFormFileToByteArray(imageFile);
-                        img = ImageService.CompressAndResizeImage(img, 400, 400);
-                        var image = new ImageUri()
-                        {
-                            Image = img,
-                        };
-                        images.Add(image);
-                    }
-                }
-
-                this.imageRepository.DeleteAllImagesByProductId(product.Id);
-
-                product.Pictures = images;
+                throw new Exception("Продуктът няма снимки.");
             }
+
+            List<ImageUri> images = imageService.GetImageFiles(input.Images);
+
+            this.imageRepository.DeleteAllImagesByProductId(product.Id);
+            
+            product.Pictures = images;
 
             var productsWithColors = new List<ProductsWithColors>();
 
@@ -172,14 +169,18 @@ namespace OnlineShop.Services.Product
             }
 
             product.Name = input.Name;
+            product.CommonName = input.CommonName;
+            product.BotanicalName = input.BotanicalName;
             product.Price = input.Price;
+            product.AdditionalDescription = input.AdditionalDescription;
             product.Description = input.Description;
-            product.ProductTarget = input.ProductTarget;
-            product.ProductType = input.ProductType;
-            product.ProductTarget = input.ProductTarget;
-            product.ProductType = input.ProductType;
             product.ProductsWithColors = productsWithColors;
             product.ProductsWithSizes = productsWithSizes;
+            product.AirPurify = input.AirPurify;
+            product.PetCompatibility = input.PetCompatibility;
+            product.LightIntensity = input.LightIntensity;
+            product.GrowDifficulty = input.GrowDifficulty;
+            product.ProductType = input.ProductType;
 
             productRepository.UpdateProduct(product);
             await productRepository.SaveChangesAsync();
@@ -196,7 +197,7 @@ namespace OnlineShop.Services.Product
         {
             var product = await productRepository.GetProductByIdAsync(id);
 
-            if(product == null)
+            if (product == null)
             {
                 throw new Exception("Object should not be null.");
             }
@@ -206,12 +207,28 @@ namespace OnlineShop.Services.Product
 
         public async Task<IEnumerable<Models.Product>> GetProductsByTypeAsync(string type, int skipCount)
         {
-            var products =  await productRepository.GetProductsByTypeAsync(type, skipCount).ToListAsync();
+            var products = await productRepository.GetProductsByType(type, skipCount).ToListAsync();
 
-            if(products == null)
-            {
-                throw new Exception("Object should not be null.");
-            }
+            return products;
+        }
+
+        public async Task<IEnumerable<Models.Product>> GetNewestProductsAsync(string type, int skipCount)
+        {
+            var products = await productRepository.GetNewestProducts(type, skipCount).ToListAsync();
+
+            return products;
+        }
+
+        public async Task<IEnumerable<Models.Product>> GetMostSoldProductsAsync(string type, int skipCount)
+        {
+            var products = await productRepository.GetMostSoldProducts(type, skipCount).ToListAsync();
+
+            return products;
+        }
+
+        public async Task<IEnumerable<Models.Product>> GetFilteredAndSortedProductsAsync(ProductFilterDTO filter, int skipCount, SortType sortType)
+        {
+            var products = await productRepository.GetFilteredAndSortedProductsAsync(filter, skipCount, sortType);
 
             return products;
         }
@@ -220,12 +237,64 @@ namespace OnlineShop.Services.Product
         {
             var colors = await productColorRepository.GetAllProductColorsAsync();
 
-            if(colors == null)
+            return colors;
+        }
+
+        public async Task<IEnumerable<Models.Product>> GetAllUserFavouriteProductsAsync(string userId)
+        {
+            var products = await productRepository.GetAllUserFavouriteProducts(userId).ToListAsync();
+
+            if (!products.Any())
             {
-                throw new Exception("No colors found in database.");
+                throw new Exception("Потребителят няма продукти под категория 'любими'.");
             }
 
-            return colors;
+            return products;
+        }
+
+        public async Task AddProductToUserFavouritesAsync(string userId, int productId)
+        {
+            var user = await userManager.FindByIdAsync(userId);
+
+            if (user == null)
+            {
+                throw new Exception("Не съществува такъв акаунт.");
+            }
+
+            var product = await productRepository.GetProductByIdAsync(productId);
+
+            if (product == null)
+            {
+                throw new Exception("Не съществува такъв продукт.");
+            }
+
+            product.Users.Add(new UserWithProducts { UserId = user.Id, ProductId = product.Id });
+            await productRepository.SaveChangesAsync();
+        }
+
+        public async Task DeleteProductFromFavouriteAsync(string userId, int productId)
+        {
+            var user = await userRepository.GetUserByIdAsync(userId);
+
+            if (user == null)
+            {
+                throw new Exception("Не съществува такъв акаунт.");
+            }
+
+            var product = user.Products.FirstOrDefault(x => x.ProductId == productId);
+
+            if (product == null)
+            {
+                throw new Exception("Не съществува такъв продукт.");
+            }
+
+            user.Products.Remove(product);
+            await productRepository.SaveChangesAsync();
+        }
+
+        public bool HasMoreProducts(ProductFilterDTO filter, int skipCount, string sortType)
+        {
+            return productRepository.HasMoreProducts(filter, skipCount, sortType);
         }
 
         private byte[] ConvertIFormFileToByteArray(IFormFile file)
