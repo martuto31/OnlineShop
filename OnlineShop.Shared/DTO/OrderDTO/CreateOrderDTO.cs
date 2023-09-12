@@ -1,14 +1,14 @@
-﻿using System;
+﻿using OnlineShop.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OnlineShop.Models
+namespace OnlineShop.Shared.DTO.OrderDTO
 {
-    public class Order
+    public class CreateOrderDTO
     {
-        public int Id { get; set; }
         public DateTime? ShipmentDepartDate { get; set; }
         public DateTime? DeliveryDate { get; set; }
         public DateTime? ReturnDate { get; set; }
