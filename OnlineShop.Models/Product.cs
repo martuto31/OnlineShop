@@ -29,6 +29,7 @@ namespace OnlineShop.Models
         public ICollection<ProductsWithColors> ProductsWithColors { get; set; }
         public ICollection<ProductsWithSizes> ProductsWithSizes { get; set; }
         public ICollection<UserWithProducts> Users{ get; set; }
+        public ICollection<ProductOrder> Orders { get; set; }
 
         public ICollection<ImageUri> Pictures { get; set; }
         public ICollection<Review> Reviews { get; set; }
