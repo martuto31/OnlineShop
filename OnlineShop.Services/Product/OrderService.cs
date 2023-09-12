@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace OnlineShop.Services.Product
 {
-    public class OrderService
+    public class OrderService : IOrderService
     {
         private readonly IOrderRepository _orderRepository;
         private readonly UserManager<Models.User> _userManager;
