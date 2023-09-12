@@ -65,5 +65,50 @@ namespace OnlineShop.Services.Product
             await _orderRepository.AddAsync(order);
             await _orderRepository.SaveChangesAsync();
         }
+
+        public async Task SetDepartDate(DateTime departDate, int orderId)
+        {
+            var order = await _orderRepository.GetOrderByIdAsync(orderId);
+
+            if(order == null)
+            {
+                throw new Exception("Не съществува такава поръчка.");
+            }
+
+            order.ShipmentDepartDate = departDate;
+
+            _orderRepository.UpdateOrder(order);
+            await _orderRepository.SaveChangesAsync();
+        }
+
+        public async Task SetDeliveryDate(DateTime deliveryDate, int orderId)
+        {
+            var order = await _orderRepository.GetOrderByIdAsync(orderId);
+
+            if (order == null)
+            {
+                throw new Exception("Не съществува такава поръчка.");
+            }
+
+            order.DeliveryDate = deliveryDate;
+
+            _orderRepository.UpdateOrder(order);
+            await _orderRepository.SaveChangesAsync();
+        }
+
+        public async Task SetReturnDate(DateTime returnDate, int orderId)
+        {
+            var order = await _orderRepository.GetOrderByIdAsync(orderId);
+
+            if (order == null)
+            {
+                throw new Exception("Не съществува такава поръчка.");
+            }
+
+            order.DeliveryDate = returnDate;
+
+            _orderRepository.UpdateOrder(order);
+            await _orderRepository.SaveChangesAsync();
+        }
     }
 }
