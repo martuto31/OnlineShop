@@ -8,5 +8,6 @@ namespace OnlineShop.Models
         public string RoleId { get; set; }
         public virtual ICollection<Review> Reviews { get; set; }
         public ICollection<UserWithProducts> Products { get; set; }
+        public ICollection<Order> Orders { get; set; }
     }
 }
