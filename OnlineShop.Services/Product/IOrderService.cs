@@ -8,6 +8,5 @@ namespace OnlineShop.Services.Product
 {
     public interface IOrderService
     {
-
     }
 }

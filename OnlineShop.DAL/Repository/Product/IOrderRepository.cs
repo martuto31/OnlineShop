@@ -11,5 +11,6 @@ namespace OnlineShop.DAL.Repository.Product
     {
         Task<Order?> GetOrderByIdAsync(int id);
         IQueryable<Order> GetOrdersByUserIdAsync(string id);
+        void UpdateOrder(Order order);
     }
 }

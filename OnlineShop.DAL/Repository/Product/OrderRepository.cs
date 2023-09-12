@@ -30,5 +30,10 @@ namespace OnlineShop.DAL.Repository.Product
                 .Where(x => x.UserId == id)
                 .AsQueryable();
         }
+
+        public void UpdateOrder(Order order)
+        {
+            DbSet.Update(order);
+        }
     }
 }
