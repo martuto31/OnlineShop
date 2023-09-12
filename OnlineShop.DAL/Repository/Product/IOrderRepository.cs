@@ -9,7 +9,8 @@ namespace OnlineShop.DAL.Repository.Product
 {
     public interface IOrderRepository : IGenericRepository<Order>
     {
-        Task<Order?> GetOrderById(int id);
-        IQueryable<Order> GetOrdersByUserId(string id);
+        Task<Order?> GetOrderByIdAsync(int id);
+        IQueryable<Order> GetOrdersByUserIdAsync(string id);
+        void UpdateOrder(Order order);
     }
 }

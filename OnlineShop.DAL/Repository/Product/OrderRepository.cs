@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using OnlineShop.DAL.Data;
 using OnlineShop.Models;
+using OnlineShop.Shared.DTO.OrderDTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,19 +16,24 @@ namespace OnlineShop.DAL.Repository.Product
         {
         }
 
-        public async Task<Order?> GetOrderById(int id)
+        public async Task<Order?> GetOrderByIdAsync(int id)
         {
             return await DbSet
                 .Where(x => x.Id == id)
                 .FirstOrDefaultAsync();
         }
 
-        public IQueryable<Order> GetOrdersByUserId(string id)
+        public IQueryable<Order> GetOrdersByUserIdAsync(string id)
         {
             return DbSet
                 .Include(x => x.User)
                 .Where(x => x.UserId == id)
                 .AsQueryable();
+        }
+
+        public void UpdateOrder(Order order)
+        {
+            DbSet.Update(order);
         }
     }
 }

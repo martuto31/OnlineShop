@@ -78,6 +78,7 @@ builder.Services.AddTransient<IImageRepository, ImageRepository>();
 builder.Services.AddTransient<IProductSizeRepository, ProductSizeRepository>();
 builder.Services.AddTransient<IProductColorRepository, ProductColorRepository>();
 builder.Services.AddTransient<IUserRepository, UserRepository>();
+builder.Services.AddTransient<IOrderRepository, OrderRepository>();
 
 // Application services
 builder.Services.AddScoped<UserManager<User>>();
@@ -86,6 +87,7 @@ builder.Services.AddTransient<IProductService, ProductService>();
 builder.Services.AddTransient<IReviewService, ReviewService>();
 builder.Services.AddTransient<IImageService, ImageService>();
 builder.Services.AddTransient<IProductSizeService, ProductSizeService>();
+builder.Services.AddTransient<IOrderService, OrderService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
