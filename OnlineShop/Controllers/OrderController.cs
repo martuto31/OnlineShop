@@ -18,5 +18,19 @@ namespace OnlineShop.Controllers
             _orderService = orderService;
             _userManager = userManager;
         }
+
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Order>>> GetOrdersByUserId()
+        {
+            var userId = User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (userId == null)
+            {
+                return BadRequest("Не сте влезли в акаунта си.");
+            }
+
+            var orders = _orderService.GetOrdersByUserIdAsync(userId);
+            return Ok(orders);
+        }
     }
 }

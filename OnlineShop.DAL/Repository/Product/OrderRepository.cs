@@ -5,6 +5,7 @@ using OnlineShop.Shared.DTO.OrderDTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -20,6 +21,7 @@ namespace OnlineShop.DAL.Repository.Product
         {
             return await DbSet
                 .Where(x => x.Id == id)
+                .Include(x => x.Products)
                 .FirstOrDefaultAsync();
         }
 
@@ -28,6 +30,7 @@ namespace OnlineShop.DAL.Repository.Product
             return DbSet
                 .Include(x => x.User)
                 .Where(x => x.UserId == id)
+                .Include(x => x.Products)
                 .AsQueryable();
         }
 
