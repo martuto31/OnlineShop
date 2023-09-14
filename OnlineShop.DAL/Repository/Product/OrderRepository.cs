@@ -13,7 +13,7 @@ namespace OnlineShop.DAL.Repository.Product
 {
     public class OrderRepository : GenericRepository<Order>, IOrderRepository
     {
-        public OrderRepository(ApplicationDbContext context): base(context) 
+        public OrderRepository(ApplicationDbContext context): base(context)
         {
         }
 

@@ -26,11 +26,6 @@ namespace OnlineShop.Services.Product
         {
             var order = await _orderRepository.GetOrderByIdAsync(id);
 
-            if (order == null)
-            {
-                throw new Exception("Order is null");
-            }
-
             return order;
         }
 
@@ -41,7 +36,7 @@ namespace OnlineShop.Services.Product
             return orders;
         }
 
-        public async void AddOrderAsync(CreateOrderDTO orderDTO, string userId)
+        public async Task AddOrderAsync(CreateOrderDTO orderDTO, string userId)
         {
             var user = await _userManager.FindByIdAsync(userId);
 
@@ -58,9 +53,11 @@ namespace OnlineShop.Services.Product
                 ReturnDate = null,
                 ShipmentDepartDate = null,
                 IsReturned = false,
-                IsShipped = false,
-                Products = orderDTO.Products
+                IsShipped = false
             };
+
+            var productOrder = orderDTO.ProductsId.Select(id => new ProductOrder { OrderId = order.Id, ProductId = id}).ToList();
+            order.Products = productOrder;
 
             await _orderRepository.AddAsync(order);
             await _orderRepository.SaveChangesAsync();
