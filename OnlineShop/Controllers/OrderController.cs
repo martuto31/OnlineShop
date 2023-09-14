@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using OnlineShop.Mapping.Models;
@@ -40,6 +41,7 @@ namespace OnlineShop.Controllers
             return Ok(response);
         }
 
+        [Authorize]
         [HttpGet("GetOrdersByUserId")]
         public async Task<ActionResult<IEnumerable<OrderResponseDTO>>> GetOrdersByUserIdAsync()
         {
@@ -57,11 +59,12 @@ namespace OnlineShop.Controllers
                 return NotFound("Акаунтът все още няма поръчки.");
             }
 
-            var response = _mapper.Map<OrderResponseDTO>(orders);
+            var response = _mapper.Map<IEnumerable<OrderResponseDTO>>(orders);
 
             return Ok(response);
         }
 
+        [Authorize]
         [HttpPost("AddOrder")]
         public async Task<IActionResult> AddOrderAsync([FromBody] CreateOrderDTO orderInput)
         {

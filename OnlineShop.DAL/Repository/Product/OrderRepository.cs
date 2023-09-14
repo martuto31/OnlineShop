@@ -22,6 +22,7 @@ namespace OnlineShop.DAL.Repository.Product
             return await DbSet
                 .Where(x => x.Id == id)
                 .Include(x => x.Products)
+                    .ThenInclude(p => p.Product)
                 .FirstOrDefaultAsync();
         }
 
@@ -31,6 +32,7 @@ namespace OnlineShop.DAL.Repository.Product
                 .Include(x => x.User)
                 .Where(x => x.UserId == id)
                 .Include(x => x.Products)
+                    .ThenInclude(p => p.Product)
                 .AsQueryable();
         }
 

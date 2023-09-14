@@ -6,23 +6,18 @@ using OnlineShop.DAL.Data;
 using OnlineShop.DAL.Repository.Product;
 using OnlineShop.Services.Product;
 using OnlineShop.Services.User;
-using OnlineShop.Shared.Options;
 using System.Text;
-using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Identity;
 using OnlineShop.Models;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using SixLabors.ImageSharp;
 using OnlineShop.Shared.ErrorMessages;
-using SendGrid;
 using SendGrid.Extensions.DependencyInjection;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using OnlineShop.DAL.Repository.User;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(configuration.GetConnectionString(OnlineShop.Constants.ConnectionString)));
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
