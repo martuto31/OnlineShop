@@ -9,6 +9,6 @@ namespace OnlineShop.Mapping.Models
         public DateTime? ReturnDate { get; set; }
         public bool IsShipped { get; set; }
         public bool IsReturned { get; set; }
-        public ICollection<ProductOrder> Products { get; set; }
+        public ICollection<Product> Products { get; set; }
     }
 }
