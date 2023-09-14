@@ -8,7 +8,8 @@ namespace OnlineShop.Mapping
     {
         public OrderMapping() 
         {
-            CreateMap<Order, OrderResponseDTO>();
+            CreateMap<Order, OrderResponseDTO>()
+                .ForMember(dest => dest.Products, opt => opt.MapFrom(src => src.Products.Select(pr => pr.Product)));
         }
     }
 }
