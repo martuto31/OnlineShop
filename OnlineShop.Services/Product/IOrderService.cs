@@ -11,7 +11,7 @@ namespace OnlineShop.Services.Product
 {
     public interface IOrderService
     {
-        void AddOrderAsync(CreateOrderDTO orderDTO, string userId);
+        Task AddOrderAsync(CreateOrderDTO orderDTO, string userId);
         Task<Order> GetOrderByIdAsync(int id);
         Task<IEnumerable<Order>> GetOrdersByUserIdAsync(string id);
         Task SetDepartDate(DateTime departDate, int orderId);
