@@ -33,7 +33,7 @@ namespace OnlineShop.Controllers
 
             if(order == null)
             {
-                return NotFound("Няма такава поръчка.");
+                return BadRequest("Няма такава поръчка.");
             }
 
             var response = _mapper.Map<OrderResponseDTO>(order);
