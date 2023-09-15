@@ -12,6 +12,7 @@ namespace OnlineShop.Mapping.Models
         public string AdditionalDescription { get; set; }
         public string Description { get; set; }
         public double Price { get; set; }
+        public double Weight { get; set; }
         public string GrowDifficulty { get; set; }
         public string LightIntensity { get; set; }
         public string ProductType { get; set; }
