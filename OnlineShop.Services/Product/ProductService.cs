@@ -86,6 +86,7 @@ namespace OnlineShop.Services.Product
                 BotanicalName = input.BotanicalName,
                 CommonName = input.CommonName,
                 Price = input.Price,
+                Weight = input.Weight,
                 ProductsWithColors = productsWithColors,
                 ProductsWithSizes = productsWithSizes,
                 Pictures = images,
@@ -172,6 +173,7 @@ namespace OnlineShop.Services.Product
             product.CommonName = input.CommonName;
             product.BotanicalName = input.BotanicalName;
             product.Price = input.Price;
+            product.Weight = input.Weight;
             product.AdditionalDescription = input.AdditionalDescription;
             product.Description = input.Description;
             product.ProductsWithColors = productsWithColors;

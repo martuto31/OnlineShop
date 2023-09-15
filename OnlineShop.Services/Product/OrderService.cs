@@ -49,11 +49,21 @@ namespace OnlineShop.Services.Product
             {
                 User = user,
                 UserId = userId,
+                OrderCreatedOn = DateTime.UtcNow,
                 DeliveryDate = null,
                 ReturnDate = null,
                 ShipmentDepartDate = null,
                 IsReturned = false,
-                IsShipped = false
+                IsShipped = false,
+                Region = orderDTO.Region,
+                City = orderDTO.City,
+                PostalCode = orderDTO.PostalCode,
+                Address = orderDTO.Address,
+                PhoneNumber = orderDTO.PhoneNumber,
+                Name = orderDTO.Name,
+                Surname = orderDTO.Surname,
+                OrderWeight = orderDTO.OrderWeight,
+                OrderTotal = orderDTO.OrderTotal,
             };
 
             var productOrder = orderDTO.ProductsId.Select(id => new ProductOrder { OrderId = order.Id, ProductId = id}).ToList();
