@@ -23,6 +23,7 @@ namespace OnlineShop.DAL.Repository.Product
                 .Where(x => x.Id == id)
                 .Include(x => x.Products)
                     .ThenInclude(p => p.Product)
+                        .ThenInclude(img => img.Pictures)
                 .FirstOrDefaultAsync();
         }
 
@@ -33,6 +34,7 @@ namespace OnlineShop.DAL.Repository.Product
                 .Where(x => x.UserId == id)
                 .Include(x => x.Products)
                     .ThenInclude(p => p.Product)
+                        .ThenInclude(img => img.Pictures)
                 .AsQueryable();
         }
 

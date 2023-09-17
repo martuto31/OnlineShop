@@ -8,8 +8,13 @@ namespace OnlineShop.Mapping
     {
         public OrderMapping() 
         {
+            // N^2 time complexity !!!
+
             CreateMap<Order, OrderResponseDTO>()
-                .ForMember(dest => dest.Products, opt => opt.MapFrom(src => src.Products.Select(pr => pr.Product)));
+                .ForMember(dest => dest.ProductsPicture, opt => opt.MapFrom(src =>
+                    src.Products
+                        .Select(productOrder => productOrder.Product.Pictures.First())
+                        .Select(picture => Convert.ToBase64String(picture.Image))));
         }
     }
 }
