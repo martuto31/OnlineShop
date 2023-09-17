@@ -98,6 +98,7 @@ namespace OnlineShop.Services.Product
             }
 
             order.DeliveryDate = deliveryDate;
+            order.IsShipped = true;
 
             _orderRepository.UpdateOrder(order);
             await _orderRepository.SaveChangesAsync();
@@ -112,7 +113,8 @@ namespace OnlineShop.Services.Product
                 throw new Exception("Не съществува такава поръчка.");
             }
 
-            order.DeliveryDate = returnDate;
+            order.ReturnDate = returnDate;
+            order.IsReturned = true;
 
             _orderRepository.UpdateOrder(order);
             await _orderRepository.SaveChangesAsync();

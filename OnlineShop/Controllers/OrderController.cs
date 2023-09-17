@@ -90,7 +90,7 @@ namespace OnlineShop.Controllers
         [HttpPost("SetDeliveryDate")]
         public async Task<IActionResult> SetDeliveryDateAsync(DateTime deliveryDate, int orderId)
         {
-            await _orderService.SetDepartDate(deliveryDate, orderId);
+            await _orderService.SetDeliveryDate(deliveryDate, orderId);
 
             return Ok();
         }
@@ -98,7 +98,7 @@ namespace OnlineShop.Controllers
         [HttpPost("SetReturnDate")]
         public async Task<IActionResult> SetReturnDateAsync(DateTime returnDate, int orderId)
         {
-            await _orderService.SetDepartDate(returnDate, orderId);
+            await _orderService.SetReturnDate(returnDate, orderId);
 
             return Ok();
         }
