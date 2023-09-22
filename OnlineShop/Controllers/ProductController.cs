@@ -161,7 +161,7 @@ namespace OnlineShop.Controllers
         [HttpGet("GetAllUserFavouriteProducts")]
         public async Task<ActionResult<List<ProductResponseDTO>>> GetAllUserFavouriteProductsAsync()
         {
-            var userId = User?.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var userId = User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
             if (userId == null)
             {
