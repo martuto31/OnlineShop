@@ -18,6 +18,8 @@ namespace OnlineShop.DAL.Repository.Product
         {
         }
 
+        private readonly int _numOfProductsToRetrieve = 12;
+
         public async Task AddProductAsync(Models.Product product)
         {
             await _context.Products.AddAsync(product);
@@ -54,7 +56,7 @@ namespace OnlineShop.DAL.Repository.Product
                     .ThenInclude(p => p.ProductSizes)
                 .Include(x => x.Users)
                     .ThenInclude(p => p.User)
-                .Take(24);
+                .Take(_numOfProductsToRetrieve);
         }
 
         public async Task<Models.Product?> GetProductByIdAsync(int id)
@@ -86,7 +88,7 @@ namespace OnlineShop.DAL.Repository.Product
                     .ThenInclude(p => p.ProductSizes)
                 .Include(x => x.Users)
                     .ThenInclude(p => p.User)
-                .Take(24);
+                .Take(_numOfProductsToRetrieve);
 
             return products;
         }
@@ -107,7 +109,7 @@ namespace OnlineShop.DAL.Repository.Product
                     .ThenInclude(p => p.ProductSizes)
                 .Include(x => x.Users)
                     .ThenInclude(p => p.User)
-                .Take(24);
+                .Take(this._numOfProductsToRetrieve);
         }
 
         public IQueryable<Models.Product> GetAllUserFavouriteProducts(string userId)
@@ -200,7 +202,7 @@ namespace OnlineShop.DAL.Repository.Product
 
             return await filteredPlants
                 .Skip(skipCount)
-                .Take(24)
+                .Take(_numOfProductsToRetrieve)
                 .Include(x => x.Pictures)
                 .Include(x => x.ProductsWithColors)
                     .ThenInclude(p => p.ProductColors)
@@ -280,7 +282,7 @@ namespace OnlineShop.DAL.Repository.Product
             }
 
             int totalProductCount = filteredPlants.Count();
-            int nextSkipCount = skipCount + 24;
+            int nextSkipCount = skipCount + _numOfProductsToRetrieve;
             bool hasMoreProducts = nextSkipCount < totalProductCount;
 
             return hasMoreProducts;
